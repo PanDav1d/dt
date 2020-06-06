@@ -17,6 +17,7 @@ import kweb.gson
 import kweb.logger
 import org.bson.internal.Base64
 import org.litote.kmongo.findOneById
+import org.litote.kmongo.save
 import java.time.ZonedDateTime
 
 
@@ -70,6 +71,7 @@ fun Routing.downloadAttachment(){
                 )
 
                 doc.signatures = (doc.signatures?:listOf()).plus(sig)
+                DbContext.documents.save(doc)
 
                 call.respond(HttpStatusCode.OK, doc)
             }
