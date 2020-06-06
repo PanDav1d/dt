@@ -2,3 +2,4 @@ rootProject.name = 'doctag'
 
 include 'docsvr'
 include 'keysvr'
+include 'doctag-lib'

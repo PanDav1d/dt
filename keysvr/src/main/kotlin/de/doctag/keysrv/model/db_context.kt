@@ -1,0 +1,13 @@
+package de.doctag.keysrv.model
+
+import org.litote.kmongo.KMongo
+import org.litote.kmongo.getCollection
+
+object DbContext {
+
+    private val client by lazy{ KMongo.createClient(Config.instance.dbConnection) }
+    private val database by lazy{ client.getDatabase(Config.instance.dbName)}
+
+    val users = database.getCollection<User>()
+    val publicKeys = database.getCollection<PublicKeyEntry>()
+}
