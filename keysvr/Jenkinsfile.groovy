@@ -1,5 +1,5 @@
 def branch = 'master'
-def scmUrl = 'https://gitea.englert.xyz/frank/keysrv.git'
+def scmUrl = 'https://gitea.englert.xyz/frank/doctag.git'
 def devServer = '192.168.178.36'
 def devServerPort = '8080'
 
