@@ -59,7 +59,7 @@ fun Routing.downloadAttachment(){
                 val doc = docId?.let { DbContext.documents.findOneById(docId) } ?: throw NotFound("Document with id ${docId}")
 
                 if(signedMessage.signedMessage?.documentUrl != doc.url){
-                    throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature")
+                    throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature. ${signedMessage.signedMessage?.documentUrl} != ${doc.url}")
                 }
 
                 val sig = Signature(

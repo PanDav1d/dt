@@ -18,7 +18,7 @@ object DocServerClient {
     }
 
     fun signDocument(doc: Document, ppk: PrivatePublicKeyPair) : Boolean {
-        val sigMessage = DoctagSignature.make(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, Duration.ofMinutes(1), ppk.signingParty!!, ppk.owner.firstName + " " + ppk.owner.lastName)
+        val sigMessage = DoctagSignature.makeWithUrl(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, Duration.ofMinutes(1), ppk.signingParty!!, ppk.owner.firstName + " " + ppk.owner.lastName, doc.url)
         val rawSigMessage = sigMessage.toDataString()
 
         val request = HttpRequest.newBuilder()

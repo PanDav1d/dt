@@ -42,7 +42,9 @@ data class DoctagSignature(
 
         fun make(priv: String, pub:String, validity: Duration, signingParty: String, signingUser: String) = make(loadPrivateKey(priv)!!, loadPublicKey(pub)!!, validity, signingParty, signingUser)
 
-        fun make(priv: PrivateKey, pub: PublicKey, validity: Duration, signingParty: String, signingUser: String): DoctagSignature{
+        fun make(priv: PrivateKey, pub: PublicKey, validity: Duration, signingParty: String, signingUser: String) = makeWithUrl(priv, pub, validity, signingParty, signingUser, null)
+
+        fun makeWithUrl(priv: PrivateKey, pub: PublicKey, validity: Duration, signingParty: String, signingUser: String, url:String?): DoctagSignature{
             val randomBytes = ByteArray(12)
             SecureRandom().nextBytes(randomBytes)
             val validFrom = ZonedDateTime.now().withSecond(0).withZoneSameInstant(ZoneId.of("UTC"))
@@ -50,7 +52,7 @@ data class DoctagSignature(
 
             val fingerprint = publicKeyFingerprint(pub)
 
-            val rawSig = DoctagSignature(validFrom.toEpochSecond(), validOn.toEpochSecond(), Base64.getEncoder().encodeToString(randomBytes), fingerprint, signingParty, signingUser, null,"")
+            val rawSig = DoctagSignature(validFrom.toEpochSecond(), validOn.toEpochSecond(), Base64.getEncoder().encodeToString(randomBytes), fingerprint, signingParty, signingUser, url,"")
             val rawSigString = rawSig.toDataString()
 
             val sig = makeSignature(priv, rawSigString)
@@ -68,7 +70,7 @@ data class DoctagSignature(
             val signingUser = tokens[6]
             val url = tokens.getOrNull(7)
 
-            return DoctagSignature(validFrom.toLong(), validTill.toLong(), randomBuffer, keyFingerprint, signingParty,signingUser, null, signature)
+            return DoctagSignature(validFrom.toLong(), validTill.toLong(), randomBuffer, keyFingerprint, signingParty,signingUser, url, signature)
         }
 
         fun load(msg: String): SignatureLoadingResult{
