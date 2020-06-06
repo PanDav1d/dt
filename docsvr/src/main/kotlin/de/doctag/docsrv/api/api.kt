@@ -14,6 +14,7 @@ import io.ktor.response.respond
 import io.ktor.response.respondBytes
 import io.ktor.routing.*
 import kweb.gson
+import kweb.logger
 import org.bson.internal.Base64
 import org.litote.kmongo.findOneById
 import java.time.ZonedDateTime
@@ -42,6 +43,7 @@ fun Routing.downloadAttachment(){
             }
 
             post("/d/{documentId}"){
+                logger.info("POST to /d/{documentId}")
 
                 val docId = call.parameters["documentId"]
 
@@ -49,8 +51,10 @@ fun Routing.downloadAttachment(){
                 val signedMessage = DoctagSignature.load(rawSignature)
 
                 if(!signedMessage.valid){
+                    logger.info("Signature is not valid")
                     throw BadRequest("Signature check failed. ${signedMessage.message}")
                 }
+                logger.info("Signature is valid")
 
                 val doc = docId?.let { DbContext.documents.findOneById(docId) } ?: throw NotFound("Document with id ${docId}")
 
