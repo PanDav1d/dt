@@ -52,8 +52,9 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
                         div().text("Quelle: ${doc.url}")
                     }
                     button(fomantic.ui.button).text("Signieren").on.click {
+                        logger.info("Signing document")
                         DocServerClient.signDocument(doc, DbContext.keys.find().first()!!)
-
+                        logger.info("Signed document")
                         modal.close()
                     }
                     button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {

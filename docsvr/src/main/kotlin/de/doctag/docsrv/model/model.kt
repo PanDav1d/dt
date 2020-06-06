@@ -1,5 +1,6 @@
 package de.doctag.docsrv.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import de.doctag.lib.PublicKeyResponse
 import de.doctag.lib.DoctagSignature
 import java.time.ZonedDateTime
@@ -19,6 +20,7 @@ data class User(
     var sessions: List<Session>?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Document(
     var _id: String? = null,
     var externalId: String? = null,

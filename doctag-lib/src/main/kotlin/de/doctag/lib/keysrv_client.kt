@@ -70,7 +70,7 @@ object KeyServerClient {
             }
             else ->{
                 logger.info("Failed to fetch public key")
-                Triple(true , null, resp.body())
+                Triple(false , null, resp.body())
             }
         }
     }

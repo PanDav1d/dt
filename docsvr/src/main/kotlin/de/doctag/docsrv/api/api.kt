@@ -67,7 +67,7 @@ fun Routing.downloadAttachment(){
 
                 doc.signatures = (doc.signatures?:listOf()).plus(sig)
 
-                call.respond(HttpStatusCode.OK)
+                call.respond(HttpStatusCode.OK, doc)
             }
         }
 }

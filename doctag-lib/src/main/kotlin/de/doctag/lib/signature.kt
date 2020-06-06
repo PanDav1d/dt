@@ -1,5 +1,6 @@
 package de.doctag.lib
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.SecureRandom
@@ -28,8 +29,8 @@ data class DoctagSignature(
         val signature: String
 )
 {
-    val toDataString: String
-        get() = "${signature?:""};$validFrom;$validTill;$randomBuffer;$keyFingerprint;${signingParty};${signingUser.replace(';',',')};${documentUrl?:""}".trimEnd(';')
+    fun toDataString(): String
+        = "${signature?:""};$validFrom;$validTill;$randomBuffer;$keyFingerprint;${signingParty};${signingUser.replace(';',',')};${documentUrl?:""}".trimEnd(';')
 
     val validFromDateTime : ZonedDateTime
         get() {
@@ -50,7 +51,7 @@ data class DoctagSignature(
             val fingerprint = publicKeyFingerprint(pub)
 
             val rawSig = DoctagSignature(validFrom.toEpochSecond(), validOn.toEpochSecond(), Base64.getEncoder().encodeToString(randomBytes), fingerprint, signingParty, signingUser, null,"")
-            val rawSigString = rawSig.toDataString
+            val rawSigString = rawSig.toDataString()
 
             val sig = makeSignature(priv, rawSigString)
 

@@ -19,14 +19,18 @@ object DocServerClient {
 
     fun signDocument(doc: Document, ppk: PrivatePublicKeyPair) : Boolean {
         val sigMessage = DoctagSignature.make(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, Duration.ofMinutes(1), ppk.signingParty!!, ppk.owner.firstName + " " + ppk.owner.lastName)
-        val rawSigMessage = sigMessage.toDataString
+        val rawSigMessage = sigMessage.toDataString()
 
         val request = HttpRequest.newBuilder()
             .uri(URI.create(doc.url!!))
             .timeout(Duration.ofMinutes(1))
+            .header("Accept", "application/json")
             .header("Content-Type", "application/json; charset=utf-8")
             .POST(HttpRequest.BodyPublishers.ofString(rawSigMessage, Charsets.UTF_8))
             .build()
+
+        logger.info("Destination: ${doc.url}")
+        logger.info("data ${rawSigMessage}")
 
         val resp = KeyServerClient.client.send(request, HttpResponse.BodyHandlers.ofString())
 
@@ -40,12 +44,16 @@ object DocServerClient {
 
         val request = HttpRequest.newBuilder()
                 .uri(URI.create(targetUrl))
+                .header("Accept","application/json")
                 .timeout(Duration.ofMinutes(1))
                 .build()
 
         val resp = client.send(request, HttpResponse.BodyHandlers.ofString())
 
         logger.info("fetching doc from url ${targetUrl}")
+        logger.info("Response status code ${resp.statusCode()}")
+        logger.info("Response string ${resp.body()}")
+
 
         return when(resp.statusCode()){
             200 -> {
@@ -53,6 +61,8 @@ object DocServerClient {
                     val doc = getJackson().readValue<Document>(resp.body())
                     doc
                 }catch(ex:Exception) {
+                    logger.error("Failed to parse json")
+                    logger.error(ex.message)
                     null
                 }
             }

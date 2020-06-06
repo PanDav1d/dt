@@ -15,10 +15,10 @@ fun ElementCreator<*>.showSignatureModal(key: PrivatePublicKeyPair) = modal("Sig
 
         val sig = DoctagSignature.make(key.privateKey!!, key.publicKey!!, Duration.ofMinutes(5), key.signingParty!!, browser.authenticatedUser!!.let { "${it.firstName} ${it.lastName}" })
 
-        logger.info("Created signature qr code with content ${sig.toDataString}")
+        logger.info("Created signature qr code with content ${sig.toDataString()}")
 
         div(fomantic.ui.image).new {
-            img(attributes = mapOf("height" to "400px", "with" to "400px","src" to getQRCodeImageAsDataUrl(sig.toDataString, 400,400)))
+            img(attributes = mapOf("height" to "400px", "with" to "400px","src" to getQRCodeImageAsDataUrl(sig.toDataString(), 400,400)))
         }
         div(fomantic.ui.content).new{
             div().text("Von Nutzer: ${sig.signingUser}")
