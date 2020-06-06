@@ -10,7 +10,7 @@ node {
     }
 
     stage('build') {
-        sh './gradlew keysvr:fatJar'
+        sh './gradlew keysrv:fatJar'
     }
 
     stage('Confirm deploy') {
