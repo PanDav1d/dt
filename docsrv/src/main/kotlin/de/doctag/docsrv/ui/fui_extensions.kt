@@ -21,6 +21,19 @@ val FomanticUIClasses.paw : FomanticUIClasses
         return this
     }
 
+
+val FomanticUIClasses.server : FomanticUIClasses
+    get() {
+        classes("server")
+        return this
+    }
+
+val FomanticUIClasses.codeBranch : FomanticUIClasses
+    get() {
+        classes("code branch")
+        return this
+    }
+
 val FomanticUIClasses.tertiary : FomanticUIClasses
     get() {
         classes("tertiary")

@@ -1,6 +1,7 @@
 package de.doctag.docsrv.ui
 
 import de.doctag.docsrv.model.host
+import de.doctag.docsrv.readResourceFile
 import de.doctag.docsrv.ui.modals.scanStatusModal
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -37,7 +38,7 @@ fun ElementCreator<*>.centeredBox( contentBlock: ElementCreator<DivElement>.()->
                 clear: both;
                 position: relative;
                 height: 20px;
-                margin-top: -6px;
+                margin-top: -15px;
                 width: 100%;
                 display: table;
                 text-align: center;
@@ -59,9 +60,19 @@ fun ElementCreator<*>.centeredBox( contentBlock: ElementCreator<DivElement>.()->
     }
 
     div(attributes = mapOf("class" to "footer")).new{
-        div(attributes = mapOf("class" to "footerContent")).text("Server: ${this.browser.host()}")
+        div(attributes = mapOf("class" to "footerContent")).new{
+            div(fomantic.ui.label).new {
+                i(fomantic.ui.icon.server)
+                span().text(this.browser.host())
+            }
+            div(fomantic.ui.label).new {
+                i(fomantic.ui.icon.codeBranch)
+                span().text(readResourceFile("version.txt"))
+            }
+        }
     }
 }
+
 
 enum class ToastKind{
     Success,
