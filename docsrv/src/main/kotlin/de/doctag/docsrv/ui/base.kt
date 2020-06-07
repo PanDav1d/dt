@@ -1,7 +1,7 @@
 package de.doctag.docsrv.ui
 
+import de.doctag.docsrv.Resources
 import de.doctag.docsrv.model.host
-import de.doctag.docsrv.readResourceFile
 import de.doctag.docsrv.ui.modals.scanStatusModal
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -67,7 +67,8 @@ fun ElementCreator<*>.centeredBox( contentBlock: ElementCreator<DivElement>.()->
             }
             div(fomantic.ui.label).new {
                 i(fomantic.ui.icon.codeBranch)
-                span().text(readResourceFile("version.txt"))
+                span().text("Build-Nr: ")
+                span().text(Resources.load("version.txt"))
             }
         }
     }

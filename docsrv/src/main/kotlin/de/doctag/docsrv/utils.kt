@@ -10,12 +10,12 @@ import kweb.state.KVar
 import kweb.state.ReversibleFunction
 import org.bson.internal.Base64
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.nio.file.Paths
-import java.security.*
+import java.net.URL
+import java.security.SecureRandom
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.jar.Manifest
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 import kotlin.reflect.KProperty1
@@ -84,9 +84,7 @@ fun getQRCodeImageAsDataUrl(text: String, width: Int, height: Int): String {
 fun ZonedDateTime.formatDateTime() = this.withZoneSameInstant(ZoneId.of("Europe/Berlin")).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
 
 
-fun readResourceFile(relPath: String): String {
-    val fullPath = Paths.get("").toAbsolutePath().toString() + "/docsrv/src/main/resources/" + relPath.trimStart('/')
 
-    val fileData = File(fullPath).inputStream().use { it.readAllBytes() }
-    return fileData.toString(Charsets.UTF_8)
+object Resources {
+    fun load(relPath: String) = javaClass.classLoader.getResource(relPath).readText()
 }
