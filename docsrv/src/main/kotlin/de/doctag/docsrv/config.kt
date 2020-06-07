@@ -4,7 +4,6 @@ import com.xenomachina.argparser.default
 interface DocSrvConfig{
     val dbConnection: String
     val dbName: String
-    val hostName: String
 }
 
 class DocsrvArgs(parser: ArgParser) : DocSrvConfig{
@@ -17,9 +16,7 @@ class DocsrvArgs(parser: ArgParser) : DocSrvConfig{
         "-d", "--dbName",
         help = "Name of the database").default("docsrv")
 
-    override val hostName by parser.storing(
-        "-n", "--hostName",
-        help = "Public Hostname on which this instance is reachable").default("127.0.0.1")
+
 }
 
 object Config {

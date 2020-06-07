@@ -2,11 +2,8 @@ package de.doctag.docsrv.ui.document
 
 import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.getQRCodeImageAsDataUrl
-import de.doctag.docsrv.model.Document
-import de.doctag.docsrv.model.authenticatedUser
+import de.doctag.docsrv.model.*
 import org.litote.kmongo.findOneById
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.Signature
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.scanStatusModal
 import kweb.*
@@ -19,7 +16,7 @@ import java.time.ZonedDateTime
 
 fun ElementCreator<*>.handleDocument(docId: String?) {
 
-    val document = KVar(DbContext.documents.findOneById(docId!!)!!)
+    val document = KVar(db().documents.findOneById(docId!!)!!)
     pageBorderAndTitle("Dokument") { pageArea ->
 
         div(fomantic.content).new() {
@@ -85,7 +82,7 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                                     if(sig != null) {
                                         val sigObj = Signature(sig.signedMessage!!, sig.publicKey!!, ZonedDateTime.now(), sig.rawSignedMessage)
                                         rDocument.signatures = (rDocument.signatures ?: listOf()).plus(sigObj)
-                                        DbContext.documents.save(rDocument)
+                                        db().documents.save(rDocument)
 
                                         logger.info("Captured signature and saved to db")
                                         pageArea.showToast("Status erfolgreich erfasst", ToastKind.Success)

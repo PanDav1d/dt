@@ -1,22 +1,17 @@
 package de.doctag.docsrv.ui.auth
 
 import de.doctag.docsrv.checkPasswordHash
-import de.doctag.docsrv.generatePasswordHash
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.centeredBox
 import de.doctag.docsrv.ui.lock
 import de.doctag.docsrv.ui.navigateTo
 import de.doctag.docsrv.ui.tertiary
-import de.doctag.docsrv.urlParameters
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
-import org.litote.kmongo.eq
 import org.litote.kmongo.regex
 import org.litote.kmongo.findOne
-import org.litote.kmongo.replaceOneById
-import java.time.ZonedDateTime
 
 fun ElementCreator<*>.handleLogin(){
 
@@ -66,10 +61,10 @@ fun ElementCreator<*>.handleLogin(){
                     this.addClasses("loading")
                     logger.info("Username ${user.value} Passwort ${password.value}")
 
-                    val user = DbContext.users.findOne(User::emailAdress.regex(user.value,"i"))
+                    val user = db().users.findOne(User::emailAdress.regex(user.value,"i"))
                     if(user != null && checkPasswordHash(user?.passwordHash, password.value)){
 
-                        Sessions.start(this.browser.getOrCreateSessionId()!!, user)
+                        Sessions.start(this.browser, this.browser.getOrCreateSessionId()!!, user)
                         //this.browser.url.value = "/?"
                         this.browser.navigateTo("/")
                     }

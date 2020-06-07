@@ -10,6 +10,11 @@ data class Session(
     val expires: ZonedDateTime
 )
 
+data class DocsrvConfig(
+        var _id: String? = "1",
+        var hostname: String = ""
+)
+
 data class User(
     var _id: String? = null,
     var firstName: String? = null,

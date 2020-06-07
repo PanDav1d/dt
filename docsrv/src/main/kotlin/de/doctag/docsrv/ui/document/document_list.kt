@@ -2,6 +2,7 @@ package de.doctag.docsrv.ui.document
 
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.authRequired
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addDocumentModal
 import kweb.*
@@ -13,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 fun ElementCreator<*>.handleDocumentList() {
     authRequired {
-        val documents = KVar(DbContext.documents.find().toList())
+        val documents = KVar(db().documents.find().toList())
         pageBorderAndTitle("Dokumente") { pageArea ->
             div(fomantic.content).new() {
 

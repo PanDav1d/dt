@@ -2,6 +2,7 @@ package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.Document
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.forms.documentAddForm
 import de.doctag.docsrv.ui.modal
 import kweb.ElementCreator
@@ -12,17 +13,17 @@ fun ElementCreator<*>.addDocumentModal(onDocumentAdd: (d: Document)->Unit) = mod
     val document  = Document()
     documentAddForm(document) { fileObj, docObj ->
 
-        fileObj.apply { DbContext.files.insertOne(fileObj) }
+        fileObj.apply { db().files.insertOne(fileObj) }
 
         docObj.attachmentId = fileObj._id
         docObj.created = ZonedDateTime.now()
         docObj.originalFileName = fileObj.name
 
         docObj.apply {
-            DbContext.documents.insertOne(docObj)
+            db().documents.insertOne(docObj)
         }
-        docObj.url = "https://${Config.instance.hostName}/d/${docObj._id}"
-        DbContext.documents.save(docObj)
+        docObj.url = "https://${db().currentConfig.hostname}/d/${docObj._id}"
+        db().documents.save(docObj)
 
         onDocumentAdd(docObj)
 

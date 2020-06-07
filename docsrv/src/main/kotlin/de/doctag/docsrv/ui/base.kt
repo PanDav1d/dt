@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui
 
+import de.doctag.docsrv.model.host
 import de.doctag.docsrv.ui.modals.scanStatusModal
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -32,6 +33,19 @@ fun ElementCreator<*>.centeredBox( contentBlock: ElementCreator<DivElement>.()->
             .column {
               max-width: 450px;
             }
+            .footer {
+                clear: both;
+                position: relative;
+                height: 20px;
+                margin-top: -6px;
+                width: 100%;
+                display: table;
+                text-align: center;
+            }
+            .footerContent {
+                display: table-cell;
+                vertical-align: middle;
+            }
         """.trimIndent())
     }
 
@@ -42,6 +56,10 @@ fun ElementCreator<*>.centeredBox( contentBlock: ElementCreator<DivElement>.()->
                 contentBlock(this)
             }
         }
+    }
+
+    div(attributes = mapOf("class" to "footer")).new{
+        div(attributes = mapOf("class" to "footerContent")).text("Server: ${this.browser.host()}")
     }
 }
 

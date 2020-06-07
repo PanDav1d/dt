@@ -3,6 +3,7 @@ package de.doctag.docsrv.ui.modals
 import de.doctag.docsrv.generatePasswordHash
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.TabPane
 import de.doctag.docsrv.ui.forms.userDeleteForm
 import de.doctag.docsrv.ui.forms.userEditForm
@@ -25,7 +26,7 @@ fun ElementCreator<*>.editUserModal(user: User, onEdit: (u:User, action: UserEdi
             tab(TabPane("Profil") {
                 userEditForm(user) { user ->
                     logger.info("Saving changed user")
-                    DbContext.users.replaceOneById(user._id!!, user)
+                    db().users.replaceOneById(user._id!!, user)
 
                     onEdit(user, UserEditAction.UserModified)
                 }
@@ -33,7 +34,7 @@ fun ElementCreator<*>.editUserModal(user: User, onEdit: (u:User, action: UserEdi
             TabPane("Passwort ändern") {
                 userPasswordEditForm(user) { newPassword ->
                     user.passwordHash = generatePasswordHash(newPassword)
-                    DbContext.users.replaceOneById(user._id!!, user)
+                    db().users.replaceOneById(user._id!!, user)
 
                     onEdit(user, UserEditAction.PasswordChanged)
 
@@ -43,7 +44,7 @@ fun ElementCreator<*>.editUserModal(user: User, onEdit: (u:User, action: UserEdi
                 userDeleteForm(user){
                     logger.info("User ${user.emailAdress} will be removed")
 
-                    DbContext.users.deleteOne(User::_id eq user._id)
+                    db().users.deleteOne(User::_id eq user._id)
                     onEdit(user, UserEditAction.UserDeleted)
 
                     modal.close()

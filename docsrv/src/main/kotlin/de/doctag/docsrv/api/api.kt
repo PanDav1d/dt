@@ -3,11 +3,13 @@ package de.doctag.docsrv.api
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.Signature
+import de.doctag.docsrv.model.db
 import de.doctag.lib.DoctagSignature
 import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.header
+import io.ktor.request.host
 import io.ktor.request.receiveStream
 import io.ktor.response.header
 import io.ktor.response.respond
@@ -24,8 +26,8 @@ import java.time.ZonedDateTime
 fun Routing.downloadAttachment(){
     get("/d/{documentId}/download"){
         val docId = call.parameters["documentId"]
-        val doc = docId?.let{DbContext.documents.findOneById(docId)}
-        val fd = doc?.attachmentId?.let{DbContext.files.findOneById(it)}
+        val doc = docId?.let{db(call.request.host()).documents.findOneById(docId)}
+        val fd = doc?.attachmentId?.let{db().files.findOneById(it)}
 
         fd?.let { fd ->
             call.response.header("Content-Disposition", """attachment; filename="${doc.originalFileName}"""")
@@ -37,7 +39,7 @@ fun Routing.downloadAttachment(){
     acceptExcludingWildcards(ContentType.Application.Json) {
             get("/d/{documentId}") {
                 val docId = call.parameters["documentId"]
-                val doc = docId?.let { DbContext.documents.findOneById(docId) } ?: throw NotFound("Document with id ${docId}")
+                val doc = docId?.let { db().documents.findOneById(docId) } ?: throw NotFound("Document with id ${docId}")
                 //val signature = call.request.header("X-Message-Signature") ?: throw BadRequest("No X-Message-Signature Header found. Requesting party can't be authenticated. Won't reply.")
 
                 call.respond(HttpStatusCode.OK, doc)
@@ -57,7 +59,7 @@ fun Routing.downloadAttachment(){
                 }
                 logger.info("Signature is valid")
 
-                val doc = docId?.let { DbContext.documents.findOneById(docId) } ?: throw NotFound("Document with id ${docId}")
+                val doc = docId?.let { db().documents.findOneById(docId) } ?: throw NotFound("Document with id ${docId}")
 
                 if(signedMessage.signedMessage?.documentUrl != doc.url){
                     throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature. ${signedMessage.signedMessage?.documentUrl} != ${doc.url}")
@@ -71,7 +73,7 @@ fun Routing.downloadAttachment(){
                 )
 
                 doc.signatures = (doc.signatures?:listOf()).plus(sig)
-                DbContext.documents.save(doc)
+                db().documents.save(doc)
 
                 call.respond(HttpStatusCode.OK, doc)
             }

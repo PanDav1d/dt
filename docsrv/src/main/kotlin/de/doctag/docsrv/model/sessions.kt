@@ -1,6 +1,9 @@
 package de.doctag.docsrv.model
 
 import de.doctag.docsrv.ui.centeredBox
+import io.ktor.features.callId
+import io.ktor.features.origin
+import io.ktor.request.host
 import kweb.*
 import org.litote.kmongo.div
 import org.litote.kmongo.eq
@@ -38,28 +41,30 @@ fun ElementCreator<*>.authRequired(block: ElementCreator<*>.()->Unit) {
 }
 
 val WebBrowser.authenticatedUser : User?
-    get() = getOrCreateSessionId()?.let{Sessions.get(it)}
+    get() = getOrCreateSessionId()?.let{Sessions.get(this,it)}
 
 fun WebBrowser.clearSession() {
     val sessionId = getOrCreateSessionId()
     doc.cookie.set("SESSION", UUID.randomUUID().toString(), expires = Duration.ofDays(14))
-    sessionId?.let{Sessions.remove(sessionId)}
+    sessionId?.let{Sessions.remove(this, sessionId)}
 
 }
 
+fun WebBrowser.host()  = this.httpRequestInfo.requestedUrl.substringAfter("://").substringBefore("/").substringBefore(":")
+
 object Sessions {
 
-    fun start(sessionId: String, user: User){
+    fun start(browser: WebBrowser, sessionId: String, user: User){
         openSessions[sessionId] = user
         user.sessions = (user.sessions?:listOf()).plus(Session(sessionId, ZonedDateTime.now().plusDays(14)))
-        DbContext.users.replaceOneById(user._id!!, user)
+        db(browser.host()).users.replaceOneById(user._id!!, user)
 
     }
 
-    fun get(sessionId: String) : User? {
+    fun get(browser: WebBrowser, sessionId: String) : User? {
         if(openSessions[sessionId]!=null)
             return openSessions[sessionId]
-        val user = DbContext.users.findOne(User::sessions/Session::sessionId eq sessionId)
+        val user = db(browser.host()).users.findOne(User::sessions/Session::sessionId eq sessionId)
 
         if(user!=null){
             openSessions[sessionId] = user
@@ -68,10 +73,10 @@ object Sessions {
         return user
     }
 
-    fun remove(sessionId: String){
+    fun remove(browser:WebBrowser, sessionId: String){
         this.openSessions.remove(sessionId)
 
-        val users = DbContext.users.find(User::sessions/Session::sessionId eq sessionId)
+        val users = db(browser.host()).users.find(User::sessions/Session::sessionId eq sessionId)
     }
     private val openSessions = mutableMapOf<String, User>()
 }

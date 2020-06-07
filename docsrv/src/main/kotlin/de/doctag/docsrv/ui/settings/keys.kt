@@ -2,6 +2,7 @@ package de.doctag.docsrv.ui.settings
 
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.authRequired
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addKeyModal
 import de.doctag.docsrv.ui.modals.showSignatureModal
@@ -15,7 +16,7 @@ import java.time.format.DateTimeFormatter
 fun ElementCreator<*>.handleKeySettings(){
     authRequired {
 
-        val keys = KVar(DbContext.keys.find().toList())
+        val keys = KVar(db().keys.find().toList())
 
         
         pageBorderAndTitle("Schlüssel") {pageArea->

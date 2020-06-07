@@ -2,6 +2,7 @@ package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.ToastKind
 import de.doctag.docsrv.ui.forms.userAddForm
 import de.doctag.docsrv.ui.modal
@@ -16,7 +17,7 @@ fun ElementCreator<*>.addUserModal(onUserAdd: (u:User)->Unit) = modal("Benutzer 
         userObj.created = ZonedDateTime.now()
 
         userObj.apply {
-            DbContext.users.insertOne(userObj)
+            db().users.insertOne(userObj)
         }
 
         onUserAdd(userObj)

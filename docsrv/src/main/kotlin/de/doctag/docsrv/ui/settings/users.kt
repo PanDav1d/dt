@@ -4,6 +4,7 @@ import de.doctag.docsrv.generatePasswordHash
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.authRequired
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.forms.userAddForm
 import de.doctag.docsrv.ui.forms.userDeleteForm
@@ -24,7 +25,7 @@ import java.time.format.DateTimeFormatter
 fun ElementCreator<*>.handleUsersSettings(){
     authRequired {
 
-        val users = KVar(DbContext.users.find().toList())
+        val users = KVar(db().users.find().toList())
 
         
         pageBorderAndTitle("Einstellungen") {pageArea->

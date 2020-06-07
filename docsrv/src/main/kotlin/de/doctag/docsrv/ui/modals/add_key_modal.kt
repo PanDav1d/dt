@@ -38,13 +38,13 @@ fun ElementCreator<*>.addKeyModal(onKeyAdd: (u: PrivatePublicKeyPair)->Unit) = m
             email = usr.emailAdress
         )
 
-        val ppk = PrivatePublicKeyPair.make(verboseName, Config.instance.hostName, address, owner)
+        val ppk = PrivatePublicKeyPair.make(verboseName, db().currentConfig.hostname, address, owner)
 
         logger.info("Saving PPK to db")
 
 
         ppk.apply {
-            DbContext.keys.save(ppk)
+            db().keys.save(ppk)
         }
 
         logger.info("Publishing PPK")

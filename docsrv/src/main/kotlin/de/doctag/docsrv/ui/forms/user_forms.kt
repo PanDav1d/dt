@@ -2,6 +2,7 @@ package de.doctag.docsrv.ui.forms
 
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
 import kweb.*
@@ -45,7 +46,7 @@ fun ElementCreator<*>.userAddForm(userObj: User, onSaveClick: (user:User, passwo
             .validate {
                 when{
                     it?.matches("^[A-Za-z0-9+_.-]+@(.+)$".toRegex()) != true -> "Bitte geben Sie eine gültige E-Mail Addresse an"
-                    DbContext.users.findOne(User::emailAdress.regex(it, "i") ) != null -> "Die E-Mail Addresse ist bereits vergeben"
+                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null -> "Die E-Mail Addresse ist bereits vergeben"
                     else -> null
                 }
             }
@@ -83,7 +84,7 @@ fun ElementCreator<*>.userEditForm(userObj: User, onSaveClick: (user:User)->Unit
             .validate {
                 when{
                     it?.matches("^[A-Za-z0-9+_.-]+@(.+)$".toRegex()) != true -> "Bitte geben Sie eine gültige E-Mail Addresse an"
-                    DbContext.users.findOne(User::emailAdress.regex(it, "i") ) != null && it != userObj.emailAdress -> "Die E-Mail Addresse ist bereits vergeben"
+                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null && it != userObj.emailAdress -> "Die E-Mail Addresse ist bereits vergeben"
                     else -> null
                 }
             }

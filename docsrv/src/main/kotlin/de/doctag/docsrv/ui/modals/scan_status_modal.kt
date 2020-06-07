@@ -3,6 +3,7 @@ package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.model.DbContext
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.modal
 import de.doctag.docsrv.ui.scanQrCode
@@ -53,7 +54,7 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
                     }
                     button(fomantic.ui.button).text("Signieren").on.click {
                         logger.info("Signing document")
-                        DocServerClient.signDocument(doc, DbContext.keys.find().first()!!)
+                        DocServerClient.signDocument(doc, db().keys.find().first()!!)
                         logger.info("Signed document")
                         modal.close()
                     }
