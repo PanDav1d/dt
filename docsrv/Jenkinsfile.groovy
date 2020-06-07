@@ -10,6 +10,7 @@ node {
     }
 
     stage('build') {
+        sh 'echo "$BUILD_NUMBER" > docsrv/src/main/resources/version.txt'
         sh './gradlew docsrv:fatJar'
     }
 
