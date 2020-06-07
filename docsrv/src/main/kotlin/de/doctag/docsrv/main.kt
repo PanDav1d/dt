@@ -13,6 +13,7 @@ import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.getOrCreateSessionId
 import de.doctag.docsrv.static.staticFiles
 import de.doctag.docsrv.ui.*
+import de.doctag.docsrv.ui.admin.handleInstall
 import de.doctag.docsrv.ui.auth.handleLogin
 import de.doctag.docsrv.ui.auth.handleLogout
 import de.doctag.docsrv.ui.auth.handleRegister
@@ -93,6 +94,9 @@ fun Application.kwebFeature(){
                     }
                     path("/register"){
                         handleRegister(this)
+                    }
+                    path("/install"){
+                        handleInstall(this)
                     }
                     path("/documents"){
                         handleDocumentList()
