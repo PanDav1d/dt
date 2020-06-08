@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.modals
 
+import de.doctag.docsrv.generatePasswordHash
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.db
@@ -15,6 +16,7 @@ fun ElementCreator<*>.addUserModal(onUserAdd: (u:User)->Unit) = modal("Benutzer 
     userAddForm(user) { userObj, pass ->
         logger.info("Creating user with e-mail ${userObj.emailAdress} and password ${pass}")
         userObj.created = ZonedDateTime.now()
+        userObj.passwordHash = generatePasswordHash(pass)
 
         userObj.apply {
             db().users.insertOne(userObj)
