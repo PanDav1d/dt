@@ -1,5 +1,6 @@
 package de.doctag.docsrv.model
 
+import de.doctag.docsrv.Config
 import de.doctag.lib.model.PrivatePublicKeyPair
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call

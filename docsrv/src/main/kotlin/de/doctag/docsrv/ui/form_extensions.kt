@@ -166,16 +166,49 @@ fun ElementCreator<*>.formSubmitButton(formCtrl: FormControl, label:String="Spei
     }
 }
 
+fun ElementCreator<*>.radioInput(label:String?=null, options: Map<String,String>, required: Boolean=false, isInline:Boolean=false, bindTo: KVar<String>) : BasicFormInput {
+    val formInput = BasicFormInput(bindTo, required, label)
+
+    render(bindTo){
+        div(fomantic.ui.required(required).fields.inline(isInline)).new {
+            formInput.errorMessage.addListener { old, newError ->
+                if(newError!=null){
+                    this.parent.addClasses("error")
+                }
+                else{
+                    this.parent.removeClasses("error")
+                }
+            }
+            label?.let {
+                label().text(label)
+            }
+            options.forEach{ (labelName, labelValue) ->
+                div(fomantic.ui.field).new {
+                    div(fomantic.ui.radio.checkbox.checked(labelValue == bindTo.value)).apply {
+                        on.click {
+                            bindTo.value = labelValue
+                        }
+                    }.new {
+                        input(type = InputType.radio, name = labelValue, attributes = mapOf("class" to "hidden")).apply {
+                            if(labelValue == bindTo.value){
+                                checked(true)
+                            }
+                        }
+                        label().text(labelName)
+                    }
+                }
+            }
+        }
+    }
+
+    return formInput
+}
+
 fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, inputType: InputType=InputType.text) : BasicFormInput{
     val formInput = BasicFormInput(bindTo, required, label)
 
-    val class_ = if(required){
-        fomantic.ui.required.field
-    } else {
-        fomantic.ui.field
-    }
 
-    div(class_).new {
+    div(fomantic.ui.required(required).field).new {
 
         formInput.errorMessage.addListener { old, newError ->
             if(newError!=null){
@@ -189,6 +222,7 @@ fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, r
         label?.let {
             label().text(label)
         }
+
         div(fomantic.ui.input).new() {
             val input = input(inputType, placeholder = placeholder).apply { value=bindTo }
             formInput.setInputElement(input)

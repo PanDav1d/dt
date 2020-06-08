@@ -94,6 +94,20 @@ val FomanticUIClasses.required : FomanticUIClasses
         return this
     }
 
+fun FomanticUIClasses.required(isRequired: Boolean):FomanticUIClasses{
+    if(isRequired){
+        classes("required")
+    }
+    return this
+}
+
+fun FomanticUIClasses.inline(isInline: Boolean):FomanticUIClasses{
+    if(isInline){
+        classes("inline")
+    }
+    return this
+}
+
 val FomanticUIClasses.upload : FomanticUIClasses
     get() {
         classes("upload")
@@ -115,6 +129,13 @@ val FomanticUIClasses.toastContainer : FomanticUIClasses
 fun FomanticUIClasses.active(isActive: Boolean):FomanticUIClasses{
     if(isActive){
         classes("active")
+    }
+    return this
+}
+
+fun FomanticUIClasses.checked(isChecked: Boolean):FomanticUIClasses{
+    if(isChecked){
+        classes("checked")
     }
     return this
 }

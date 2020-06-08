@@ -1,3 +1,5 @@
+package de.doctag.docsrv
+
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 
