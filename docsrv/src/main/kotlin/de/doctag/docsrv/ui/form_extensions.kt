@@ -204,7 +204,24 @@ fun ElementCreator<*>.radioInput(label:String?=null, options: Map<String,String>
     return formInput
 }
 
-fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, inputType: InputType=InputType.text) : BasicFormInput{
+fun ElementCreator<*>.formInputWithRightLabel(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, rightLabelText: String): BasicFormInput = absFormInput(label, required, bindTo){
+    lateinit var input: InputElement
+    div(fomantic.ui.right.labeled.input).new() {
+        input = input(InputType.text, placeholder = placeholder).apply { value=bindTo }
+        div(fomantic.ui.label).text(rightLabelText)
+    }
+    input
+}
+
+fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, inputType: InputType=InputType.text): BasicFormInput = absFormInput(label, required, bindTo){
+    lateinit var input: InputElement
+    div(fomantic.ui.input).new() {
+        input = input(inputType, placeholder = placeholder).apply { value=bindTo }
+    }
+    input
+}
+
+fun ElementCreator<*>.absFormInput(label: String?=null, required:Boolean=false, bindTo: KVar<String>, inputElementFunc: ElementCreator<*>.()->InputElement) : BasicFormInput{
     val formInput = BasicFormInput(bindTo, required, label)
 
 
@@ -223,10 +240,8 @@ fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, r
             label().text(label)
         }
 
-        div(fomantic.ui.input).new() {
-            val input = input(inputType, placeholder = placeholder).apply { value=bindTo }
-            formInput.setInputElement(input)
-        }
+        val input = inputElementFunc()
+        formInput.setInputElement(input)
     }
     return formInput
 }

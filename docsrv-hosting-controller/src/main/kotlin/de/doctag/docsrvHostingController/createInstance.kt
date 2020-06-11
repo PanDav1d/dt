@@ -32,7 +32,7 @@ enum class SetupSteps {
 
 fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
-    val status = KVar(SetupSteps.ENTER_DOMAIN_NAME)
+    val status = KVar(SetupSteps.ENTER_PERSONAL_DATA)
     val userInstance = KVar<User?>(null)
     val instance = HostedInstance()
 
@@ -86,6 +86,9 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
                         div(fomantic.ui.centered.inline.loader).text("Bitte warten")
 
                         val file = File(Config.instance.caddyConfigDir + File.separator + instance.domainName+".conf")
+
+                        logger.info("Writing caddy config to ${file.absolutePath}")
+
                         file.writeText("""
                             ${instance.domainName} {
                                tls ${Config.instance.adminMailAddress}
@@ -96,8 +99,10 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
                             }
                         """.trimIndent())
 
+                        logger.info("Reloading caddy")
                         shellExec("sudo service caddy reload")
 
+                        logger.info("Saving setup to db")
                         db(instance.domainName!!).users.save(userInstance.value!!)
                         db(instance.domainName!!).config.save(DocsrvConfig(_id = "1", hostname = instance.domainName!!))
                         DbContext.hostedInstances.save(instance)
