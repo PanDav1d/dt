@@ -6,7 +6,7 @@ import java.io.InputStreamReader
 
 fun shellExec(command:String){
     val r = Runtime.getRuntime()
-    val p = r.exec("uname -a")
+    val p = r.exec(command)
     p.waitFor()
     val b = BufferedReader(InputStreamReader(p.inputStream))
     var line: String? = ""

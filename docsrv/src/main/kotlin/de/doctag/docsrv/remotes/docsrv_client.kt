@@ -21,14 +21,20 @@ object DocServerClient {
         val remoteUrl = remote.removePrefix("http://").removePrefix("https://").removeSuffix("/")
 
 
-        val request = HttpRequest.newBuilder()
-                .uri(URI.create("https://${remoteUrl}/health"))
-                .header("Accept","application/json")
-                .timeout(Duration.ofMinutes(1))
-                .build()
-
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-        return response.statusCode() == 200
+        try {
+            val request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://${remoteUrl}/health"))
+                    .header("Accept", "application/json")
+                    .timeout(Duration.ofMinutes(1))
+                    .build()
+            logger.info("Sending request to ${request.uri()}")
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+            return response.statusCode() == 200
+        }
+        catch(ex: Exception){
+            logger.info("Health check failed: ${ex.message}")
+            return false
+        }
     }
 
     fun signDocument(doc: Document, ppk: PrivatePublicKeyPair) : Boolean {

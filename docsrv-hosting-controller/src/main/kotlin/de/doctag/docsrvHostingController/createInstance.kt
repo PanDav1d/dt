@@ -33,7 +33,7 @@ enum class SetupSteps {
 
 fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
-    val status = KVar(SetupSteps.LOADING_PAGE)
+    val status = KVar(SetupSteps.ENTER_PERSONAL_DATA)
     val userInstance = KVar<User?>(null)
     val instance = HostedInstance()
 
@@ -98,19 +98,9 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
                                 }
                             }
                         }
-                        GlobalScope.launch {
-                            delay(5000)
 
-                            val numRetries = 5
-                            for(i in 0..numRetries) {
-                                setupState.value = setupState.value.plus("Prüfen ob die Instanz erreichar ist. Versuch ${i} von ${numRetries}")
-                                val isReachable = DocServerClient.checkHealth(instance.domainName!!)
 
-                            }
 
-                        }
-
-                        /*
                         val file = File(Config.instance.caddyConfigDir + File.separator + instance.domainName+".conf")
 
                         logger.info("Writing caddy config to ${file.absolutePath}")
@@ -138,14 +128,21 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
                         GlobalScope.launch {
                             delay(5000)
-                            setupState.value = setupState.value.plus("Prüfen ob die Instanz erreichar ist")
 
+                            val numRetries = 5
+                            for(i in 0..numRetries) {
+                                setupState.value = setupState.value.plus("Prüfen ob die Instanz erreichar ist. Versuch ${i+1} von ${numRetries+1}")
+                                val isReachable = DocServerClient.checkHealth(instance.domainName!!)
 
+                                if(isReachable) {
+                                    setupState.value = setupState.value.plus("Instanz ist erreichbar")
+                                    status.value = SetupSteps.RESULT_PAGE
+                                }
 
-                            status.value = SetupSteps.RESULT_PAGE
+                                delay(5000)
+                            }
+
                         }
-                        */
-
                     }
                     SetupSteps.RESULT_PAGE -> {
                         h2().text("Einrichtung abgeschlossen")
