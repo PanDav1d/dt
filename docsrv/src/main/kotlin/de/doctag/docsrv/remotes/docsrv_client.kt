@@ -17,6 +17,20 @@ object DocServerClient {
         HttpClient.newBuilder().build()
     }
 
+    fun checkHealth(remote: String) : Boolean {
+        val remoteUrl = remote.removePrefix("http://").removePrefix("https://").removeSuffix("/")
+
+
+        val request = HttpRequest.newBuilder()
+                .uri(URI.create("https://${remoteUrl}/health"))
+                .header("Accept","application/json")
+                .timeout(Duration.ofMinutes(1))
+                .build()
+
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        return response.statusCode() == 200
+    }
+
     fun signDocument(doc: Document, ppk: PrivatePublicKeyPair) : Boolean {
         val sigMessage = DoctagSignature.makeWithUrl(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, Duration.ofMinutes(1), ppk.signingParty!!, ppk.owner.firstName + " " + ppk.owner.lastName, doc.url)
         val rawSigMessage = sigMessage.toDataString()
@@ -32,7 +46,7 @@ object DocServerClient {
         logger.info("Destination: ${doc.url}")
         logger.info("data ${rawSigMessage}")
 
-        val resp = KeyServerClient.client.send(request, HttpResponse.BodyHandlers.ofString())
+        val resp = client.send(request, HttpResponse.BodyHandlers.ofString())
 
         logger.info("Response status ${resp.statusCode()}")
         logger.info("Response string ${resp.body()}")

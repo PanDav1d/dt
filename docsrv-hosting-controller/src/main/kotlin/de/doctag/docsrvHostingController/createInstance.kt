@@ -7,6 +7,7 @@ import de.doctag.docsrv.generatePasswordHash
 import de.doctag.docsrv.model.DocsrvConfig
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.db
+import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.centeredBox
 import de.doctag.docsrv.ui.forms.userAddForm
 import de.doctag.docsrv.ui.navigateTo
@@ -32,7 +33,7 @@ enum class SetupSteps {
 
 fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
-    val status = KVar(SetupSteps.ENTER_PERSONAL_DATA)
+    val status = KVar(SetupSteps.LOADING_PAGE)
     val userInstance = KVar<User?>(null)
     val instance = HostedInstance()
 
@@ -82,9 +83,34 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
                         }
                     }
                     SetupSteps.LOADING_PAGE -> {
-                        h2().text("Einrichtung wird durchgeführt")
-                        div(fomantic.ui.centered.inline.loader).text("Bitte warten")
+                        val setupState = KVar(listOf("Caddy Konfiguration schreiben"))
 
+                        h2().text("Einrichtung wird durchgeführt")
+                        div(fomantic.ui.centered.inline.active.loader).new {
+                            div(fomantic.ui.text.loader).text("Bitte warten")
+                        }
+                        p().new {
+                            render(setupState){actions ->
+                                ul(attributes = mapOf("style" to "list-style-type: \"-\"")).new{
+                                    actions.forEach{item ->
+                                        li(attributes = mapOf("style" to "text-align: left")).text(item)
+                                    }
+                                }
+                            }
+                        }
+                        GlobalScope.launch {
+                            delay(5000)
+
+                            val numRetries = 5
+                            for(i in 0..numRetries) {
+                                setupState.value = setupState.value.plus("Prüfen ob die Instanz erreichar ist. Versuch ${i} von ${numRetries}")
+                                val isReachable = DocServerClient.checkHealth(instance.domainName!!)
+
+                            }
+
+                        }
+
+                        /*
                         val file = File(Config.instance.caddyConfigDir + File.separator + instance.domainName+".conf")
 
                         logger.info("Writing caddy config to ${file.absolutePath}")
@@ -100,17 +126,26 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
                         """.trimIndent())
 
                         logger.info("Reloading caddy")
+                        setupState.value = setupState.value.plus("Caddy Server neu starten")
                         shellExec("sudo service caddy reload")
 
                         logger.info("Saving setup to db")
+                        setupState.value = setupState.value.plus("Datenbank erzeugen")
                         db(instance.domainName!!).users.save(userInstance.value!!)
                         db(instance.domainName!!).config.save(DocsrvConfig(_id = "1", hostname = instance.domainName!!))
                         DbContext.hostedInstances.save(instance)
 
+
                         GlobalScope.launch {
                             delay(5000)
+                            setupState.value = setupState.value.plus("Prüfen ob die Instanz erreichar ist")
+
+
+
                             status.value = SetupSteps.RESULT_PAGE
                         }
+                        */
+
                     }
                     SetupSteps.RESULT_PAGE -> {
                         h2().text("Einrichtung abgeschlossen")

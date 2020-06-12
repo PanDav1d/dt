@@ -2,6 +2,7 @@ package de.doctag.docsrv.api
 
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.DbContext
+import de.doctag.docsrv.model.DocsrvConfig
 import de.doctag.docsrv.model.Signature
 import de.doctag.docsrv.model.db
 import de.doctag.lib.DoctagSignature
@@ -18,12 +19,21 @@ import io.ktor.routing.*
 import kweb.gson
 import kweb.logger
 import org.bson.internal.Base64
+import org.litote.kmongo.eq
+import org.litote.kmongo.findOne
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.save
 import java.time.ZonedDateTime
 
 
-fun Routing.downloadAttachment(){
+fun Routing.docsrvApi(){
+    get("/health"){
+        val isHealthy = db().config.findOne(DocsrvConfig::_id eq "1") != null
+        val statusCode = if(isHealthy) HttpStatusCode.OK else HttpStatusCode.InternalServerError
+
+        call.respond(statusCode, HealthCheckResponse(isHealthy))
+    }
+
     get("/d/{documentId}/download"){
         val docId = call.parameters["documentId"]
         val doc = docId?.let{db(call.request.host()).documents.findOneById(docId)}

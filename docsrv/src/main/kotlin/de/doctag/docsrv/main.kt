@@ -4,12 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.xenomachina.argparser.ArgParser
-import com.xenomachina.argparser.default
-import de.doctag.docsrv.api.downloadAttachment
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.User
+import de.doctag.docsrv.api.docsrvApi
 import de.doctag.docsrv.model.authRequired
-import de.doctag.docsrv.model.getOrCreateSessionId
 import de.doctag.docsrv.static.staticFiles
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.admin.handleInstall
@@ -32,7 +28,6 @@ import io.ktor.http.cio.websocket.pingPeriod
 import io.ktor.http.cio.websocket.timeout
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
-import io.ktor.routing.Routing
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.jetty.Jetty
@@ -40,9 +35,6 @@ import io.ktor.websocket.WebSockets
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.plugins.fomanticUI.fomanticUIPlugin
-import mu.KotlinLogging
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOne
 import java.time.Duration
 
 
@@ -127,7 +119,7 @@ fun Application.kwebFeature(){
             }
         }
         routing {
-            downloadAttachment()
+            docsrvApi()
             staticFiles()
         }
     }
