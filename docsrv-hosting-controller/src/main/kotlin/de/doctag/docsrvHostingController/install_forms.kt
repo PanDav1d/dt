@@ -82,7 +82,7 @@ fun ElementCreator<*>.setupDomainNameForm(whenDone: (domainName: String)->Unit){
             displayErrorMessages(formCtrl)
 
             formSubmitButton(formCtrl) {
-                if(rUseCustomDomain == "yes") {
+                if(rUseCustomDomain != "yes") {
                     whenDone(domainName.value.toLowerCase()+"."+Config.instance.baseDomainName)
                 }
                 else {
