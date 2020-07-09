@@ -23,6 +23,7 @@ dependencies {
     compile 'com.github.kwebio:kweb-core:0.7.0'
     compile "com.google.zxing:core:3.3.0"
     compile 'com.google.zxing:javase:3.3.0'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.20'
     compile group: 'com.xenomachina', name: 'kotlin-argparser', version: '2.0.7'
     compile "io.ktor:ktor-jackson:$ktor_version"
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1'

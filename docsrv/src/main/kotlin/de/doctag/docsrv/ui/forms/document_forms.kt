@@ -1,9 +1,8 @@
 package de.doctag.docsrv.ui.forms
 
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.Document
-import de.doctag.docsrv.model.FileData
-import de.doctag.docsrv.model.User
+import de.doctag.docsrv.extractQRCode
+import de.doctag.docsrv.getImagesFromBase64Content
+import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
 import kweb.*
@@ -42,11 +41,27 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
         formSubmitButton(formCtrl){
             formField.retrieveFile { file ->
                 logger.info("Received file ${file.fileName}")
+
+
                 val doc = document.value
 
                 val (contentType, data) = file.base64Content.removePrefix("data:").split(";base64,")
 
-                val file = FileData(null, file.fileName!!, data, contentType)
+                val docId  = getImagesFromBase64Content(data).mapNotNull { img->
+                    extractQRCode(img)?.let { qrCode ->
+                        logger.info("Found code ${qrCode}")
+                        if(qrCode.startsWith("http") && qrCode.contains(db().currentConfig.hostname) && qrCode.contains("/d/")){
+                            qrCode.split("/d/")[1]
+                        }
+                        else {
+                            null
+                        }
+                    }
+                }.firstOrNull()
+
+                docId?.also { logger.info("Extracted document ID: ${it}") }
+
+                val file = FileData(docId, file.fileName!!, data, contentType)
                 onSaveClick(file, doc)
             }
 

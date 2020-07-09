@@ -13,14 +13,15 @@ fun ElementCreator<*>.addDocumentModal(onDocumentAdd: (d: Document)->Unit) = mod
     val document  = Document()
     documentAddForm(document) { fileObj, docObj ->
 
-        fileObj.apply { db().files.insertOne(fileObj) }
+        fileObj.apply { db().files.save(fileObj) }
 
+        docObj._id = fileObj._id
         docObj.attachmentId = fileObj._id
         docObj.created = ZonedDateTime.now()
         docObj.originalFileName = fileObj.name
 
         docObj.apply {
-            db().documents.insertOne(docObj)
+            db().documents.save(docObj)
         }
         docObj.url = "https://${db().currentConfig.hostname}/d/${docObj._id}"
         db().documents.save(docObj)
