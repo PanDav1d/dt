@@ -3,7 +3,7 @@ package de.doctag.keysrv
 import com.google.gson.*
 import com.google.gson.annotations.SerializedName
 import kweb.WebBrowser
-import kweb.gson
+import kweb.util.gson
 import kweb.logger
 import kweb.state.KVar
 import kweb.state.ReversibleFunction

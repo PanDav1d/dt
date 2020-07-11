@@ -2,6 +2,7 @@ package de.doctag.docsrv.ui.forms.system
 
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
+import de.doctag.docsrv.remotes.MailReceiver
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.EmailContent
 import de.doctag.lib.MailSender
@@ -77,7 +78,13 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
         val testResult = KVar<UserMessage?>(null)
 
         render(testResult){ userMessage->
-            userMessage?.let { displayMessage(it) }
+            userMessage?.let {
+                displayMessage(it)
+                GlobalScope.launch {
+                    delay(5000)
+                    testResult.value = null
+                }
+            }
         }
 
         formSubmitButton(formCtrl) {
@@ -93,6 +100,19 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
                 } else {
                     testResult.value = UserMessage(DisplayMessageKind.Error, "Fehlgeschlagen", "E-Mail konnte nicht versendet werden")
                 }
+            }
+        }
+
+        button(fomantic.ui.button.tertiary.blue.disabled(inbound.protocol == null || inbound.server == null || inbound.user == null || inbound.password == null)).text("Abruf testen").on.click {
+            logger.info ("Test receiving mail")
+            val recv = MailReceiver.connect(inbound.protocol!!, inbound.server!!, inbound.user!!, inbound.password!!)
+            val messages = recv?.receive()
+
+            if(messages != null) {
+                testResult.value = UserMessage(DisplayMessageKind.Success, "Erfolg", "E-Mail Abruf erfolgreich. ${messages.size} Nachrichten empfangen")
+            }
+            else {
+                testResult.value = UserMessage(DisplayMessageKind.Error, "Fehler", "E-Mail Abruf fehlgeschlagen. Bitte prüfen Sie die Einstellungen")
             }
         }
     }

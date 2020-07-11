@@ -176,6 +176,13 @@ fun FomanticUIClasses.positive(isPositive: Boolean):FomanticUIClasses{
     return this
 }
 
+fun FomanticUIClasses.disabled(isDisabled: Boolean):FomanticUIClasses{
+    if(isDisabled){
+        classes("positive")
+    }
+    return this
+}
+
 enum class DisplayMessageKind{
     Error,
     Warning,
