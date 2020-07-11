@@ -15,6 +15,7 @@ import de.doctag.docsrv.ui.auth.handleRegister
 import de.doctag.docsrv.ui.document.handleDocument
 import de.doctag.docsrv.ui.document.handleDocumentList
 import de.doctag.docsrv.ui.settings.handleKeySettings
+import de.doctag.docsrv.ui.settings.handleSystemSettings
 import de.doctag.docsrv.ui.settings.handleUsersSettings
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -101,6 +102,9 @@ fun Application.kwebFeature(){
                     }
                     path("/settings/keys"){
                         handleKeySettings()
+                    }
+                    path("/settings/system"){
+                        handleSystemSettings()
                     }
                     path("/") {
                         authRequired {

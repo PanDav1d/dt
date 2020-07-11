@@ -20,7 +20,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile 'org.litote.kmongo:kmongo:4.0.0'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-    compile 'com.github.kwebio:kweb-core:0.7.0'
+    compile 'com.github.kwebio:kweb-core:0.7.20'
     compile "com.google.zxing:core:3.3.0"
     compile 'com.google.zxing:javase:3.3.0'
     compile group: 'com.xenomachina', name: 'kotlin-argparser', version: '2.0.7'

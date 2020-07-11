@@ -27,13 +27,10 @@ fun ElementCreator<*>.handleKeySettings(){
             }
 
             div(fomantic.content).new() {
-                div(fomantic.ui.secondary.pointing.menu).new{
-                    a(fomantic.ui.item, "/settings/users").text("Benutzer")
-                    a(fomantic.ui.item.active, "/settings/keys").text("Schlüssel")
-                }
-
-                button(fomantic.ui.button).text("Neuer Schlüssel").on.click {
-                    modal.open()
+                settingsTabMenu(SettingsTabMenuActiveItem.Keys) {
+                    button(fomantic.ui.button.mini).text("Neuer Schlüssel").on.click {
+                        modal.open()
+                    }
                 }
 
                 div(fomantic.ui.divider.hidden)

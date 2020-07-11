@@ -36,14 +36,12 @@ fun ElementCreator<*>.handleUsersSettings(){
             }
 
             div(fomantic.content).new() {
-                div(fomantic.ui.secondary.pointing.menu).new{
-                    a(fomantic.ui.item.active, "/settings/users").text("Benutzer")
-                    a(fomantic.ui.item, "/settings/keys").text("Schlüssel")
+                settingsTabMenu(SettingsTabMenuActiveItem.User) {
+                    button(fomantic.ui.button.mini).text("Neuer Benutzer").on.click {
+                        modal.open()
+                    }
                 }
 
-                button(fomantic.ui.button).text("Neuer Benutzer").on.click {
-                    modal.open()
-                }
 
                 div(fomantic.ui.divider.hidden)
 
