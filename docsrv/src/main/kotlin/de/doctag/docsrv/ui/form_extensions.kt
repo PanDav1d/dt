@@ -6,6 +6,8 @@ import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import kweb.util.random
+import kweb.util.gson
 
 class FormControl{
 
@@ -142,7 +144,8 @@ class FileFormInput(
 
         inputElement.browser.executeWithCallback(js, callbackId) { result ->
             logger.info("Result is ${result.toString()}")
-            onFileRetrieveCallback(gson.fromJson(result.toString()) as FileUpload)
+            val fupload : FileUpload = gson.fromJson(result.toString())
+            onFileRetrieveCallback( fupload )
         }
         inputElement.creator?.onCleanup(true) {
             inputElement.browser.removeCallback(callbackId)
@@ -165,6 +168,7 @@ fun ElementCreator<*>.formSubmitButton(formCtrl: FormControl, label:String="Spei
         }
     }
 }
+
 
 fun ElementCreator<*>.radioInput(label:String?=null, options: Map<String,String>, required: Boolean=false, isInline:Boolean=false, bindTo: KVar<String>) : BasicFormInput {
     val formInput = BasicFormInput(bindTo, required, label)
@@ -219,6 +223,32 @@ fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, r
         input = input(inputType, placeholder = placeholder).apply { value=bindTo }
     }
     input
+}
+
+fun ElementCreator<*>.checkBoxInput(label:String, bindTo: KVar<Boolean>) {
+    val bindToStr = KVar(bindTo.toString())
+    bindToStr.addListener { oldVal, newVal ->
+        val currentVal = newVal.toBoolean()
+        bindTo.value = currentVal
+    }
+    div(fomantic.field).new {
+        render(bindTo){isChecked->
+            div(fomantic.ui.checkbox.checked(bindTo.value))
+                    .apply {
+                        on.click {
+                            bindTo.value = !bindTo.value
+                        }
+                    }
+                    .new {
+                        input(InputType.checkbox,attributes = mapOf("class" to "hidden")).apply {
+                            if(isChecked) {
+                                checked(true)
+                            }
+                        }
+                        label().text(label)
+                    }
+        }
+    }
 }
 
 fun ElementCreator<*>.absFormInput(label: String?=null, required:Boolean=false, bindTo: KVar<String>, inputElementFunc: ElementCreator<*>.()->InputElement) : BasicFormInput{
@@ -301,6 +331,7 @@ fun ElementCreator<*>.formControl(block: ElementCreator<*>.(form:FormControl)->U
 
     return fc
 }
+
 
 fun ElementCreator<*>.displayErrorMessages(form:FormControl)  {
     render(form.errors){errors ->

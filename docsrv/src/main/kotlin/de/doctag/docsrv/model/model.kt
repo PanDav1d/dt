@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import de.doctag.lib.PublicKeyResponse
 import de.doctag.lib.DoctagSignature
 import java.time.ZonedDateTime
+import kotlin.random.Random
 
 data class Session(
     val sessionId:String,
@@ -12,7 +13,30 @@ data class Session(
 
 data class DocsrvConfig(
         var _id: String? = "1",
-        var hostname: String = ""
+        var hostname: String = "",
+        var outboundMail: OutboundMailConfig? = null,
+        var inboundMail: InboundMailConfig? = null
+)
+
+
+data class OutboundMailConfig(
+        val server: String? = null,
+        val user: String? = null,
+        val password: String? = null,
+        val fromAddress: String? =null
+)
+
+enum class InboundMailProtocol {
+    POP3,
+    IMAP
+}
+
+data class InboundMailConfig(
+        var shouldReceiveDocumentsViaMail: Boolean? = null,
+        var server: String? = null,
+        var protocol: InboundMailProtocol? = null,
+        var user: String? = null,
+        var password: String? = null
 )
 
 data class User(

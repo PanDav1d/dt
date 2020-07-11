@@ -36,6 +36,7 @@ import io.ktor.websocket.WebSockets
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.plugins.fomanticUI.fomanticUIPlugin
+import kweb.state.KVar
 import java.time.Duration
 
 
@@ -103,8 +104,11 @@ fun Application.kwebFeature(){
                     path("/settings/keys"){
                         handleKeySettings()
                     }
-                    path("/settings/system"){
-                        handleSystemSettings()
+                    path("/settings/system/"){params->
+                        handleSystemSettings(KVar("host"))
+                    }
+                    path("/settings/system/{item}"){params->
+                        handleSystemSettings(params.get("item") ?: KVar("host"))
                     }
                     path("/") {
                         authRequired {

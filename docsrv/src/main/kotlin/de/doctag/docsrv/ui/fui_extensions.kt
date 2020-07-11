@@ -1,7 +1,8 @@
 package de.doctag.docsrv.ui
 
-import kweb.classes
+import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
+import kweb.plugins.fomanticUI.fomantic
 
 val FomanticUIClasses.lock : FomanticUIClasses
     get() {
@@ -145,5 +146,57 @@ fun FomanticUIClasses.visible(isVisible: Boolean):FomanticUIClasses{
         classes("visible")
     }
     return this
+}
+
+fun FomanticUIClasses.negative(isNegative: Boolean):FomanticUIClasses{
+    if(isNegative){
+        classes("negative")
+    }
+    return this
+}
+
+fun FomanticUIClasses.warning(isWarning: Boolean):FomanticUIClasses{
+    if(isWarning){
+        classes("warning")
+    }
+    return this
+}
+
+fun FomanticUIClasses.info(isInfo: Boolean):FomanticUIClasses{
+    if(isInfo){
+        classes("info")
+    }
+    return this
+}
+
+fun FomanticUIClasses.positive(isPositive: Boolean):FomanticUIClasses{
+    if(isPositive){
+        classes("positive")
+    }
+    return this
+}
+
+enum class DisplayMessageKind{
+    Error,
+    Warning,
+    Info,
+    Success
+}
+
+data class UserMessage(val kind:DisplayMessageKind, val header:String, val text:String)
+
+
+
+fun ElementCreator<*>.displayMessage(msg: UserMessage){
+    div(fomantic.ui.message
+            .negative(msg.kind == DisplayMessageKind.Error)
+            .positive(msg.kind == DisplayMessageKind.Success)
+            .warning(msg.kind == DisplayMessageKind.Warning)
+            .info(msg.kind == DisplayMessageKind.Info)
+    ).new {
+        div(fomantic.ui.header).text(msg.header)
+        p().text(msg.text)
+    }
+    div(fomantic.ui.divider.hidden)
 }
 

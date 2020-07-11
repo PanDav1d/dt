@@ -30,6 +30,7 @@ dependencies {
     compile project(":docsrv")
     compile group: 'com.sun.mail', name: 'smtp', version: '1.4.5'
     compile group: 'javax.mail', name: 'mail', version: '1.4.1'
+    compile project(":doctag-lib")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile 'de.bwaldvogel:mongo-java-server:1.29.1'
