@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.forms
 
+import de.doctag.docsrv.extractDocumentIdOrNull
 import de.doctag.docsrv.extractQRCode
 import de.doctag.docsrv.getImagesFromBase64Content
 import de.doctag.docsrv.model.*
@@ -47,21 +48,16 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
 
                 val (contentType, data) = file.base64Content.removePrefix("data:").split(";base64,")
 
-                val docId  = getImagesFromBase64Content(data).mapNotNull { img->
-                    extractQRCode(img)?.let { qrCode ->
-                        logger.info("Found code ${qrCode}")
-                        if(qrCode.startsWith("http") && qrCode.contains(db().currentConfig.hostname) && qrCode.contains("/d/")){
-                            qrCode.split("/d/")[1]
-                        }
-                        else {
-                            null
-                        }
-                    }
-                }.firstOrNull()
+                val docId  = extractDocumentIdOrNull(data, db().currentConfig.hostname)
 
-                docId?.also { logger.info("Extracted document ID: ${it}") }
+                if(docId != null){
+                    logger.info("Extracted document ID: ${docId}")
+                }
+                else {
+                    logger.info("No Document ID found")
+                }
 
-                val file = FileData(docId, file.fileName!!, data, contentType)
+                val file = FileData(docId, file.fileName, data, contentType)
                 onSaveClick(file, doc)
             }
 
