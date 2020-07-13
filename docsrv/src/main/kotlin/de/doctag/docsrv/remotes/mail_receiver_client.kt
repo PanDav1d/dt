@@ -1,5 +1,6 @@
 package de.doctag.docsrv.remotes
 
+import de.doctag.docsrv.model.InboundMailConfig
 import de.doctag.docsrv.model.InboundMailProtocol
 import de.doctag.lib.logger
 import java.lang.Exception
@@ -11,6 +12,10 @@ import javax.mail.search.FlagTerm
 class MailReceiver(val store: Store){
 
     companion object {
+        fun connect(conf: InboundMailConfig) : MailReceiver? {
+            return connect(conf.protocol!!, conf.server!!, conf.user!!, conf.password!!)
+        }
+
         fun connect(protocol: InboundMailProtocol, server: String, user: String, password : String) : MailReceiver? {
             try {
                 val (port, protocol) = when (protocol) {
@@ -48,6 +53,7 @@ class MailReceiver(val store: Store){
     fun markAsRead(message: Message){
 
         val inbox: Folder = store.getFolder("INBOX")
+        inbox.open(Folder.READ_WRITE)
 
         val flags = Flags()
         flags.add(Flags.Flag.SEEN)
