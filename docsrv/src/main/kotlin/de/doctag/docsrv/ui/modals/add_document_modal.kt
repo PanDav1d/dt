@@ -23,7 +23,11 @@ fun ElementCreator<*>.addDocumentModal(onDocumentAdd: (d: Document)->Unit) = mod
         docObj.apply {
             db().documents.save(docObj)
         }
-        docObj.url = "https://${db().currentConfig.hostname}/d/${docObj._id}"
+
+        if(docObj.url == null) {
+            docObj.url = "https://${db().currentConfig.hostname}/d/${docObj._id}"
+        }
+
         db().documents.save(docObj)
 
         onDocumentAdd(docObj)

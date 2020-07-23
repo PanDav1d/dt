@@ -32,7 +32,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                 .with(formCtrl)
                 .withInputMissingErrorMessage("Bitte geben Sie die Dokumentenklasse an.")
 
-        var file = KVar<String>("")
+        var file = KVar("")
 
         var formField = fileInput("Datei", "", false, file)
                 .with(formCtrl)
@@ -48,16 +48,20 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
 
                 val (contentType, data) = file.base64Content.removePrefix("data:").split(";base64,")
 
-                val docId  = extractDocumentIdOrNull(data, db().currentConfig.hostname)
+                val docId  = extractDocumentIdOrNull(data)
 
                 if(docId != null){
-                    logger.info("Extracted document ID: ${docId}")
+                    logger.info("Extracted document ID: ${docId.fullUrl}")
+                    if(docId.hostname == db().currentConfig.hostname) {
+                        doc._id = docId.id
+                    }
+                    doc.url = docId.fullUrl
                 }
                 else {
                     logger.info("No Document ID found")
                 }
 
-                val file = FileData(docId, file.fileName, data, contentType)
+                val file = FileData(docId?.id, file.fileName, data, contentType)
                 onSaveClick(file, doc)
             }
 

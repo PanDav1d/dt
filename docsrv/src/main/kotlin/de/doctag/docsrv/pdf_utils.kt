@@ -1,10 +1,13 @@
 package de.doctag.docsrv
 
 import com.google.zxing.BinaryBitmap
+import com.google.zxing.DecodeHintType
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource
 import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.qrcode.QRCodeReader
+import de.doctag.docsrv.model.DocumentId
 import kweb.logger
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.rendering.PDFRenderer
@@ -16,12 +19,12 @@ import java.util.*
 import javax.imageio.ImageIO
 
 
-fun extractDocumentIdOrNull(b64: String, expectedHostName: String): String? {
+fun extractDocumentIdOrNull(b64: String): DocumentId? {
     return getImagesFromBase64Content(b64).mapNotNull { img->
         extractQRCode(img)?.let { qrCode ->
             logger.info("Found code ${qrCode}")
-            if(qrCode.startsWith("http") && qrCode.contains(expectedHostName) && qrCode.contains("/d/")){
-                qrCode.split("/d/")[1]
+            if(DocumentId.isValid(qrCode)){
+                DocumentId.parse(qrCode)
             }
             else {
                 null
@@ -47,11 +50,11 @@ fun getImagesFromPdfDocument(input: InputStream) : List<BufferedImage>{
 
         val renderer = PDFRenderer(pdf)
 
-        val bi = renderer.renderImageWithDPI(0, 150.0f)
+        val bi = renderer.renderImageWithDPI(0, 350.0f)
         val outputfile = File("saved.png")
         ImageIO.write(bi, "png", outputfile)
 
-        return allImages.map { it.second.image }.plus(renderer.renderImageWithDPI(0, 300.0f))
+        return allImages.map { it.second.image }.plus(renderer.renderImageWithDPI(0, 350.0f))
     }
 }
 
@@ -59,7 +62,7 @@ fun extractQRCode(img: BufferedImage):String?{
     try {
         val binaryBitmap = BinaryBitmap(HybridBinarizer(
                 BufferedImageLuminanceSource(img)))
-        val qrCodeResult = MultiFormatReader().decode(binaryBitmap)
+        val qrCodeResult = QRCodeReader().decode(binaryBitmap, mapOf(DecodeHintType.TRY_HARDER to true))
         return qrCodeResult.text
     }
     catch(ex:NotFoundException){

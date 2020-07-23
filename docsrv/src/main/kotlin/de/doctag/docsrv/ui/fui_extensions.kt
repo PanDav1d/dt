@@ -183,6 +183,13 @@ fun FomanticUIClasses.disabled(isDisabled: Boolean):FomanticUIClasses{
     return this
 }
 
+fun FomanticUIClasses.loading(isLoading: Boolean):FomanticUIClasses{
+    if(isLoading){
+        classes("loading")
+    }
+    return this
+}
+
 enum class DisplayMessageKind{
     Error,
     Warning,

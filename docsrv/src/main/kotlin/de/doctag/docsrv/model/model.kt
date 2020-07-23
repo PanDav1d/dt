@@ -49,6 +49,25 @@ data class User(
     var sessions: List<Session>?=null
 )
 
+data class DocumentId(
+        val fullUrl : String,
+        val hostname: String,
+        val id: String
+) {
+    companion object {
+        fun isValid(input:String) : Boolean {
+            return input.trim().startsWith("http") && input.contains("/d/")
+        }
+
+        fun parse(input:String): DocumentId {
+            val rest = input.split("://")[1]
+            val (hostname, docId) = rest.split("/d/")
+
+            return DocumentId(input, hostname, docId)
+        }
+    }
+}
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Document(
     var _id: String? = null,
