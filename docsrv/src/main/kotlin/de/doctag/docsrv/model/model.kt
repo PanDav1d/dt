@@ -73,6 +73,7 @@ data class Document(
     var _id: String? = null,
     var externalId: String? = null,
     var url : String? = null,
+    var isMirrored: Boolean? = null,
     var originalFileName: String? = null,
     var classifier: String? = null,
     var attachmentId: String? = null,

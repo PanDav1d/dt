@@ -55,6 +55,9 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                     if(docId.hostname == db().currentConfig.hostname) {
                         doc._id = docId.id
                     }
+                    else {
+                        doc.isMirrored = true
+                    }
                     doc.url = docId.fullUrl
                 }
                 else {

@@ -126,7 +126,7 @@ class AttachmentImporter(val dbContext: DbContext){
     }
 
     private fun DocumentId?.isOwnedByThisMaching() = this?.hostname == dbContext.currentConfig.hostname
-    private fun DocumentId?.isOwnedByOtherMachine() = this != null && this.hostname == dbContext.currentConfig.hostname
+    private fun DocumentId?.isOwnedByOtherMachine() = this != null && this.hostname != dbContext.currentConfig.hostname
     private fun DocumentId?.isNotPresent() = this != null && this.hostname == dbContext.currentConfig.hostname
 
     private fun processInputStream(fileName: String, stream: InputStream){
@@ -154,10 +154,14 @@ class AttachmentImporter(val dbContext: DbContext){
             doctagId.isOwnedByOtherMachine() -> {
                 kweb.logger.info("Importing document which is not owned by this host.")
                 doc.url = doctagId?.fullUrl
+                doc.isMirrored = true
                 // TODO: Register at remote machine for changes
             }
             doctagId.isNotPresent() -> {
                 kweb.logger.info("Importing document where no doctag is present")
+            }
+            else ->  {
+                kweb.logger.info("Unknown case")
             }
         }
 
