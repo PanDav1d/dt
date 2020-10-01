@@ -1,5 +1,7 @@
 #!/bin/bash
 
-scp build/libs/docsrvHostingController-0.1.0.jar pi@192.168.178.39:/home/pi/docsrvHostingController.jar
-ssh pi@192.168.178.39 'sudo service docsrvHostingController restart'
+scp build/libs/docsrvHostingController-0.1.0.jar root@116.202.109.213:/root/docsrvHostingController.jar
+scp docsrvHostingController.service root@116.202.109.213:/etc/systemd/system/docsrvHostingController.service
+scp docsrvHostingController.env root@116.202.109.213:/root/docsrvHostingController.env
+ssh root@116.202.109.213 'sudo service docsrvHostingController restart'
 

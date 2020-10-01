@@ -1,0 +1,25 @@
+#
+#  _______ __________________ _______  _       __________________ _______  _
+# (  ___  )\__   __/\__   __/(  ____ \( (    /|\__   __/\__   __/(  ___  )( (    /|
+# | (   ) |   ) (      ) (   | (    \/|  \  ( |   ) (      ) (   | (   ) ||  \  ( |
+# | (___) |   | |      | |   | (__    |   \ | |   | |      | |   | |   | ||   \ | |
+# |  ___  |   | |      | |   |  __)   | (\ \) |   | |      | |   | |   | || (\ \) |
+# | (   ) |   | |      | |   | (      | | \   |   | |      | |   | |   | || | \   |
+# | )   ( |   | |      | |   | (____/\| )  \  |   | |   ___) (___| (___) || )  \  |
+# |/     \|   )_(      )_(   (_______/|/    )_)   )_(   \_______/(_______)|/    )_)
+#
+
+Description=Docserver Hosting Controller
+After=network.service
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutSec=300
+WorkingDirectory=/root/
+EnvironmentFile=/root/docsrvHostingController.env
+ExecStart=/usr/bin/java -Xms256m -Xmx256m -XX:MaxDirectMemorySize=256M -XX:MaxGCPauseMillis=50 -jar docsrvHostingController.jar
+
+
+[Install]
+WantedBy=multi-user.target

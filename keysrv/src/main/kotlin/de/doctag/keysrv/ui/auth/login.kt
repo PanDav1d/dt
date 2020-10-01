@@ -75,12 +75,12 @@ fun ElementCreator<*>.handleLogin(){
                 }
             }
 
-            button(fomantic.ui.button.blue.tertiary).apply {
-                text.value="Registrieren"
-                on.click {
-                    this.browser.url.value = "/register"
-                }
-            }
+            //button(fomantic.ui.button.blue.tertiary).apply {
+            //    text.value="Registrieren"
+            //    on.click {
+            //        this.browser.url.value = "/register"
+            //    }
+            //}
         }
     }
 }

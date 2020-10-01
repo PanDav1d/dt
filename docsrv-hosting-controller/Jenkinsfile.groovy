@@ -1,6 +1,6 @@
 def branch = 'master'
 def scmUrl = 'https://gitea.englert.xyz/frank/doctag.git'
-def devServer = '192.168.178.36'
+def devServer = '116.202.109.213'
 def devServerPort = '8080'
 
 node {
@@ -20,7 +20,7 @@ node {
 
     stage('deploy dev'){
         sshagent(['berry3-ssh']) {
-            sh "scp docsrv/build/libs/docsrv-0.1.0.jar pi@${devServer}:/home/pi/docsrv.jar"
+            sh "scp docsrv/build/libs/docsrv-0.1.0.jar root@${devServer}:/home/pi/docsrv.jar"
             sh "ssh pi@${devServer} sudo service docsrv restart"
         }
     }

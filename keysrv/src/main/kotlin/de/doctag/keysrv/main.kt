@@ -36,7 +36,7 @@ fun main(args: Array<String>) {
     ArgParser(args).parseInto(::KeySrvArgs).run {
         Config._instance = this
 
-        embeddedServer(Jetty, host = "0.0.0.0", port = 16098, module = Application::kwebFeature).start()
+        embeddedServer(Jetty, host = "127.0.0.1", port = 16098, module = Application::kwebFeature).start()
     }
 }
 

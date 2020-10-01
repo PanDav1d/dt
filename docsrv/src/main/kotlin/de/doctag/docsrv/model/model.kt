@@ -78,7 +78,8 @@ data class Document(
     var classifier: String? = null,
     var attachmentId: String? = null,
     var signatures: List<Signature>? = null,
-    var created: ZonedDateTime? = null
+    var created: ZonedDateTime? = null,
+    var mirrors: List<String>? = null
 )
 
 data class FileData(
