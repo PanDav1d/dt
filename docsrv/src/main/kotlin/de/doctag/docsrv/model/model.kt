@@ -89,6 +89,30 @@ data class FileData(
     val contentType: String? = null
 )
 
+data class Workflow(
+        var id: String? = null,
+        var name: String? = null,
+        var actions: List<WorkflowAction>
+)
+
+data class WorkflowAction(
+        var role: String? = null,
+        var inputs: List<WorkflowInput>? = null
+)
+
+data class WorkflowInput(
+        val name: String? = null,
+        val description: String? = null,
+        val kind: WorkflowInputKind? = null
+)
+
+enum class WorkflowInputKind {
+    TextInput,
+    FileInput,
+    SelectFromList,
+    Checkbox
+}
+
 
 
 data class Signature(

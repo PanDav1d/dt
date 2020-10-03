@@ -107,11 +107,7 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
                         file.writeText("""
                             ${instance.domainName} {
-                               tls ${Config.instance.adminMailAddress}
-                               proxy / ${Config.instance.docsrvAddress} {
-                                 websocket
-                                 transparent
-                               }
+                               reverse_proxy ${Config.instance.docsrvAddress}
                             }
                         """.trimIndent())
 
