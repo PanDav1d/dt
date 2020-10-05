@@ -8,6 +8,7 @@ import de.doctag.docsrv.ui.ToastKind
 import de.doctag.docsrv.ui.active
 import de.doctag.docsrv.ui.forms.system.hostnameEditForm
 import de.doctag.docsrv.ui.forms.system.mailSettingsEditForm
+import de.doctag.docsrv.ui.forms.system.workflowListEditForm
 import de.doctag.docsrv.ui.pageBorderAndTitle
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
@@ -59,8 +60,11 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
 
                                             pageArea.showToast("E-Mail Einstellungen geändert", ToastKind.Success)
                                         }
-
                                     }
+                                }
+
+                                SystemSettingsActiveItem.WORKFLOW -> {
+                                    workflowListEditForm(pageArea)
                                 }
                             }
                         }
@@ -73,12 +77,14 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
 
 enum class SystemSettingsActiveItem {
     HOST,
-    MAIL
+    MAIL,
+    WORKFLOW
 }
 
 fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
     div(fomantic.ui.secondary.vertical.menu).new {
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.HOST), "/settings/system/host").text("Hostname")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.MAIL), "/settings/system/mail").text("E-Mail")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.WORKFLOW), "/settings/system/workflow").text("Workflows")
     }
 }

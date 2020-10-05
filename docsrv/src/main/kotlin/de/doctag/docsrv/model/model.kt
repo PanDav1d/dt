@@ -92,7 +92,7 @@ data class FileData(
 data class Workflow(
         var id: String? = null,
         var name: String? = null,
-        var actions: List<WorkflowAction>
+        var actions: List<WorkflowAction>? = null
 )
 
 data class WorkflowAction(

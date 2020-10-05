@@ -24,6 +24,7 @@ class DbContext(dbName: String) {
     val files = database.getCollection<FileData>()
     val keys = database.getCollection<PrivatePublicKeyPair>()
     val config = database.getCollection<DocsrvConfig>()
+    val workflows = database.getCollection<Workflow>()
 
     val currentConfig by lazy {
         val configObj = config.findOne(DocsrvConfig::_id eq "1")

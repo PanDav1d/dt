@@ -1,0 +1,17 @@
+package de.doctag.docsrv.ui.modals.system
+
+import de.doctag.docsrv.model.Workflow
+import de.doctag.docsrv.model.db
+import de.doctag.docsrv.ui.forms.system.workflowForm
+import de.doctag.docsrv.ui.modal
+import kweb.ElementCreator
+import org.litote.kmongo.save
+
+fun ElementCreator<*>.addWorkflowModal(onWorkflowAdd: (wf: Workflow)->Unit) = modal("Workflow hinzufügen"){ modal->
+
+    workflowForm(Workflow()) { workflow ->
+        db().workflows.save(workflow)
+        onWorkflowAdd(workflow)
+        modal.close()
+    }
+}

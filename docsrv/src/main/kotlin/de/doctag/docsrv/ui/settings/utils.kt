@@ -6,6 +6,8 @@ import kweb.div
 import kweb.new
 import kweb.plugins.fomanticUI.fomantic
 import de.doctag.docsrv.ui.active
+import kweb.state.KVar
+import kweb.state.render
 
 enum class SettingsTabMenuActiveItem {
     User,
@@ -13,7 +15,8 @@ enum class SettingsTabMenuActiveItem {
     System
 }
 
-fun ElementCreator<*>.settingsTabMenu(activeItem: SettingsTabMenuActiveItem, rightAction: ElementCreator<*>.()->Unit){
+
+fun ElementCreator<*>.settingsTabMenu(activeItem: SettingsTabMenuActiveItem, rightAction: ElementCreator<*>.()->Unit)  {
     div(fomantic.ui.secondary.pointing.menu).new{
         a(fomantic.ui.item.active(activeItem == SettingsTabMenuActiveItem.User), "/settings/users").text("Benutzer")
         a(fomantic.ui.item.active(activeItem == SettingsTabMenuActiveItem.Keys), "/settings/keys").text("Schlüssel")
@@ -26,5 +29,4 @@ fun ElementCreator<*>.settingsTabMenu(activeItem: SettingsTabMenuActiveItem, rig
             }
         }
     }
-
 }
