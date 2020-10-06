@@ -1,14 +1,67 @@
 package de.doctag.docsrv.ui.forms.system
 
+import com.github.salomonbrys.kotson.fromJson
 import de.doctag.docsrv.model.Workflow
 import de.doctag.docsrv.model.WorkflowAction
 import de.doctag.docsrv.model.WorkflowInput
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import kweb.util.gson
+import kweb.util.random
+
+/*
+
+<div class="ui selection dropdown">
+          <input type="hidden" name="gender">
+          <i class="dropdown icon"></i>
+          <div class="default text">Gender</div>
+          <div class="menu">
+              <div class="item" data-value="1">Male</div>
+              <div class="item" data-value="0">Female</div>
+          </div>
+      </div>
+
+
+* */
+
+class DropdownValueSelectEvent(val selectedValue: String?, val selectedText: String? )
+
+fun ElementCreator<*>.dropdown(options: Map<String, String>) {
+
+    div(fomantic.ui.selection.dropdown).new {
+        input(type=InputType.hidden, name="dropdown")
+        i(fomantic.icon.dropdown)
+        div(fomantic.text.default).text("Auswahl")
+        div(fomantic.menu).new{
+            options.forEach { (key, displayText) ->
+                div(fomantic.item).apply { this.setAttributeRaw("data-value", key) }.text(displayText)
+            }
+        }
+    }
+
+    val callbackId = Math.abs(random.nextInt())
+    browser.executeWithCallback("""
+        $('.ui.dropdown').dropdown({
+            action: 'activate',
+            onChange: function(value, text) {
+              // custom action
+              console.log("changed")
+              callbackWs($callbackId,{selectedValue: value, selectedText: text});
+            }
+        });
+        """.trimIndent(), callbackId) {result->
+        val selectedData : DropdownValueSelectEvent = gson.fromJson(result.toString())
+        logger.info("Dropdown selected ${selectedData?.selectedValue} / ${selectedData?.selectedText}.")
+    }
+}
+
 
 fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Unit) {
     val workflow = KVar(wf)
@@ -102,13 +155,13 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                                 val input = KVar(WorkflowInput())
 
                                 th().new{
-                                    input(InputType.text,placeholder = "Name").apply { value=input.propertyOrDefault(WorkflowInput::name, "") }.focus()
+                                    input(InputType.text,placeholder = "Name").apply { value=input.propertyOrDefault(WorkflowInput::name, "") }
                                 }
                                 th().new{
-
+                                    dropdown(mapOf("aaa" to "A", "bb" to "B", "ccc" to "C"))
                                 }
                                 th().new{
-                                    input(InputType.text, placeholder = "Beschreibung").apply { value=input.propertyOrDefault(WorkflowInput::description, "") }.focus()
+                                    input(InputType.text, placeholder = "Beschreibung").apply { value=input.propertyOrDefault(WorkflowInput::description, "") }
                                 }
                                 th().text("")
                             }

@@ -127,6 +127,12 @@ val FomanticUIClasses.toastContainer : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.default : FomanticUIClasses
+    get() {
+        classes("default")
+        return this
+    }
+
 fun FomanticUIClasses.active(isActive: Boolean):FomanticUIClasses{
     if(isActive){
         classes("active")
@@ -189,6 +195,7 @@ fun FomanticUIClasses.loading(isLoading: Boolean):FomanticUIClasses{
     }
     return this
 }
+
 
 enum class DisplayMessageKind{
     Error,
