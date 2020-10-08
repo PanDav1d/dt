@@ -1,66 +1,16 @@
 package de.doctag.docsrv.ui.forms.system
 
-import com.github.salomonbrys.kotson.fromJson
 import de.doctag.docsrv.model.Workflow
 import de.doctag.docsrv.model.WorkflowAction
 import de.doctag.docsrv.model.WorkflowInput
+import de.doctag.docsrv.model.WorkflowInputKind
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kweb.*
+import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
-import kweb.util.gson
-import kweb.util.random
-
-/*
-
-<div class="ui selection dropdown">
-          <input type="hidden" name="gender">
-          <i class="dropdown icon"></i>
-          <div class="default text">Gender</div>
-          <div class="menu">
-              <div class="item" data-value="1">Male</div>
-              <div class="item" data-value="0">Female</div>
-          </div>
-      </div>
-
-
-* */
-
-class DropdownValueSelectEvent(val selectedValue: String?, val selectedText: String? )
-
-fun ElementCreator<*>.dropdown(options: Map<String, String>) {
-
-    div(fomantic.ui.selection.dropdown).new {
-        input(type=InputType.hidden, name="dropdown")
-        i(fomantic.icon.dropdown)
-        div(fomantic.text.default).text("Auswahl")
-        div(fomantic.menu).new{
-            options.forEach { (key, displayText) ->
-                div(fomantic.item).apply { this.setAttributeRaw("data-value", key) }.text(displayText)
-            }
-        }
-    }
-
-    val callbackId = Math.abs(random.nextInt())
-    browser.executeWithCallback("""
-        $('.ui.dropdown').dropdown({
-            action: 'activate',
-            onChange: function(value, text) {
-              // custom action
-              console.log("changed")
-              callbackWs($callbackId,{selectedValue: value, selectedText: text});
-            }
-        });
-        """.trimIndent(), callbackId) {result->
-        val selectedData : DropdownValueSelectEvent = gson.fromJson(result.toString())
-        logger.info("Dropdown selected ${selectedData?.selectedValue} / ${selectedData?.selectedText}.")
-    }
-}
 
 
 fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Unit) {
@@ -83,6 +33,7 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
         h4(fomantic.ui.header).text("Rollen")
         render(activeActionIdx){
             render(workflow){ rWorkflow ->
+                logger.info("Render workflow")
                 div(fomantic.ui.tabular.menu).new{
                     rWorkflow.actions?.forEachIndexed { idx, wfAction ->
                         a(fomantic.item.active(idx == activeActionIdx.value)).on.click {
@@ -132,54 +83,64 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                 }
 
                 if(workflow.value.actions?.get(activeActionIdx.value) != null){
-                    table(fomantic.ui.table.very.basic.celled.table).new {
-                        thead().new {
-                            tr().new {
-                                th().text("Feldname")
-                                th().text("Eingabe Typ")
-                                th().text("Beschreibung")
-                                th().text("")
-                            }
-                        }
-                        tbody().new {
-                            workflow.value.actions?.get(activeActionIdx.value)?.inputs?.forEach { field->
+                    val editAtIndex = KVar<Int?>(null)
+                    render(editAtIndex){selectedIdx->
+                        table(fomantic.ui.table.very.basic.celled.table).new {
+                            thead().new {
                                 tr().new {
-                                    th().text(field.name ?: "")
-                                    th().text(field.kind?.toString()?:"")
-                                    th().text(field.description?:"")
-                                    th().text("")
+                                    th(fomantic.four.wide).text("Feldname")
+                                    th(fomantic.four.wide).text("Eingabe Typ")
+                                    th(fomantic.six.wide).text("Beschreibung")
+                                    th(fomantic.two.wide).text("")
+                                }
+                            }
+                            tbody().new {
+                                workflow.value.actions?.get(activeActionIdx.value)?.inputs?.forEachIndexed { index, field ->
+                                    if(selectedIdx != index) {
+                                        tr().new {
+                                            td().text(field.name ?: "")
+                                            td().text(field.kind?.toString() ?: "")
+                                            td().text(field.description ?: "")
+                                            td().new{
+                                                i(fomantic.icon.edit).on.click {
+                                                    editAtIndex.value = index
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        workflowInputInlineEditForm(field, fomantic.icon.check){newWorkflowInput->
+                                            val newVal = rWorkflow.modifyWorkflowActionWithIndex(activeActionIdx.value){ oldAction->
+                                                val newInputs = oldAction.inputs?.mapIndexed { index, currentWorkflowInput ->
+                                                    if(index == editAtIndex.value) newWorkflowInput else currentWorkflowInput
+                                                }
+                                                oldAction.copy(inputs = newInputs)
+                                            }
+                                            workflow.value = newVal
+                                            editAtIndex.value = null
+                                        }
+                                    }
                                 }
                             }
 
-                            tr().new {
-                                val input = KVar(WorkflowInput())
 
-                                th().new{
-                                    input(InputType.text,placeholder = "Name").apply { value=input.propertyOrDefault(WorkflowInput::name, "") }
-                                }
-                                th().new{
-                                    dropdown(mapOf("aaa" to "A", "bb" to "B", "ccc" to "C"))
-                                }
-                                th().new{
-                                    input(InputType.text, placeholder = "Beschreibung").apply { value=input.propertyOrDefault(WorkflowInput::description, "") }
-                                }
-                                th().text("")
+                            workflowInputInlineEditForm(WorkflowInput()){ workFlowInput ->
+                                val newVal = rWorkflow.copy(actions = workflow.value.actions?.mapIndexed { index, workflowAction ->
+                                    if(index == activeActionIdx.value){
+                                        workflowAction.copy(inputs = (workflowAction.inputs?:listOf()) + workFlowInput)
+                                    }else {
+                                        workflowAction
+                                    }
+                                }?.toList())
+
+                                workflow.value = newVal
+
+                                logger.info("workflowInputInlineEditForm::save finished")
                             }
                         }
                     }
                 }
 
-/*
-                <table class="ui very basic collapsing celled table">
-                <thead>
-                <tr><th>Employee</th>
-                <th>Correct Guesses</th>
-                </tr></thead>
-                <tbody>
-                <tr>
-                <td>
-
- */
             }
         }
 
@@ -189,6 +150,37 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
 
         formSubmitButton(formCtrl){
             onSaveClick(workflow.value)
+        }
+    }
+}
+
+fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, iconClass :FomanticUIClasses = fomantic.icon.add, saveFunc: (wfi:WorkflowInput)->Unit){
+    tr().new {
+        val input = KVar(workFlowInput)
+
+        td().new{
+            input(InputType.text,placeholder = "Name").apply { value=input.propertyOrDefault(WorkflowInput::name, "") }
+        }
+        td().new{
+            dropdown(mapOf(
+                    WorkflowInputKind.Checkbox.name to "Checkbox",
+                    WorkflowInputKind.FileInput.name to "Datei anfügen",
+                    WorkflowInputKind.TextInput.name to "Texteingabe"
+            )).onSelect{ selectedKey->
+                val kind = WorkflowInputKind.valueOf(selectedKey!!)
+                input.value.kind = kind
+            }
+        }
+        td().new{
+            input(InputType.text, placeholder = "Beschreibung").apply { value=input.propertyOrDefault(WorkflowInput::description, "") }
+        }
+        td().new{
+
+            a(href = "#").new {
+                i(iconClass).on.click {
+                    saveFunc(input.value)
+                }
+            }
         }
     }
 }

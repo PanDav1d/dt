@@ -90,10 +90,20 @@ data class FileData(
 )
 
 data class Workflow(
-        var id: String? = null,
+        var _id: String? = null,
         var name: String? = null,
         var actions: List<WorkflowAction>? = null
-)
+) {
+    fun modifyWorkflowActionWithIndex(idx: Int, modifyFunc: (WorkflowAction)->WorkflowAction) : Workflow {
+        return this.copy(actions = this.actions?.mapIndexed { index, workflowAction ->
+            if(index == idx){
+                modifyFunc(workflowAction)
+            }else {
+                workflowAction
+            }
+        }?.toList())
+    }
+}
 
 data class WorkflowAction(
         var role: String? = null,
@@ -101,9 +111,9 @@ data class WorkflowAction(
 )
 
 data class WorkflowInput(
-        val name: String? = null,
-        val description: String? = null,
-        val kind: WorkflowInputKind? = null
+        var name: String? = null,
+        var description: String? = null,
+        var kind: WorkflowInputKind? = null
 )
 
 enum class WorkflowInputKind {

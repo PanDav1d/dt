@@ -4,6 +4,7 @@ import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.PageArea
 import de.doctag.docsrv.ui.ToastKind
 import de.doctag.docsrv.ui.modals.system.addWorkflowModal
+import de.doctag.docsrv.ui.modals.system.modifyWorkflowModal
 import de.doctag.docsrv.ui.selectable
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
@@ -12,7 +13,7 @@ import kweb.state.render
 
 fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) {
     val workflows = KVar(db().workflows.find().toList())
-    
+
     h4(fomantic.ui.dividing.header).text("Workflows")
 
     val modal = addWorkflowModal{addedWorkflow ->
@@ -38,7 +39,16 @@ fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) {
                     tr().new{
                         td().text(wf.name ?: "")
                         td().text(wf.actions?.map { it.role ?: "" }?.joinToString(",") ?: "")
-                        td()
+                        td().new {
+                            a(href = "#").new {
+                                i(fomantic.icon.edit).on.click {
+                                    modifyWorkflowModal(wf) {
+                                        pageArea.showToast("Workflow bearbeitet", ToastKind.Success)
+                                        workflows.value = db().workflows.find().toList()
+                                    }.open()
+                                }
+                            }
+                        }
                     }
                 }
             }

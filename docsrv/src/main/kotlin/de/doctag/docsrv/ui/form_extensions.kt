@@ -8,6 +8,7 @@ import kweb.state.KVar
 import kweb.state.render
 import kweb.util.random
 import kweb.util.gson
+import kotlin.math.abs
 
 class FormControl{
 
@@ -151,6 +152,51 @@ class FileFormInput(
             inputElement.browser.removeCallback(callbackId)
         }
     }
+}
+
+class DropdownValueSelectEvent(val selectedValue: String?, val selectedText: String?)
+class DropdownElement {
+    internal val callbacks: MutableList<(key: String?)->Unit> = mutableListOf()
+    fun onSelect(callback:(key: String?)->Unit)
+    {
+        callbacks.add(callback)
+    }
+}
+
+fun ElementCreator<*>.dropdown(options: Map<String, String>, currentValue: KVar<String>?=null):DropdownElement {
+
+    val result = DropdownElement()
+
+    div(fomantic.ui.selection.dropdown).new {
+        input(type=InputType.hidden, name="dropdown", initialValue = currentValue?.value)
+        i(fomantic.icon.dropdown)
+        div(fomantic.text.default).text("Auswahl")
+        div(fomantic.menu).new{
+            options.forEach { (key, displayText) ->
+                div(fomantic.item).apply { this.setAttributeRaw("data-value", key) }.text(displayText)
+            }
+        }
+    }
+
+    val callbackId = abs(random.nextInt())
+    browser.executeWithCallback("""
+        $('.ui.dropdown').dropdown({
+            action: 'activate',
+            onChange: function(value, text) {
+              // custom action
+              console.log("changed")
+              callbackWs($callbackId,{selectedValue: value, selectedText: text});
+            }
+        });
+        """.trimIndent(), callbackId) {inputData->
+        val selectedData : DropdownValueSelectEvent = gson.fromJson(inputData.toString())
+        if(currentValue != null) {
+            currentValue.value = selectedData.selectedValue ?: ""
+        }
+        result.callbacks.forEach{cb->cb.invoke(selectedData.selectedValue)}
+    }
+
+    return result
 }
 
 

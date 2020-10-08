@@ -15,3 +15,12 @@ fun ElementCreator<*>.addWorkflowModal(onWorkflowAdd: (wf: Workflow)->Unit) = mo
         modal.close()
     }
 }
+
+fun ElementCreator<*>.modifyWorkflowModal(workflow: Workflow, onWorkflowModify: (wf: Workflow)->Unit) = modal("Workflow bearbeiten"){ modal->
+
+    workflowForm(workflow) { workflow ->
+        db().workflows.save(workflow)
+        onWorkflowModify(workflow)
+        modal.close()
+    }
+}
