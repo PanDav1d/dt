@@ -15,9 +15,10 @@ import org.litote.kmongo.findOne
 
 fun ElementCreator<*>.handleLogin(){
 
-
     centeredBox {
+        img(src = "./ressources/logo_inverse.svg")
 
+        div(fomantic.divider.hidden)
         h2().text("Anmeldung erforderlich")
 
         val user = KVar<String>("")

@@ -79,7 +79,8 @@ data class Document(
     var attachmentId: String? = null,
     var signatures: List<Signature>? = null,
     var created: ZonedDateTime? = null,
-    var mirrors: List<String>? = null
+    var mirrors: List<String>? = null,
+    var workflow: Workflow? = null
 )
 
 data class FileData(

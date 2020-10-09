@@ -116,7 +116,9 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
     }
 
     div(fomantic.ui.fixed.menu).new{
-        a(fomantic.header.item, href="/documents").text("DocSrv")
+        a(fomantic.header.item, href="/documents").new {
+            img("/ressources/logo_small_inverse.svg", attributes = mapOf("width" to "32px", "height" to "32px"))
+        }
         div(fomantic.right.menu).new{
 
             render(area.toastVisible) { isVisible ->

@@ -14,5 +14,6 @@ fun Routing.staticFiles(){
     static("ressources") {
         staticBasePackage = "static"
         resources("js")
+        resources("img")
     }
 }
