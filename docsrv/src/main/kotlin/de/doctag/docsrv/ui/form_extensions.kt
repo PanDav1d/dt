@@ -131,6 +131,13 @@ class FileFormInput(
         return validator?.invoke(actualValue.value)
     }
 
+    fun onFileSelect(onFileSelectCallback: ()->Unit){
+        inputElement.on.change { evt ->
+            logger.info(evt.retrieved)
+            onFileSelectCallback()
+        }
+    }
+
     fun retrieveFile(onFileRetrieveCallback:(FileUpload)->Unit){
         val callbackId = Math.abs(random.nextInt())
 
@@ -144,7 +151,7 @@ class FileFormInput(
             """.trimIndent()
 
         inputElement.browser.executeWithCallback(js, callbackId) { result ->
-            logger.info("Result is ${result.toString()}")
+            //logger.info("Result is ${result.toString()}")
             val fupload : FileUpload = gson.fromJson(result.toString())
             onFileRetrieveCallback( fupload )
         }
@@ -167,7 +174,8 @@ fun ElementCreator<*>.dropdown(options: Map<String?, String>, currentValue: KVar
 
     val result = DropdownElement()
 
-    div(fomantic.ui.selection.dropdown).new {
+    val dropdown = div(fomantic.ui.selection.dropdown)
+    dropdown.new {
         input(type=InputType.hidden, name="dropdown", initialValue = currentValue.value)
         i(fomantic.icon.dropdown)
         div(fomantic.text.default).text("Auswahl")
@@ -181,7 +189,7 @@ fun ElementCreator<*>.dropdown(options: Map<String?, String>, currentValue: KVar
 
     val callbackId = abs(random.nextInt())
     browser.executeWithCallback("""
-        $('.ui.dropdown').dropdown({
+        $('#${dropdown.id}').dropdown({
             action: 'activate',
             onChange: function(value, text) {
               // custom action

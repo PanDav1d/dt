@@ -9,8 +9,9 @@ import kweb.*
 import kweb.logger
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
-import kweb.state.property
 import kweb.state.render
+import org.litote.kmongo.eq
+import org.litote.kmongo.findOne
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.save
 import java.time.Duration
@@ -21,7 +22,8 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document)
     val role = KVar<WorkflowAction?>(null)
     val key = KVar<PrivatePublicKeyPair?>(null)
     var workflowResults: List<KVar<WorkflowInputResult>>?=null
-    doc.workflow?.actions?.map { it.role }
+    val filesToAdd = mutableListOf<FileData>()
+
     formControl { formCtrl->
 
         h4(fomantic.ui.header.divider.horizontal).text("Allgemeine Angaben").focus()
@@ -45,13 +47,16 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document)
         div(fomantic.ui.field).new {
             label().text("Schlüssel wählen")
             dropdown(keyOptions).onSelect { selectedKeyId ->
-                key.value = db().keys.findOneById(selectedKeyId!!)
+                val currentKey = db().keys.findOne(PrivatePublicKeyPair::_id eq selectedKeyId)
+                logger.info("Selected key: ${selectedKeyId}. key.value = ${currentKey?.verboseName}" )
+                key.value = currentKey
             }
         }
 
         h4(fomantic.ui.header.divider.horizontal).text("Zusatzdaten")
 
         render(role){rRole ->
+            logger.info("Rendering selected role ${rRole?.role}")
             workflowResults = rRole?.inputs?.map { input->
 
                 val result = KVar(WorkflowInputResult(name=input.name))
@@ -60,12 +65,15 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document)
                     WorkflowInputKind.TextInput->{
                         div(fomantic.ui.field).new {
                             label().text(input.name ?:"")
+                            span().text(input.description?:"")
                             formInput(null, "", true, result.propertyOrDefault(WorkflowInputResult::value,""))
-                                    .with(formCtrl)
                         }
                     }
                     WorkflowInputKind.Checkbox -> {
                         val checkedState = KVar(false)
+                        checkedState.addListener { old, new ->
+                            result.value.value = new.toString()
+                        }
                         div(fomantic.ui.field).new {
                             label().text(input.name ?: "")
                             checkBoxInput(
@@ -78,13 +86,32 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document)
 
                     }
                     WorkflowInputKind.FileInput -> {
+                        div(fomantic.ui.field).new {
+                            label().text(input.name ?: "")
+                            span().text(input.description?:"")
+                            val fileField = fileInput(null, "", false, KVar(""))
+                            fileField.onFileSelect {
+                                fileField.retrieveFile { fd ->
+                                    logger.info("Received file ${fd.fileName}")
+                                    val (contentType, data) = fd.base64Content.removePrefix("data:").split(";base64,")
 
+                                    val fileObj = FileData(name = fd.fileName, base64Content = data, contentType = contentType)
+                                    fileObj.apply {
+                                        db().files.save(fileObj)
+                                    }
+                                    filesToAdd.add(fileObj)
+                                    result.value.fileId = fileObj._id
+                                }
+                            }
+                        }
                     }
                 }
 
                 result
             }
         }
+
+        div(fomantic.ui.divider.hidden)
 
         formSubmitButton(formCtrl, "Dokument signieren"){
             logger.info("Make signature for document ${doc.url}")
@@ -99,6 +126,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document)
 
             db().documents.save(doc)
             onSignFunc(doc)
+            modal.close()
         }
     }
 }

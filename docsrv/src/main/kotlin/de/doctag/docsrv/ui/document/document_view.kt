@@ -102,6 +102,7 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                             div(fomantic.ui.item).new {
                                 val modal = signDocumentModal(rDocument){signedDocument->
                                     db().documents.save(signedDocument)
+                                    document.value = signedDocument
                                 }
                                 button(fomantic.ui.button.tertiary.blue).text("Signieren").on.click {
                                     modal.open()
@@ -121,10 +122,11 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                     table(fomantic.ui.selectable.celled.table).new {
                         thead().new {
                             tr().new {
+                                th().text("Rolle")
                                 th().text("Name")
-                                th().text("Ort")
+                                th().text("Addresse")
                                 th().text("Signiert von")
-                                th().text("Signiert am")
+                                th().text("Datum")
                                 th().text("Aktion")
                             }
                         }
@@ -132,6 +134,7 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                             rDocument.signatures?.forEach { sig ->
 
                                 tr().new {
+                                    td().text(sig.role ?: "n.v.")
                                     td().text(sig.publicKey.issuer.name1 ?: "")
                                     td().text("${sig.publicKey.issuer.zipCode ?: ""} ${sig.publicKey.issuer.city ?: ""}")
                                     td().text("${sig.publicKey.owner.firstName} ${sig.publicKey.owner.lastName}")
