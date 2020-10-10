@@ -1,73 +1,151 @@
 package de.doctag.docsrv.ui.forms
 
-import de.doctag.docsrv.extractDocumentIdOrNull
-import de.doctag.docsrv.extractQRCode
-import de.doctag.docsrv.getImagesFromBase64Content
+import com.github.salomonbrys.kotson.fromJson
+import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
-import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.plugins.jqueryCore.executeOnSelf
 import kweb.state.KVar
+import kweb.state.property
+import kweb.state.render
+import kweb.util.gson
 import org.litote.kmongo.findOne
+import org.litote.kmongo.findOneById
 import org.litote.kmongo.regex
+import java.io.ByteArrayOutputStream
 import java.time.ZonedDateTime
+import javax.imageio.ImageIO
+import kotlin.random.Random
+
+enum class DocumentAddState{
+    UPLOAD,
+    INSERT_DOCTAG,
+    SAVE
+}
+
+
+data class ImagePositionOnCanvas(val x: Float, val y: Float)
+fun ElementCreator<*>.drawDoctagElement(file: FileData, onSubmit:(file:FileData, doctag:String)->Unit) {
+    val doctag = "https://${db().currentConfig.hostname}/d/${generateRandomString(16)}"
+    val doctagImg = getQRCodeImageAsDataUrl(doctag, 90, 90)
+    val documentImg = renderPdfAsImage(file.base64Content!!).asDataUrlImage()
+
+    element("script", mapOf("src" to "/ressources/canvas.js"))
+    val canvas = canvas(420, 594).apply {
+        this.setAttributeRaw("style", "border: 1px solid black;)")
+    }//.focus()
+
+    GlobalScope.launch {
+        delay(100)
+        browser.execute("""
+        canvas = document.getElementById("${canvas.id}");
+        context = canvas.getContext("2d");
+        
+        
+        currentX = canvas.width/2;
+        currentY = canvas.height/2;
+        
+        star_img.onload = function() {
+            _Go();
+        };
+        
+        background_img.onload = function() {
+            context.drawImage(background_img, 0, 0);
+        }
+        
+        background_img.src='${documentImg}';
+        star_img.src='${doctagImg}';
+        
+        canvas.focus();
+        """.trimIndent())
+    }
+
+    div(fomantic.divider.hidden)
+    buttonWithLoader("Übernehmen"){
+        val callbackId = Random.nextInt()
+        browser.executeWithCallback("callbackWs($callbackId,{x: 1.0*currentX/canvas.width, y: 1.0*currentY/canvas.height});", callbackId){inputData->
+            val pos : ImagePositionOnCanvas = gson.fromJson(inputData.toString())
+            logger.info("QR Code shall be placed at position ${pos.x}/${pos.y}")
+            file.base64Content = insertDoctagIntoPDF(file.base64Content!!, doctag, pos.x, pos.y, 4.29f)
+            onSubmit(file, doctag)
+        }
+    }
+}
 
 fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file: FileData, doc: Document)->Unit){
     val document = KVar(documentObj)
+    val fileObj = FileData()
+    val state = KVar(DocumentAddState.UPLOAD)
 
-    formControl { formCtrl ->
+    formControl {
+        render(state){rState->
+            when(rState){
+                DocumentAddState.UPLOAD-> {
+                    val formField = fileInput("Datei", "", false, KVar(""))
 
-        formCtrl.withValidation {
-            null
-        }
+                    buttonWithAsyncLoader("Hochladen"){whenDone->
+                        formField.retrieveFile { file ->
+                            logger.info("Received file ${file.fileName}")
 
+                            val (contentType, data) = file.base64Content.removePrefix("data:").split(";base64,")
+                            val docId = extractDocumentIdOrNull(data)
 
-        formInput("Referenz-Nr", "Dokumenten-Nummer", true, document.propertyOrDefault(Document::externalId, ""))
-                .with(formCtrl)
-                .withInputMissingErrorMessage("Bitte geben Sie die Dokumentenreferenz an.")
+                            logger.info("Has doctag? ${docId != null}. Full url ${docId?.fullUrl}")
 
-        formInput("Klasse", "Dokumentenklasse", true, document.propertyOrDefault(Document::classifier, ""))
-                .with(formCtrl)
-                .withInputMissingErrorMessage("Bitte geben Sie die Dokumentenklasse an.")
+                            fileObj.name = file.fileName
+                            fileObj.contentType = contentType
+                            fileObj.base64Content = data
 
-        var file = KVar("")
+                            document.value.let {
+                                it.url = docId?.fullUrl
+                            }
 
-        var formField = fileInput("Datei", "", false, file)
-                .with(formCtrl)
-
-        displayErrorMessages(formCtrl)
-
-        formSubmitButton(formCtrl){
-            formField.retrieveFile { file ->
-                logger.info("Received file ${file.fileName}")
-
-
-                val doc = document.value
-
-                val (contentType, data) = file.base64Content.removePrefix("data:").split(";base64,")
-
-                val docId  = extractDocumentIdOrNull(data)
-
-                if(docId != null){
-                    logger.info("Extracted document ID: ${docId.fullUrl}")
-                    if(docId.hostname == db().currentConfig.hostname) {
-                        doc._id = docId.id
+                            state.value = if(docId!=null)DocumentAddState.SAVE else DocumentAddState.INSERT_DOCTAG
+                            whenDone()
+                        }
                     }
-                    else {
-                        doc.isMirrored = true
-                    }
-                    doc.url = docId.fullUrl
                 }
-                else {
-                    logger.info("No Document ID found")
-                }
+                DocumentAddState.INSERT_DOCTAG -> {
 
-                val file = FileData(docId?.id, file.fileName, data, contentType)
-                onSaveClick(file, doc)
+                    h4(fomantic.ui.header).text("Doctag einfügen")
+                    p().text("Positionieren Sie das DocTag mit der Maus an der gewünschten Position")
+                    drawDoctagElement(fileObj) {fileWithDoctag, doctag->
+                        document.value.url = doctag
+                        state.value = DocumentAddState.SAVE
+                    }
+                }
+                DocumentAddState.SAVE -> {
+                    div(fomantic.ui.icon.message).new {
+                        i(fomantic.icon.qrcode)
+                        div(fomantic.content).new {
+                            div(fomantic.header).text("DocTag erkannt")
+                            p().text("Das hochgeladene Dokument hat das DocTag ${document.value.url}. Drücken Sie auf Speichern um den Import abzuschließen.")
+                        }
+                    }
+
+                    div(fomantic.ui.field).new {
+                        label().text("Workflow wählen")
+                        dropdown(db().workflows.find().map { it._id to (it.name ?:"") }.toMap()).onSelect { selectedWorkflowId->
+                            if(selectedWorkflowId != null) {
+                                document.value.workflow = db().workflows.findOneById(selectedWorkflowId)
+
+                                logger.info("Workflow ${document.value.workflow?.name} selected")
+                            }
+                        }
+                    }
+
+                    buttonWithLoader("Speichern"){
+                        val doc = document.value
+                        doc.isMirrored = DocumentId.parse(doc.url!!).hostname != db().currentConfig.hostname
+                        onSaveClick(fileObj, doc)
+                    }
+                }
             }
-
         }
     }
 }

@@ -58,8 +58,6 @@ fun ElementCreator<*>.handleDocumentList() {
                     table(fomantic.ui.selectable.celled.table).new {
                         thead().new {
                             tr().new {
-                                th().text("Nr")
-                                th().text("Art")
                                 th().text("Dateiname")
                                 th().text("Erstellt am")
                                 th().text("Aktion")
@@ -74,8 +72,6 @@ fun ElementCreator<*>.handleDocumentList() {
                                         browser.url.value="/d/${document._id}"
                                     }
                                 }.new {
-                                    td().text(document.externalId ?: "")
-                                    td().text(document.classifier ?: "")
                                     td().text(document.originalFileName ?: "")
                                     td().text(document.created?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) ?: "")
                                     td().new {

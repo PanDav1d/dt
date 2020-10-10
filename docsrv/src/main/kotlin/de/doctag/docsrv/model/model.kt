@@ -15,9 +15,14 @@ data class DocsrvConfig(
         var _id: String? = "1",
         var hostname: String = "",
         var outboundMail: OutboundMailConfig? = null,
-        var inboundMail: InboundMailConfig? = null
+        var inboundMail: InboundMailConfig? = null,
+        var design: DesignConfig? = null
 )
 
+data class DesignConfig(
+        val headerColor: String?=null,
+        val headerTitle: String?=null
+)
 
 data class OutboundMailConfig(
         val server: String? = null,
@@ -71,11 +76,9 @@ data class DocumentId(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Document(
     var _id: String? = null,
-    var externalId: String? = null,
     var url : String? = null,
     var isMirrored: Boolean? = null,
     var originalFileName: String? = null,
-    var classifier: String? = null,
     var attachmentId: String? = null,
     var signatures: List<Signature>? = null,
     var created: ZonedDateTime? = null,
@@ -87,7 +90,7 @@ data class FileData(
     var _id: String? = null,
     var name: String? = null,
     var base64Content: String? = null,
-    val contentType: String? = null
+    var contentType: String? = null
 )
 
 data class Workflow(
@@ -117,6 +120,12 @@ data class WorkflowInput(
         var kind: WorkflowInputKind? = null
 )
 
+data class WorkflowInputResult(
+        var name: String? = null,
+        var value: String? = null,
+        var fileId: String? = null
+)
+
 enum class WorkflowInputKind {
     TextInput,
     FileInput,
@@ -124,11 +133,11 @@ enum class WorkflowInputKind {
     Checkbox
 }
 
-
-
 data class Signature(
         var doc : DoctagSignature,
         var publicKey: PublicKeyResponse,
         var signed: ZonedDateTime,
-        var originalMessage: String? = null
+        var originalMessage: String? = null,
+        var role: String? = null,
+        var inputs: List<WorkflowInputResult>? = null
 )

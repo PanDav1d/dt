@@ -9,6 +9,7 @@ import kweb.WebBrowser
 import kweb.state.KVar
 import kweb.state.ReversibleFunction
 import org.bson.internal.Base64
+import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.net.URL
 import java.security.SecureRandom
@@ -18,9 +19,12 @@ import java.time.format.DateTimeFormatter
 import java.util.jar.Manifest
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
+import javax.imageio.ImageIO
+import kotlin.random.Random
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.instanceParameter
 import kotlin.reflect.full.memberFunctions
+import kotlin.streams.asSequence
 
 
 inline fun <O, reified T : Any?> KVar<T>.propertyOrDefault(property: KProperty1<T, O?>, default: O): KVar<O> {
@@ -70,16 +74,26 @@ fun getSalt(): ByteArray {
 }
 
 
-
-fun getQRCodeImageAsDataUrl(text: String, width: Int, height: Int): String {
+fun getQRCodeImageAsPng(text: String, width: Int, height:Int):ByteArrayOutputStream {
     val qrCodeWriter = QRCodeWriter()
     val bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height)
     val pngOutputStream = ByteArrayOutputStream()
     MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
-    return "data:image/png;base64,"+Base64.encode(pngOutputStream.toByteArray())
+    return pngOutputStream
 }
 
+fun getQRCodeImageAsDataUrl(text: String, width: Int, height: Int): String {
+    return "data:image/png;base64,"+Base64.encode(getQRCodeImageAsPng(text, width, height).toByteArray())
+}
 
+fun BufferedImage.asDataUrlImage() : String{
+    val bos = ByteArrayOutputStream()
+    ImageIO.write(this, "png", bos)
+    return "data:image/png;base64,"+Base64.encode(bos.toByteArray())
+}
+
+private val source = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+fun generateRandomString(length: Long) = java.util.Random().ints(length, 0, source.length).asSequence().map(source::get).joinToString("")
 
 fun ZonedDateTime.formatDateTime() = this.withZoneSameInstant(ZoneId.of("Europe/Berlin")).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
 

@@ -1,11 +1,9 @@
 package de.doctag.docsrv.ui.settings
 
-import de.doctag.docsrv.model.InboundMailConfig
-import de.doctag.docsrv.model.OutboundMailConfig
-import de.doctag.docsrv.model.authRequired
-import de.doctag.docsrv.model.db
+import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.ToastKind
 import de.doctag.docsrv.ui.active
+import de.doctag.docsrv.ui.forms.system.designForm
 import de.doctag.docsrv.ui.forms.system.hostnameEditForm
 import de.doctag.docsrv.ui.forms.system.mailSettingsEditForm
 import de.doctag.docsrv.ui.forms.system.workflowListEditForm
@@ -66,6 +64,16 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                 SystemSettingsActiveItem.WORKFLOW -> {
                                     workflowListEditForm(pageArea)
                                 }
+
+                                SystemSettingsActiveItem.DESIGN->{
+                                    designForm(db().currentConfig.design ?: DesignConfig()){designConfig ->
+                                        db().currentConfig.let { conf->
+                                            conf.design = designConfig
+                                            db().config.save(conf)
+                                        }
+                                        pageArea.showToast("Design Einstellungen geändert", ToastKind.Success)
+                                    }
+                                }
                             }
                         }
                     }
@@ -78,7 +86,8 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
 enum class SystemSettingsActiveItem {
     HOST,
     MAIL,
-    WORKFLOW
+    WORKFLOW,
+    DESIGN
 }
 
 fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
@@ -86,5 +95,6 @@ fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.HOST), "/settings/system/host").text("Hostname")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.MAIL), "/settings/system/mail").text("E-Mail")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.WORKFLOW), "/settings/system/workflow").text("Workflows")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.DESIGN), "/settings/system/design").text("Design")
     }
 }

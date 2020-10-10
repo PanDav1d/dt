@@ -163,12 +163,12 @@ class DropdownElement {
     }
 }
 
-fun ElementCreator<*>.dropdown(options: Map<String, String>, currentValue: KVar<String>?=null):DropdownElement {
+fun ElementCreator<*>.dropdown(options: Map<String?, String>, currentValue: KVar<String?> = KVar(null)):DropdownElement {
 
     val result = DropdownElement()
 
     div(fomantic.ui.selection.dropdown).new {
-        input(type=InputType.hidden, name="dropdown", initialValue = currentValue?.value)
+        input(type=InputType.hidden, name="dropdown", initialValue = currentValue.value)
         i(fomantic.icon.dropdown)
         div(fomantic.text.default).text("Auswahl")
         div(fomantic.menu).new{
@@ -177,6 +177,7 @@ fun ElementCreator<*>.dropdown(options: Map<String, String>, currentValue: KVar<
             }
         }
     }
+
 
     val callbackId = abs(random.nextInt())
     browser.executeWithCallback("""
@@ -199,19 +200,26 @@ fun ElementCreator<*>.dropdown(options: Map<String, String>, currentValue: KVar<
     return result
 }
 
-
-fun ElementCreator<*>.formSubmitButton(formCtrl: FormControl, label:String="Speichern", classes: FomanticUIClasses= fomantic.ui.button, submitAction: ()->Unit)  {
+fun ElementCreator<*>.buttonWithAsyncLoader(label:String, classes: FomanticUIClasses= fomantic.ui.button, onClickAction: (whenDone: ()->Unit)->Unit)  {
     button(classes).apply {
         text.value = label
         on.click {
             this.addClasses("loading")
-
-            if(formCtrl.isValid) {
-                submitAction()
+            onClickAction{
+                this.removeClasses("loading")
             }
-
-            this.removeClasses("loading")
         }
+    }
+}
+
+fun ElementCreator<*>.buttonWithLoader(label:String, classes: FomanticUIClasses= fomantic.ui.button, onClickAction: ()->Unit) = buttonWithAsyncLoader(label, classes){ whenDone->
+    onClickAction()
+    whenDone()
+}
+
+fun ElementCreator<*>.formSubmitButton(formCtrl: FormControl, label:String="Speichern", classes: FomanticUIClasses= fomantic.ui.button, submitAction: ()->Unit) = buttonWithLoader(label, classes) {
+    if(formCtrl.isValid) {
+        submitAction()
     }
 }
 

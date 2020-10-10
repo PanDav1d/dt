@@ -1,6 +1,7 @@
 package de.doctag.lib
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import de.doctag.lib.model.PrivatePublicKeyPair
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.SecureRandom
@@ -58,6 +59,11 @@ data class DoctagSignature(
             val sig = makeSignature(priv, rawSigString)
 
             return rawSig.copy(signature = sig)
+        }
+
+        fun makeWithPPK(ppk: PrivatePublicKeyPair, validity: Duration, url:String?) : DoctagSignature{
+            val user = "${ppk.owner?.firstName} ${ppk.owner.lastName}"
+            return makeWithUrl(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!,validity, ppk.signingParty!!, user, url)
         }
 
         fun fromCsv(tokens: List<String>):DoctagSignature {

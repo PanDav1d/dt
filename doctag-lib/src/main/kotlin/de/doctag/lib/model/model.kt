@@ -26,6 +26,7 @@ data class Address(
 
 
 data class PrivatePublicKeyPair(
+        var _id: String? = null,
         var privateKey: String? = null,
         var publicKey : String? = null,
         var verboseName: String? = null,

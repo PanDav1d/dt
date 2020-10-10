@@ -133,6 +133,19 @@ val FomanticUIClasses.default : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.qrcode : FomanticUIClasses
+    get() {
+        classes("qrcode")
+        return this
+    }
+
+fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
+    if(color != null) {
+        classes(color)
+    }
+    return this
+}
+
 fun FomanticUIClasses.active(isActive: Boolean):FomanticUIClasses{
     if(isActive){
         classes("active")
@@ -171,6 +184,13 @@ fun FomanticUIClasses.warning(isWarning: Boolean):FomanticUIClasses{
 fun FomanticUIClasses.info(isInfo: Boolean):FomanticUIClasses{
     if(isInfo){
         classes("info")
+    }
+    return this
+}
+
+fun FomanticUIClasses.inverted(isInverted: Boolean): FomanticUIClasses{
+    if(isInverted){
+        classes("inverted")
     }
     return this
 }

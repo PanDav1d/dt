@@ -1,6 +1,7 @@
 package de.doctag.docsrv.ui
 
 import de.doctag.docsrv.Resources
+import de.doctag.docsrv.model.db
 import de.doctag.docsrv.model.host
 import de.doctag.docsrv.ui.modals.scanStatusModal
 import kotlinx.coroutines.GlobalScope
@@ -10,6 +11,7 @@ import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import kweb.util.gson
 
 fun WebBrowser.navigateTo(path:String){
     this.evaluate("window.location = \"${path}\"")
@@ -115,9 +117,14 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
         element("script", mapOf("src" to "/ressources/html5-qrcode.min.js"))
     }
 
-    div(fomantic.ui.fixed.menu).new{
+    val design = db().currentConfig.design
+
+    val logo = if(design?.headerColor.isNullOrBlank()) "/ressources/logo_small_inverse.svg" else "/ressources/logo_small_inverse_white.svg"
+
+    div(fomantic.ui.fixed.menu.inverted(!design?.headerColor.isNullOrBlank()).withColor(design?.headerColor)).new{
         a(fomantic.header.item, href="/documents").new {
-            img("/ressources/logo_small_inverse.svg", attributes = mapOf("width" to "32px", "height" to "32px"))
+            img(logo, attributes = mapOf("width" to "32px", "height" to "32px"))
+            span(attributes = mapOf("style" to "padding-left: 16px;")).text(design?.headerTitle ?: "")
         }
         div(fomantic.right.menu).new{
 
@@ -166,14 +173,20 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
     }
 }
 
-class ModalView(val ec: ElementCreator<*>, val id: String = (modalCounter++).toString(), var isOpen: KVar<Boolean> = KVar(false)) {
+class ModalViewOptions(
+        val autofocus: Boolean=true
+)
+
+class ModalView(val ec: ElementCreator<*>, val id: String = (modalCounter++).toString(), var isOpen: KVar<Boolean> = KVar(false), val autoFocus: Boolean=true) {
     companion object {
         var modalCounter: Int = 0
     }
+    val options = ModalViewOptions(autofocus=autoFocus)
+
 
     fun close(){
         ec.browser.evaluate("""
-            $('#${this.id}').modal('hide');
+            $('#${this.id}').modal(${gson.toJson(options)}).modal('hide');
         """.trimIndent())
 
         isOpen.value = false
@@ -182,13 +195,13 @@ class ModalView(val ec: ElementCreator<*>, val id: String = (modalCounter++).toS
     fun open(){
         isOpen.value = true
         ec.browser.evaluate("""
-            $('#${this.id}').modal('show');
+            $('#${this.id}').modal(${gson.toJson(options)}).modal('show',${gson.toJson(options)});
         """.trimIndent())
     }
 }
 
-fun ElementCreator<*>.modal(header: String, content: ElementCreator<DivElement>.(modal: ModalView) -> Unit) : ModalView {
-    val mv = ModalView(this)
+fun ElementCreator<*>.modal(header: String, autoFocus: Boolean=true, content: ElementCreator<DivElement>.(modal: ModalView) -> Unit) : ModalView {
+    val mv = ModalView(this, autoFocus = autoFocus)
 
     val classes = fomantic.ui.modal
     render(mv.isOpen){isOpen ->

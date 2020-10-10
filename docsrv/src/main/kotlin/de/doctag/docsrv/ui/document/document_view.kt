@@ -6,6 +6,7 @@ import de.doctag.docsrv.model.*
 import org.litote.kmongo.findOneById
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.scanStatusModal
+import de.doctag.docsrv.ui.modals.signDocumentModal
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
@@ -42,13 +43,15 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                                     div(fomantic.description).text("Erstellt am")
                                 }
                             }
+
                             div(fomantic.ui.item).new {
                                 i(fomantic.ui.tags.icon)
                                 div(fomantic.ui.content).new {
-                                    span(fomantic.header).text(rDocument.classifier ?: "")
-                                    div(fomantic.description).text("Dokumentenklasse")
+                                    span(fomantic.header).text(rDocument.url ?: "")
+                                    div(fomantic.description).text("Dokumentenaddresse")
                                 }
                             }
+                            /*
                             div(fomantic.ui.item).new {
                                 i(fomantic.addressCard.icon)
                                 div(fomantic.ui.content).new {
@@ -56,6 +59,7 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                                     div(fomantic.description).text("Referenz")
                                 }
                             }
+                            */
                         }
                     }
 
@@ -94,6 +98,17 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                                 }
                             }
                         }
+                        if(this.browser.authenticatedUser != null) {
+                            div(fomantic.ui.item).new {
+                                val modal = signDocumentModal(rDocument){signedDocument->
+                                    db().documents.save(signedDocument)
+                                }
+                                button(fomantic.ui.button.tertiary.blue).text("Signieren").on.click {
+                                    modal.open()
+                                }
+                            }
+                        }
+
                         div(fomantic.ui.item).new {
                             a(href = "/d/${rDocument._id}/download", attributes = mapOf("download" to "", "class" to "ui button tertiary blue")).text("Herunterladen")
                         }
