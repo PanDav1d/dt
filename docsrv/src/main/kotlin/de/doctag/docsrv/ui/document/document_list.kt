@@ -7,18 +7,14 @@ import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.remotes.AttachmentImporter
 import de.doctag.docsrv.remotes.MailReceiver
-import de.doctag.docsrv.ui.ToastKind
-import de.doctag.docsrv.ui.fileExport
+import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addDocumentModal
-import de.doctag.docsrv.ui.pageBorderAndTitle
-import de.doctag.docsrv.ui.selectable
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
 import org.litote.kmongo.descending
 import java.time.format.DateTimeFormatter
-import de.doctag.docsrv.ui.loading
 
 
 fun ElementCreator<*>.handleDocumentList() {
@@ -59,6 +55,7 @@ fun ElementCreator<*>.handleDocumentList() {
                         thead().new {
                             tr().new {
                                 th().text("Dateiname")
+                                th().text("Status")
                                 th().text("Erstellt am")
                                 th().text("Aktion")
                             }
@@ -73,6 +70,17 @@ fun ElementCreator<*>.handleDocumentList() {
                                     }
                                 }.new {
                                     td().text(document.originalFileName ?: "")
+                                    td().new {
+                                        document.getWorkflowStatus().forEach { (role, signature) ->
+                                            if(signature != null) {
+                                                val signedAt = signature.signed.format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"))
+                                                i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.publicKey.issuer.name1}")
+                                            }
+                                            else {
+                                                i(fomantic.ui.icon.circle.outline.grey).withPopup(role, "Noch nicht signiert")
+                                            }
+                                        }
+                                    }
                                     td().text(document.created?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) ?: "")
                                     td().new {
 

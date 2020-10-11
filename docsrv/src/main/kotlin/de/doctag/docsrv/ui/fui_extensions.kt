@@ -1,5 +1,8 @@
 package de.doctag.docsrv.ui
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
@@ -227,6 +230,21 @@ enum class DisplayMessageKind{
 data class UserMessage(val kind:DisplayMessageKind, val header:String, val text:String)
 
 
+fun Element.withPopup(title:String?, content:String?){
+    content?.let {
+        setAttributeRaw("data-content", content)
+    }
+    title?.let {
+        setAttributeRaw("data-title", title)
+    }
+
+    browser.execute("""
+        $('#${this@withPopup.id}')
+          .popup()
+        ;
+    """.trimIndent())
+
+}
 
 fun ElementCreator<*>.displayMessage(msg: UserMessage){
     div(fomantic.ui.message

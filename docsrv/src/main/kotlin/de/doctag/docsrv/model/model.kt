@@ -84,7 +84,18 @@ data class Document(
     var created: ZonedDateTime? = null,
     var mirrors: List<String>? = null,
     var workflow: Workflow? = null
-)
+) {
+    fun getWorkflowStatus() : List<Pair<String, Signature?>>{
+        return workflow?.actions?.mapNotNull { action ->
+            val signature = this.signatures?.find {sig->
+                sig.role == action.role
+            }
+
+            action.role?.let{it to signature}
+        } ?: listOf()
+    }
+}
+
 
 data class FileData(
     var _id: String? = null,

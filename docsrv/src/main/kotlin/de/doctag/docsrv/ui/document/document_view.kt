@@ -119,7 +119,7 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                 h2(fomantic.ui.header).text("Signaturen")
 
                 if(rDocument.signatures?.count() ?: 0 > 0) {
-                    table(fomantic.ui.selectable.celled.table).new {
+                    table(fomantic.ui.very.basic.selectable.celled.table).new {
                         thead().new {
                             tr().new {
                                 th().text("Rolle")
