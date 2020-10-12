@@ -142,6 +142,30 @@ val FomanticUIClasses.qrcode : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.collapsing : FomanticUIClasses
+    get() {
+        classes("collapsing")
+        return this
+    }
+
+val FomanticUIClasses.pdf : FomanticUIClasses
+    get() {
+        classes("pdf")
+        return this
+    }
+
+val FomanticUIClasses.file : FomanticUIClasses
+    get() {
+        classes("file")
+        return this
+    }
+
+val FomanticUIClasses.eye : FomanticUIClasses
+    get() {
+        classes("eye")
+        return this
+    }
+
 fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
     if(color != null) {
         classes(color)

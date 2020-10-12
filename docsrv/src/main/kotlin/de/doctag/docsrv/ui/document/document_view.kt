@@ -5,6 +5,7 @@ import de.doctag.docsrv.getQRCodeImageAsDataUrl
 import de.doctag.docsrv.model.*
 import org.litote.kmongo.findOneById
 import de.doctag.docsrv.ui.*
+import de.doctag.docsrv.ui.modals.filePreviewModal
 import de.doctag.docsrv.ui.modals.scanStatusModal
 import de.doctag.docsrv.ui.modals.signDocumentModal
 import kweb.*
@@ -18,6 +19,8 @@ import java.time.ZonedDateTime
 fun ElementCreator<*>.handleDocument(docId: String?) {
 
     val document = KVar(db().documents.findOneById(docId!!)!!)
+    val selectedSignature = KVar<Int?>(null)
+
     pageBorderAndTitle("Dokument") { pageArea ->
 
         div(fomantic.content).new() {
@@ -40,7 +43,7 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                                 i(fomantic.ui.calendarDay.icon)
                                 div(fomantic.ui.content).new {
                                     span(fomantic.header).text(rDocument.created?.formatDateTime() ?: "")
-                                    div(fomantic.description).text("Erstellt am")
+                                    div(fomantic.description).text("Erstellungsdatum")
                                 }
                             }
 
@@ -51,15 +54,19 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                                     div(fomantic.description).text("Dokumentenaddresse")
                                 }
                             }
-                            /*
+
                             div(fomantic.ui.item).new {
-                                i(fomantic.addressCard.icon)
+                                i(fomantic.ui.eye.outline.icon)
                                 div(fomantic.ui.content).new {
-                                    span(fomantic.header).text(rDocument.externalId ?: "")
-                                    div(fomantic.description).text("Referenz")
+                                    span(fomantic.header).new {
+                                        span().text("Beobachter ")
+                                        div(fomantic.ui.mini.label).text((rDocument.mirrors?.size ?: 0).toString())
+                                    }
+                                    div(fomantic.description).new{
+                                        a().text("hinzufügen")
+                                    }
                                 }
                             }
-                            */
                         }
                     }
 
@@ -118,39 +125,95 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
 
                 h2(fomantic.ui.header).text("Signaturen")
 
-                if(rDocument.signatures?.count() ?: 0 > 0) {
-                    table(fomantic.ui.very.basic.selectable.celled.table).new {
-                        thead().new {
-                            tr().new {
-                                th().text("Rolle")
-                                th().text("Name")
-                                th().text("Addresse")
-                                th().text("Signiert von")
-                                th().text("Datum")
-                                th().text("Aktion")
-                            }
-                        }
-                        tbody().new {
-                            rDocument.signatures?.forEach { sig ->
-
+                if(rDocument.signatures?.count() ?: 0 > 0 || rDocument.workflow != null) {
+                    render(selectedSignature){selectedSignatureIdx ->
+                        table(fomantic.ui.very.basic.selectable.table.compact).new {
+                            thead().new {
                                 tr().new {
-                                    td().text(sig.role ?: "n.v.")
-                                    td().text(sig.publicKey.issuer.name1 ?: "")
-                                    td().text("${sig.publicKey.issuer.zipCode ?: ""} ${sig.publicKey.issuer.city ?: ""}")
-                                    td().text("${sig.publicKey.owner.firstName} ${sig.publicKey.owner.lastName}")
-                                    td().text(sig.signed.formatDateTime() ?: "")
-                                    td().new {
+                                    th().text("Rolle")
+                                    th().text("Name")
+                                    th().text("Addresse")
+                                    th().text("Signiert von")
+                                    th().text("Datum")
+                                    th().text("Aktion")
+                                }
+                            }
+                            tbody().new {
+                                rDocument.signatures?.forEachIndexed { idx, sig ->
 
-                                        /*
-                                        i(fomantic.ui.edit.icon).on.click {
-                                            logger.info("Opening document ${document._id}")
+                                    tr().apply {
+                                        on.click {
+                                            if(selectedSignature.value == idx){
+                                                selectedSignature.value = null
+                                            }else {
+                                                selectedSignature.value = idx
+                                            }
                                         }
-
-                                        a(href = "/d/${document._id}/download",attributes = mapOf("download" to "", "class" to "actionIcon")).new {
-                                            i(fomantic.ui.fileExport.icon)
+                                    }.new {
+                                        td().text(sig.role ?: "n.v.")
+                                        td().text(sig.publicKey.issuer.name1 ?: "")
+                                        td().text("${sig.publicKey.issuer.zipCode ?: ""} ${sig.publicKey.issuer.city ?: ""}")
+                                        td().text("${sig.publicKey.owner.firstName} ${sig.publicKey.owner.lastName}")
+                                        td().text(sig.signed.formatDateTime() ?: "")
+                                        td().new {
                                         }
+                                    }
 
-                                         */
+                                    if(selectedSignatureIdx == idx) {
+                                        tr().new {
+                                            td()
+                                            td(attributes = mapOf("colspan" to "5")).new {
+                                                if(sig.inputs != null) {
+                                                    table(fomantic.ui.very.basic.very.compact.collapsing.celled.table).new {
+                                                        thead().new {
+                                                            tr().new {
+                                                                th().text("Name")
+                                                                th().text("Wert")
+                                                            }
+                                                        }
+                                                        tbody().new {
+                                                            sig.inputs?.forEach { workflowResult ->
+                                                                tr().new {
+                                                                    td().text(workflowResult.name ?: "")
+
+                                                                    when {
+                                                                        workflowResult.value != null -> td().text(workflowResult.value
+                                                                                ?: "")
+                                                                        workflowResult.fileId != null -> {
+                                                                            val fd = db().files.findOneById(workflowResult.fileId!!)
+                                                                            td().new{
+                                                                                span().text("${fd?.name}  ")
+                                                                                i(fomantic.icon.eye).on.click {
+                                                                                    filePreviewModal(fd!!).open()
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else -> td().text("")
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    span(fomantic.ui.grey.text).text("Keine Workflow-Eingaben vorhanden")
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            tbody().new {
+                                val missingActions = rDocument.getWorkflowStatus()
+                                        .filter { it.second == null }
+                                        .map { (currRole, sig) -> rDocument.workflow?.actions?.find { it.role ==  currRole} }
+
+                                missingActions.forEach { missingAction ->
+                                    tr().new {
+                                        td().text(missingAction?.role ?: "")
+                                        td(attributes = mapOf("colspan" to "5")).new {
+                                            span(fomantic.ui.grey.text).text("Noch keine Signatur vorhanden")
+                                        }
                                     }
                                 }
                             }

@@ -49,6 +49,16 @@ fun Routing.docsrvApi(){
         } ?: call.respond(HttpStatusCode.NotFound, "No document found with id $docId")
     }
 
+    get("/f/{fileId}/download"){
+        val fileId = call.parameters["fileId"]
+        val fileData = fileId?.let{db(call.request.host()).files.findOneById(fileId)}
+
+        fileData?.let { fd ->
+            call.response.header("Content-Disposition", """attachment; filename="${fileData.name}"""")
+            call.respondBytes(Base64.decode(fd.base64Content),ContentType.parse(fd.contentType!!))
+        } ?: call.respond(HttpStatusCode.NotFound, "No file found with id $fileId")
+    }
+
 
     acceptExcludingWildcards(ContentType.Application.Json) {
         get("/d/{documentId}") {
