@@ -1,37 +1,32 @@
 package de.doctag.docsrv.ui.modals
 
-
 import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.isUrl
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.db
+import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
-import de.doctag.docsrv.ui.modal
-import de.doctag.docsrv.ui.scanQrCode
-import de.doctag.docsrv.ui.tertiary
+import de.doctag.docsrv.ui.*
 import de.doctag.lib.DoctagSignature
-import de.doctag.lib.SignatureLoadingResult
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import java.time.ZonedDateTime
 
+fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:DocumentSignRequest)->Unit) = modal("Signaturanfrage erstellen") { modal ->
 
+    val scannedCode = KVar("")
 
-fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResult?)->Unit) = modal("Status erfassen"){ modal->
-    val scannedCode = KVar<String>("")
-
-    render(scannedCode){ code->
-
+    render(scannedCode){ code ->
         when{
-            code.isBlank() -> {
+            scannedCode.value.isBlank() -> {
                 scanQrCode { scanResult->
                     scannedCode.value = scanResult
                 }
             }
             code.isUrl() -> {
 
-                val doc = DocServerClient.loadDocument(code)
+                val url = code.replace("https://127.0.0.1", "http://127.0.0.1")
+                val doc = DocServerClient.loadDocument(url)
 
                 if(doc == null) {
                     div(fomantic.ui.message.success).new {
@@ -45,7 +40,7 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
                     button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
                         scannedCode.value = ""
                     }
-                }else {
+                } else {
                     logger.info("Found remote document. Allow signing it")
                     div(fomantic.ui.message.success).new {
                         div(fomantic.ui.header).text("Dokument erkannt")
@@ -53,11 +48,38 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
                         div().text("Erstellt am: ${doc.created?.formatDateTime()}")
                         div().text("Quelle: ${doc.url}")
                     }
-                    button(fomantic.ui.button).text("Signieren").on.click {
-                        logger.info("Signing document")
-                        DocServerClient.signDocument(doc, db().keys.find().first()!!)
-                        logger.info("Signed document")
+
+                    val selection = KVar<String?>(null)
+                    val opts = doc.workflow?.actions?.map { it.role to (it.role ?:"") }?.toMap()
+                    if(opts != null) {
+                        formControl {
+                            div(fomantic.ui.field).new {
+                                label().text("Rolle wählen")
+                                dropdown(opts, selection).onSelect {
+                                    selection.value = it
+                                }
+                            }
+                        }
+                    }
+
+                    div(fomantic.ui.divider.hidden)
+
+                    button(fomantic.ui.button).text("Signaturanfrage erstellen").on.click {
+                        logger.info("Creating document sign reqeust")
+
+                        val docSignRequest = DocumentSignRequest(
+                                doctagUrl = doc.url,
+                                createdBy = DocumentSignRequestUser(
+                                        userId = this.browser.authenticatedUser?._id,
+                                        userName = this.browser.authenticatedUser?.firstName + " " + this.browser.authenticatedUser?.lastName
+                                ),
+                                timestamp = ZonedDateTime.now(),
+                                role = selection.value
+                        )
+                        docSignRequest.apply { db().signRequests.insertOne(docSignRequest)}
+                        logger.info("Created document sign request")
                         modal.close()
+                        onCreate(docSignRequest)
                     }
                     button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
                         scannedCode.value = ""
@@ -86,7 +108,7 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
 
                 if(sig.valid){
                     button(fomantic.ui.button).text("Übernehmen").on.click {
-                        onScanSuccessful(sig)
+                        //onScanSuccessful(sig)
                         modal.close()
                     }
                 }
@@ -97,4 +119,6 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
             }
         }
     }
+
+
 }

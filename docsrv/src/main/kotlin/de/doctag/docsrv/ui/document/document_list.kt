@@ -1,12 +1,9 @@
 package de.doctag.docsrv.ui.document
 
-import de.doctag.docsrv.extractDocumentIdOrNull
 import de.doctag.docsrv.model.Document
-import de.doctag.docsrv.model.FileData
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.remotes.AttachmentImporter
-import de.doctag.docsrv.remotes.MailReceiver
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addDocumentModal
 import kweb.*
@@ -25,27 +22,35 @@ fun ElementCreator<*>.handleDocumentList() {
         pageBorderAndTitle("Dokumente") { pageArea ->
             div(fomantic.content).new() {
 
-                val modal = addDocumentModal { doc->
-                    logger.info("Dokument hinzufügen")
-                    pageArea.showToast("Dokument erfolgreich hinzugefügt", ToastKind.Success)
-                    documents.value = listOf(doc).plus(documents.value)
-                }
+                render(isImportRunning, container = {div()}){ isRunning->
+                documentTabMenu(DocumentTabMenuActiveItem.DocumentList) {
+                        val modal = addDocumentModal { doc->
+                            logger.info("Dokument hinzufügen")
+                            pageArea.showToast("Dokument erfolgreich hinzugefügt", ToastKind.Success)
+                            documents.value = listOf(doc).plus(documents.value)
+                        }
 
-                button(fomantic.ui.button).text("Dokument hinzufügen").on.click {
-                    modal.open()
-                }
+                        a(fomantic.item).text("Dokument hinzufügen").on.click {
+                            modal.open()
+                        }
 
-                render(isImportRunning){ isRunning->
-                    button(fomantic.ui.button.loading(isRunning)).text("Aus Mail Postfach importieren").on.click {
-                        try {
-                            isImportRunning.value = true
-                            AttachmentImporter(db()).runImport()
-                        }finally {
-                            isImportRunning.value = false
+
+                        if(isRunning) {
+                            div(fomantic.ui.active.inline.loader)
+                        }
+                        else {
+                            a(fomantic.item).text("Aus Mail Postfach importieren").on.click {
+                                try {
+                                    isImportRunning.value = true
+                                    AttachmentImporter(db()).runImport()
+                                } finally {
+                                    isImportRunning.value = false
+                                }
+                            }
                         }
                     }
-                }
 
+                }
 
                 div(fomantic.ui.divider.hidden)
 
@@ -73,8 +78,8 @@ fun ElementCreator<*>.handleDocumentList() {
                                     td().new {
                                         document.getWorkflowStatus().forEach { (role, signature) ->
                                             if(signature != null) {
-                                                val signedAt = signature.signed.format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"))
-                                                i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.publicKey.issuer.name1}")
+                                                val signedAt = signature.signed?.format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"))
+                                                i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.publicKey?.issuer?.name1}")
                                             }
                                             else {
                                                 i(fomantic.ui.icon.circle.outline.grey).withPopup(role, "Noch nicht signiert")

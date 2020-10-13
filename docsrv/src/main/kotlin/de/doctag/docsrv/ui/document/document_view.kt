@@ -151,10 +151,10 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                                         }
                                     }.new {
                                         td().text(sig.role ?: "n.v.")
-                                        td().text(sig.publicKey.issuer.name1 ?: "")
-                                        td().text("${sig.publicKey.issuer.zipCode ?: ""} ${sig.publicKey.issuer.city ?: ""}")
-                                        td().text("${sig.publicKey.owner.firstName} ${sig.publicKey.owner.lastName}")
-                                        td().text(sig.signed.formatDateTime() ?: "")
+                                        td().text(sig.publicKey?.issuer?.name1 ?: "")
+                                        td().text("${sig.publicKey?.issuer?.zipCode ?: ""} ${sig.publicKey?.issuer?.city ?: ""}")
+                                        td().text("${sig.publicKey?.owner?.firstName} ${sig.publicKey?.owner?.lastName}")
+                                        td().text(sig.signed?.formatDateTime() ?: "")
                                         td().new {
                                         }
                                     }

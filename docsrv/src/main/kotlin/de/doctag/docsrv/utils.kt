@@ -102,3 +102,5 @@ fun ZonedDateTime.formatDateTime() = this.withZoneSameInstant(ZoneId.of("Europe/
 object Resources {
     fun load(relPath: String) = javaClass.classLoader.getResource(relPath).readText()
 }
+
+fun String.isUrl(): Boolean = this.startsWith("https://")

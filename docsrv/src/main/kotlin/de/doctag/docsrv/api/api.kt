@@ -1,10 +1,7 @@
 package de.doctag.docsrv.api
 
 import de.doctag.docsrv.*
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.DocsrvConfig
-import de.doctag.docsrv.model.Signature
-import de.doctag.docsrv.model.db
+import de.doctag.docsrv.model.*
 import de.doctag.lib.DoctagSignature
 import io.ktor.application.call
 import io.ktor.http.ContentType
@@ -63,7 +60,7 @@ fun Routing.docsrvApi(){
     acceptExcludingWildcards(ContentType.Application.Json) {
         get("/d/{documentId}") {
             val docId = call.parameters["documentId"]
-            val doc = docId?.let { db().documents.findOneById(docId) } ?: throw NotFound("Document with id ${docId}")
+            val doc = docId?.let { db().documents.findOne(Document::url eq "https://${db().currentConfig.hostname}/d/${docId}") } ?: throw NotFound("Document with id ${docId}")
             //val signature = call.request.header("X-Message-Signature") ?: throw BadRequest("No X-Message-Signature Header found. Requesting party can't be authenticated. Won't reply.")
 
             call.respond(HttpStatusCode.OK, doc)

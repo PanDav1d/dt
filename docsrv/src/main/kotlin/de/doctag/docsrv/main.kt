@@ -14,6 +14,7 @@ import de.doctag.docsrv.ui.auth.handleLogout
 import de.doctag.docsrv.ui.auth.handleRegister
 import de.doctag.docsrv.ui.document.handleDocument
 import de.doctag.docsrv.ui.document.handleDocumentList
+import de.doctag.docsrv.ui.document.handleSignRequestList
 import de.doctag.docsrv.ui.settings.handleKeySettings
 import de.doctag.docsrv.ui.settings.handleSystemSettings
 import de.doctag.docsrv.ui.settings.handleUsersSettings
@@ -93,6 +94,9 @@ fun Application.kwebFeature(){
                     }
                     path("/documents"){
                         handleDocumentList()
+                    }
+                    path("/doc_sign_requests"){
+                        handleSignRequestList()
                     }
                     path("/d/{id}"){params ->
                         val docId = params.getValue("id")

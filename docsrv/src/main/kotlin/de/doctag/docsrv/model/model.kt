@@ -1,8 +1,10 @@
 package de.doctag.docsrv.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import de.doctag.lib.PublicKeyResponse
 import de.doctag.lib.DoctagSignature
+import de.doctag.lib.model.Address
 import java.time.ZonedDateTime
 import kotlin.random.Random
 
@@ -73,6 +75,20 @@ data class DocumentId(
     }
 }
 
+data class DocumentSignRequest(
+        var _id: String? = null,
+        var doctagUrl: String? = null,
+        val role: String? = null,
+        val requestingParty: Address? = null,
+        val createdBy: DocumentSignRequestUser? = null,
+        val timestamp: ZonedDateTime? = ZonedDateTime.now()
+)
+
+data class DocumentSignRequestUser(
+        val userId: String? = null,
+        val userName: String? = null
+)
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Document(
     var _id: String? = null,
@@ -85,6 +101,7 @@ data class Document(
     var mirrors: List<String>? = null,
     var workflow: Workflow? = null
 ) {
+    @JsonIgnore
     fun getWorkflowStatus() : List<Pair<String, Signature?>>{
         return workflow?.actions?.mapNotNull { action ->
             val signature = this.signatures?.find {sig->
@@ -145,9 +162,9 @@ enum class WorkflowInputKind {
 }
 
 data class Signature(
-        var doc : DoctagSignature,
-        var publicKey: PublicKeyResponse,
-        var signed: ZonedDateTime,
+        var doc : DoctagSignature? = null,
+        var publicKey: PublicKeyResponse? = null,
+        var signed: ZonedDateTime? = null,
         var originalMessage: String? = null,
         var role: String? = null,
         var inputs: List<WorkflowInputResult>? = null
