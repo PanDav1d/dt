@@ -12,13 +12,15 @@ import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import org.litote.kmongo.eq
+import org.litote.kmongo.findOne
 import org.litote.kmongo.save
 import java.time.ZonedDateTime
 
 
-fun ElementCreator<*>.handleDocument(docId: String?) {
+fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
 
-    val document = KVar(db().documents.findOneById(docId!!)!!)
+    val document = KVar(db().documents.findOne(Document::url eq "https://${hostname ?: db().currentConfig.hostname}/d/${docId}")!!)
     val selectedSignature = KVar<Int?>(null)
 
     pageBorderAndTitle("Dokument") { pageArea ->
@@ -107,7 +109,7 @@ fun ElementCreator<*>.handleDocument(docId: String?) {
                         }
                         if(this.browser.authenticatedUser != null) {
                             div(fomantic.ui.item).new {
-                                val modal = signDocumentModal(rDocument){signedDocument->
+                                val modal = signDocumentModal(rDocument){signedDocument,_->
                                     db().documents.save(signedDocument)
                                     document.value = signedDocument
                                 }

@@ -15,6 +15,7 @@ import de.doctag.docsrv.ui.auth.handleRegister
 import de.doctag.docsrv.ui.document.handleDocument
 import de.doctag.docsrv.ui.document.handleDocumentList
 import de.doctag.docsrv.ui.document.handleSignRequestList
+import de.doctag.docsrv.ui.document.handleViewSignRequest
 import de.doctag.docsrv.ui.settings.handleKeySettings
 import de.doctag.docsrv.ui.settings.handleSystemSettings
 import de.doctag.docsrv.ui.settings.handleUsersSettings
@@ -100,7 +101,16 @@ fun Application.kwebFeature(){
                     }
                     path("/d/{id}"){params ->
                         val docId = params.getValue("id")
-                        handleDocument(docId.value)
+                        handleDocument(docId.value,null)
+                    }
+                    path("/d/{id}/{hostname}"){params ->
+                        val docId = params.getValue("id")
+                        val hostname = params.getValue("hostname")
+                        handleDocument(docId.value, hostname.value)
+                    }
+                    path("/doc_sign_requests/{id}"){params ->
+                        val docId = params.getValue("id")
+                        handleViewSignRequest(docId.value)
                     }
                     path("/settings/users"){
                         handleUsersSettings()

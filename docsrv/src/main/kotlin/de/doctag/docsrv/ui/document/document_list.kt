@@ -71,7 +71,15 @@ fun ElementCreator<*>.handleDocumentList() {
                                 tr().apply {
                                     this.on.click {
                                         logger.info("Clicked")
-                                        browser.url.value="/d/${document._id}"
+                                        val docIdPart = document.url!!.split("/d/")[1]
+                                        val hostname = document.url!!.split("/d/")[0].removePrefix("https://")
+
+                                        if(hostname != db().currentConfig.hostname){
+                                            browser.url.value="/d/${docIdPart}/${hostname}"
+                                        }
+                                        else {
+                                            browser.url.value="/d/${docIdPart}"
+                                        }
                                     }
                                 }.new {
                                     td().text(document.originalFileName ?: "")

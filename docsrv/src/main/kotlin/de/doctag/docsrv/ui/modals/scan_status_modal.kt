@@ -31,7 +31,8 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
             }
             code.isUrl() -> {
 
-                val doc = DocServerClient.loadDocument(code)
+                val embeddedDoc = DocServerClient.loadDocument(code)
+                val doc = embeddedDoc?.document
 
                 if(doc == null) {
                     div(fomantic.ui.message.success).new {

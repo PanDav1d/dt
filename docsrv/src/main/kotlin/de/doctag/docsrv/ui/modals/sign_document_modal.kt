@@ -17,7 +17,7 @@ import org.litote.kmongo.save
 import java.time.Duration
 import java.time.ZonedDateTime
 
-fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document)->Unit) = modal("Dokument signieren", autoFocus = false) { modal ->
+fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document, addedSig: Signature)->Unit) = modal("Dokument signieren", autoFocus = false) { modal ->
 
     val role = KVar<WorkflowAction?>(null)
     val key = KVar<PrivatePublicKeyPair?>(null)
@@ -125,7 +125,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document)
             doc.signatures = (doc.signatures ?:listOf()) + addSignature
 
             db().documents.save(doc)
-            onSignFunc(doc)
+            onSignFunc(doc, addSignature)
             modal.close()
         }
     }

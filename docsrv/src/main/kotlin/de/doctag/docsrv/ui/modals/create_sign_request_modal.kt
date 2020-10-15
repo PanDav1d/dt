@@ -26,7 +26,9 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
             code.isUrl() -> {
 
                 val url = code.replace("https://127.0.0.1", "http://127.0.0.1")
-                val doc = DocServerClient.loadDocument(url)
+                val embeddedDoc = DocServerClient.loadDocument(url)
+                val files = embeddedDoc?.files
+                val doc = embeddedDoc?.document
 
                 if(doc == null) {
                     div(fomantic.ui.message.success).new {
@@ -42,6 +44,7 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
                     }
                 } else {
                     logger.info("Found remote document. Allow signing it")
+
                     div(fomantic.ui.message.success).new {
                         div(fomantic.ui.header).text("Dokument erkannt")
                         div().text("Dateiname: ${doc.originalFileName}")

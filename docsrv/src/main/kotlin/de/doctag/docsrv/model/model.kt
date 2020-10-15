@@ -81,7 +81,8 @@ data class DocumentSignRequest(
         val role: String? = null,
         val requestingParty: Address? = null,
         val createdBy: DocumentSignRequestUser? = null,
-        val timestamp: ZonedDateTime? = ZonedDateTime.now()
+        val timestamp: ZonedDateTime? = ZonedDateTime.now(),
+        var signed: Boolean = false
 )
 
 data class DocumentSignRequestUser(

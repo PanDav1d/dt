@@ -14,10 +14,7 @@ import io.ktor.response.respondBytes
 import io.ktor.routing.*
 import kweb.logger
 import org.bson.internal.Base64
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOne
-import org.litote.kmongo.findOneById
-import org.litote.kmongo.save
+import org.litote.kmongo.*
 import java.time.ZonedDateTime
 
 
@@ -46,6 +43,15 @@ fun Routing.docsrvApi(){
         } ?: call.respond(HttpStatusCode.NotFound, "No document found with id $docId")
     }
 
+    get("/f/{fileId}/view"){
+        val fileId = call.parameters["fileId"]
+        val fileData = fileId?.let{db(call.request.host()).files.findOneById(fileId)}
+
+        fileData?.let { fd ->
+            call.respondBytes(Base64.decode(fd.base64Content),ContentType.parse(fd.contentType!!))
+        } ?: call.respond(HttpStatusCode.NotFound, "No file found with id $fileId")
+    }
+
     get("/f/{fileId}/download"){
         val fileId = call.parameters["fileId"]
         val fileData = fileId?.let{db(call.request.host()).files.findOneById(fileId)}
@@ -63,7 +69,12 @@ fun Routing.docsrvApi(){
             val doc = docId?.let { db().documents.findOne(Document::url eq "https://${db().currentConfig.hostname}/d/${docId}") } ?: throw NotFound("Document with id ${docId}")
             //val signature = call.request.header("X-Message-Signature") ?: throw BadRequest("No X-Message-Signature Header found. Requesting party can't be authenticated. Won't reply.")
 
-            call.respond(HttpStatusCode.OK, doc)
+            val fileIdList = listOf(doc.attachmentId) + (doc.signatures?.flatMap { it.inputs ?:listOf() }?.map { it.fileId } ?: listOf())
+            val files = db().files.find(FileData::_id `in` fileIdList).toList()
+
+            val embeddedDocument = EmbeddedDocument(files, doc)
+
+            call.respond(HttpStatusCode.OK, embeddedDocument)
         }
 
         post("/d/{documentId}"){

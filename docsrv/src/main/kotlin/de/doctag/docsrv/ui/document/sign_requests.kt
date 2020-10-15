@@ -69,6 +69,7 @@ fun ElementCreator<*>.handleSignRequestList() {
 
                                         i(fomantic.ui.key.icon).on.click {
                                             logger.info("Opening document ${req._id}")
+                                            browser.url.value = "/doc_sign_requests/${req._id}"
                                         }
                                     }
                                 }
