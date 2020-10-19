@@ -13,6 +13,7 @@ import io.ktor.response.respond
 import io.ktor.response.respondBytes
 import io.ktor.routing.*
 import kweb.logger
+import kweb.util.gson
 import org.bson.internal.Base64
 import org.litote.kmongo.*
 import java.time.ZonedDateTime
@@ -77,34 +78,31 @@ fun Routing.docsrvApi(){
             call.respond(HttpStatusCode.OK, embeddedDocument)
         }
 
-        post("/d/{documentId}"){
-            logger.info("POST to /d/{documentId}")
+        post("/d/{documentId}/{hostname}"){
+            logger.info("POST to /d/{documentId}/{hostName}")
 
             val docId = call.parameters["documentId"]
+            val hostName = call.parameters["hostname"]
 
             val rawSignature = String(call.receiveStream().readAllBytes(), Charsets.UTF_8)
-            val signedMessage = DoctagSignature.load(rawSignature)
+            val signedMessage = EmbeddedSignature.load(rawSignature)
 
-            if(!signedMessage.valid){
-                logger.info("Signature is not valid")
-                throw BadRequest("Signature check failed. ${signedMessage.message}")
-            }
+
+
             logger.info("Signature is valid")
 
-            val doc = docId?.let { db().documents.findOneById(docId) } ?: throw NotFound("Document with id ${docId}")
+            val doc = docId?.let { db().documents.findOne(Document::url eq "https://$hostName/d/$docId") } ?: throw NotFound("Document with id ${docId}")
 
-            if(signedMessage.signedMessage?.documentUrl != doc.url){
-                throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature. ${signedMessage.signedMessage?.documentUrl} != ${doc.url}")
+            if(signedMessage.signature.doc?.documentUrl != doc.url){
+                throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature. ${signedMessage.signature.doc?.documentUrl} != ${doc.url}")
             }
 
-            val sig = Signature(
-                signedMessage.signedMessage!!,
-                signedMessage.publicKey!!,
-                ZonedDateTime.now(),
-                rawSignature
-            )
 
-            doc.signatures = (doc.signatures?:listOf()).plus(sig)
+            signedMessage.files.forEach {
+                db().files.save(it)
+            }
+
+            doc.signatures = (doc.signatures?:listOf()).plus(signedMessage.signature)
             db().documents.save(doc)
 
             call.respond(HttpStatusCode.OK, doc)

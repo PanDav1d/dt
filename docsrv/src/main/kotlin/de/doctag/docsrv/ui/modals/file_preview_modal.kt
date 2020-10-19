@@ -17,12 +17,20 @@ private fun String?.isImage():Boolean {
     return this!= null && ( this.contains("png") || this.contains("gif") || this.contains("jpg"))
 }
 
+private fun String?.isPdf():Boolean {
+    return this!=null && this.contains("pdf")
+}
+
 fun ElementCreator<*>.filePreviewModal(file: FileData) = modal("Vorschau"){ modal->
     div(fomantic.ui.placeholder.segment).new{
 
         when{
             file.contentType.isImage() -> {
                 img("/f/${file._id}/download", fomantic.ui.medium.centered.image)
+                div(fomantic.ui.divider.hidden)
+            }
+            file.contentType.isPdf() -> {
+                element("iframe", mapOf("style" to "height: 70vh; width:90%; border: none", "src" to "/f/${file._id}/view"))
                 div(fomantic.ui.divider.hidden)
             }
             else -> {

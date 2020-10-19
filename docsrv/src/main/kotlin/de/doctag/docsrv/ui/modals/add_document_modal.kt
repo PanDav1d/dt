@@ -5,6 +5,7 @@ import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.forms.documentAddForm
 import de.doctag.docsrv.ui.modal
+import de.doctag.lib.toSha1HexString
 import kweb.ElementCreator
 import org.litote.kmongo.save
 import java.time.ZonedDateTime
@@ -17,6 +18,7 @@ fun ElementCreator<*>.addDocumentModal(onDocumentAdd: (d: Document)->Unit) = mod
 
         docObj._id = fileObj._id
         docObj.attachmentId = fileObj._id
+        docObj.attachmentHash = fileObj.base64Content?.toSha1HexString()
         docObj.created = ZonedDateTime.now()
         docObj.originalFileName = fileObj.name
 

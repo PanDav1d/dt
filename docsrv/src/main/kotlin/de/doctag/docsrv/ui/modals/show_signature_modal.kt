@@ -24,7 +24,7 @@ fun ElementCreator<*>.showSignatureModal(key: PrivatePublicKeyPair) = modal("Sig
             div().text("Von Nutzer: ${sig.signingUser}")
             div().text("Von Org: ${sig.signingParty}/${sig.keyFingerprint}")
             div().text("Vorgang: ${sig.randomBuffer}")
-            div().text("Gültigkeit: ${DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").format(sig.validFromDateTime)} + 5min")
+            div().text("Gültigkeit: ${sig.validFromDateTime.formatDateTime()} + 5min")
         }
         div(fomantic.ui.extra.content).new {
             div().text("Signatur")

@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.modals
 
+import de.doctag.docsrv.fixHttps
 import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.isUrl
 import de.doctag.docsrv.model.*
@@ -25,7 +26,7 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
             }
             code.isUrl() -> {
 
-                val url = code.replace("https://127.0.0.1", "http://127.0.0.1")
+                val url = code.fixHttps()
                 val embeddedDoc = DocServerClient.loadDocument(url)
                 val files = embeddedDoc?.files
                 val doc = embeddedDoc?.document

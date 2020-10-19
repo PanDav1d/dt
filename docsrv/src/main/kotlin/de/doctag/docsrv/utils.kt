@@ -97,7 +97,10 @@ fun generateRandomString(length: Long) = java.util.Random().ints(length, 0, sour
 
 fun ZonedDateTime.formatDateTime() = this.withZoneSameInstant(ZoneId.of("Europe/Berlin")).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
 
+fun ZonedDateTime.formatDate() = this.withZoneSameInstant(ZoneId.of("Europe/Berlin")).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
+
+fun String.fixHttps() = replace("https://127.0.0.1","http://127.0.0.1")
 
 object Resources {
     fun load(relPath: String) = javaClass.classLoader.getResource(relPath).readText()

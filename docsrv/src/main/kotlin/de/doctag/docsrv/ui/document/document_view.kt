@@ -8,6 +8,9 @@ import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.filePreviewModal
 import de.doctag.docsrv.ui.modals.scanStatusModal
 import de.doctag.docsrv.ui.modals.signDocumentModal
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
@@ -22,6 +25,8 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
 
     val document = KVar(db().documents.findOne(Document::url eq "https://${hostname ?: db().currentConfig.hostname}/d/${docId}")!!)
     val selectedSignature = KVar<Int?>(null)
+    val isSignatureValid = KVar<Boolean?>(null)
+    GlobalScope.launch { delay(500); isSignatureValid.value = document.value.validateSignatures(db()) }
 
     pageBorderAndTitle("Dokument") { pageArea ->
 
@@ -52,7 +57,14 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
                             div(fomantic.ui.item).new {
                                 i(fomantic.ui.tags.icon)
                                 div(fomantic.ui.content).new {
-                                    span(fomantic.header).text(rDocument.url ?: "")
+                                    span(fomantic.header).new {
+                                        span().text("${rDocument.url ?: ""} ")
+                                        a(href="#", attributes = mapOf("style" to "color:black;")).new {
+                                            i(fomantic.icon.eye).on.click {
+                                                filePreviewModal(db().files.findOneById(rDocument.attachmentId!!)!!).open()
+                                            }
+                                        }
+                                    }
                                     div(fomantic.description).text("Dokumentenaddresse")
                                 }
                             }
@@ -66,6 +78,33 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
                                     }
                                     div(fomantic.description).new{
                                         a().text("hinzufügen")
+                                    }
+                                }
+                            }
+
+                            render(isSignatureValid, container = {div(fomantic.ui.item)}){validationResult->
+
+                                when(validationResult){
+                                    true  -> i(fomantic.icon.smile.outline)
+                                    false -> i(fomantic.icon.exclamationCircle)
+                                    null -> div(fomantic.ui.active.mini.inline.loader).apply { setAttributeRaw("style", "display: inline;") }
+
+                                }
+
+                                div(fomantic.ui.content).also {
+                                    it.setAttributeRaw("style", "margin-left:24px;")
+                                }.new {
+
+                                    span(fomantic.header).new {
+                                        when(validationResult){
+                                            true -> span().text("Signaturen gültig ")
+                                            false -> span().text("Signaturen ungültig ")
+                                            null -> span().text("Validierung läuft ")
+                                        }
+
+                                    }
+                                    div(fomantic.description).new{
+                                        div(fomantic.description).text("Status")
                                     }
                                 }
                             }
@@ -125,7 +164,10 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
                     }
                 }
 
-                h2(fomantic.ui.header).text("Signaturen")
+                h2(fomantic.ui.header).new {
+                    span().text("Signaturen")
+                }
+
 
                 if(rDocument.signatures?.count() ?: 0 > 0 || rDocument.workflow != null) {
                     render(selectedSignature){selectedSignatureIdx ->

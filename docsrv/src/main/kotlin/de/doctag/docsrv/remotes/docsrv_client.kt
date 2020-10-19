@@ -2,11 +2,15 @@ package de.doctag.docsrv.remotes
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.doctag.docsrv.api.EmbeddedDocument
+import de.doctag.docsrv.fixHttps
 import kweb.logger
 import de.doctag.docsrv.model.Document
+import de.doctag.docsrv.model.DocumentId
+import de.doctag.docsrv.model.EmbeddedSignature
 import de.doctag.docsrv.model.Signature
 import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
+import kweb.util.gson
 import java.lang.Exception
 import java.net.URI
 import java.net.http.HttpClient
@@ -40,7 +44,7 @@ object DocServerClient {
     }
 
     fun signDocument(doc: Document, ppk: PrivatePublicKeyPair) : Boolean {
-        val sigMessage = DoctagSignature.makeWithUrl(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, Duration.ofMinutes(1), ppk.signingParty!!, ppk.owner.firstName + " " + ppk.owner.lastName, doc.url)
+        val sigMessage = DoctagSignature.makeWithUrl(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, Duration.ofMinutes(1), ppk.signingParty!!, ppk.owner.firstName + " " + ppk.owner.lastName, doc.url, null, null)
         val rawSigMessage = sigMessage.toDataString()
 
         val request = HttpRequest.newBuilder()
@@ -62,20 +66,22 @@ object DocServerClient {
         return resp.statusCode() == 200
     }
 
-    fun pushSignature(doc: Document, sig:Signature) : Boolean {
-        val sigMessage = sig.doc!!
-        val rawSigMessage = sigMessage.toDataString()
+    fun pushSignature(doctagUrl: String, sig:EmbeddedSignature) : Boolean {
+
+        val rawSigMessage = sig.serialize()
+
+        val pushUrl = DocumentId.parse(doctagUrl)
 
         val request = HttpRequest.newBuilder()
-                .uri(URI.create(doc.url!!.replace("https://127.0.0.1", "http://127.0.0.1")))
+                .uri(URI.create("https://${pushUrl.hostname}/d/${pushUrl.id}/${pushUrl.hostname}".fixHttps()))
                 .timeout(Duration.ofMinutes(1))
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json; charset=utf-8")
                 .POST(HttpRequest.BodyPublishers.ofString(rawSigMessage, Charsets.UTF_8))
                 .build()
 
-        logger.info("Destination: ${doc.url}")
-        logger.info("data ${rawSigMessage}")
+        logger.info("Destination: $doctagUrl")
+        logger.info("data $rawSigMessage")
 
         val resp = client.send(request, HttpResponse.BodyHandlers.ofString())
 

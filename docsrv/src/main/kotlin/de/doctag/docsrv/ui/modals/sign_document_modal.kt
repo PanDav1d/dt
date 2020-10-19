@@ -95,7 +95,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                                     logger.info("Received file ${fd.fileName}")
                                     val (contentType, data) = fd.base64Content.removePrefix("data:").split(";base64,")
 
-                                    val fileObj = FileData(name = fd.fileName, base64Content = data, contentType = contentType)
+                                    val fileObj = FileData(_id = data.toSha1HexString(), name = fd.fileName, base64Content = data, contentType = contentType)
                                     fileObj.apply {
                                         db().files.save(fileObj)
                                     }
@@ -117,10 +117,9 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
             logger.info("Make signature for document ${doc.url}")
 
             val currentKey = key.value!!
-            val sig = DoctagSignature.makeWithPPK(currentKey, Duration.ofSeconds(60), doc.url)
-            val realResults = workflowResults?.map { it.value }
 
-            val addSignature = Signature(sig, PublicKeyResponse(currentKey.publicKey, currentKey.verboseName, currentKey.owner, currentKey.issuer, currentKey.signingParty), ZonedDateTime.now(), null, role.value?.role, realResults)
+            val realResults = workflowResults?.map { it.value }
+            val addSignature = doc.makeSignature(currentKey, role.value?.role, realResults)
 
             doc.signatures = (doc.signatures ?:listOf()) + addSignature
 

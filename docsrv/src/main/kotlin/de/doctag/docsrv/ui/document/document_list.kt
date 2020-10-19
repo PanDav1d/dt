@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.document
 
+import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
@@ -86,7 +87,7 @@ fun ElementCreator<*>.handleDocumentList() {
                                     td().new {
                                         document.getWorkflowStatus().forEach { (role, signature) ->
                                             if(signature != null) {
-                                                val signedAt = signature.signed?.format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"))
+                                                val signedAt = signature.signed?.formatDateTime()
                                                 i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.publicKey?.issuer?.name1}")
                                             }
                                             else {
@@ -94,7 +95,7 @@ fun ElementCreator<*>.handleDocumentList() {
                                             }
                                         }
                                     }
-                                    td().text(document.created?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) ?: "")
+                                    td().text(document.created?.formatDateTime() ?: "")
                                     td().new {
 
                                         i(fomantic.ui.edit.icon).on.click {

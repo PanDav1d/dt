@@ -148,6 +148,18 @@ val FomanticUIClasses.collapsing : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.exclamationCircle : FomanticUIClasses
+    get(){
+        classes("exclamation circle")
+        return this
+    }
+
+val FomanticUIClasses.spinner : FomanticUIClasses
+    get(){
+        classes("spinner fa-spin")
+        return this
+    }
+
 val FomanticUIClasses.pdf : FomanticUIClasses
     get() {
         classes("pdf")

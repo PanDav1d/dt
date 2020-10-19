@@ -4,6 +4,7 @@ import com.github.salomonbrys.kotson.fromJson
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.*
+import de.doctag.lib.toSha1HexString
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -100,6 +101,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                             fileObj.name = file.fileName
                             fileObj.contentType = contentType
                             fileObj.base64Content = data
+                            fileObj._id = data.toSha1HexString()
 
                             document.value.let {
                                 it.url = docId?.fullUrl
@@ -142,6 +144,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                     buttonWithLoader("Speichern"){
                         val doc = document.value
                         doc.isMirrored = DocumentId.parse(doc.url!!).hostname != db().currentConfig.hostname
+                        fileObj._id = fileObj.base64Content!!.toSha1HexString()
                         onSaveClick(fileObj, doc)
                     }
                 }

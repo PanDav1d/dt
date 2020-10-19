@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.settings
 
+import de.doctag.docsrv.formatDate
 import de.doctag.docsrv.generatePasswordHash
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
@@ -66,7 +67,7 @@ fun ElementCreator<*>.handleUsersSettings(){
                                     td().text(user.firstName ?: "")
                                     td().text(user.lastName ?: "")
                                     td().text(user.emailAdress ?: "")
-                                    td().text(user.created?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) ?: "")
+                                    td().text(user.created?.formatDate() ?: "")
                                     td().new {
 
                                         i(fomantic.ui.edit.icon).on.click {

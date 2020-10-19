@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.settings
 
+import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
@@ -53,7 +54,7 @@ fun ElementCreator<*>.handleKeySettings(){
 
                                 tr().new {
                                     td().text(key.verboseName ?: "")
-                                    td().text(key.created?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) ?: "")
+                                    td().text(key.created?.formatDateTime() ?: "")
                                     td().text("${key.owner?.firstName} ${key.owner?.lastName}")
                                     td().new {
 

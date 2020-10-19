@@ -3,6 +3,8 @@ package de.doctag.docsrv.remotes
 import de.doctag.docsrv.extractDocumentIdOrNull
 import de.doctag.docsrv.model.*
 import de.doctag.lib.logger
+import de.doctag.lib.sha1
+import de.doctag.lib.toSha1HexString
 import org.litote.kmongo.eq
 import org.litote.kmongo.save
 import java.io.InputStream
@@ -140,7 +142,7 @@ class AttachmentImporter(val dbContext: DbContext){
             return
         }
 
-        val fd = FileData(_id = null, name = fileName, base64Content = documentData, contentType = "application/pdf")
+        val fd = FileData(_id = documentData.toSha1HexString(), name = fileName, base64Content = documentData, contentType = "application/pdf")
         fd.apply { dbContext.files.save(fd) }
 
         val doc = Document()
@@ -166,6 +168,7 @@ class AttachmentImporter(val dbContext: DbContext){
         }
 
         doc.attachmentId = fd._id
+        doc.attachmentHash = fd.base64Content?.toSha1HexString()
         doc.originalFileName = fileName
         doc.created = ZonedDateTime.now()
 

@@ -103,3 +103,7 @@ fun sha1(array: ByteArray): ByteArray {
     val md = MessageDigest.getInstance("SHA1")
     return md.digest(array)
 }
+
+fun String.toSha1HexString():String{
+    return toHex(sha1(toByteArray()))
+}

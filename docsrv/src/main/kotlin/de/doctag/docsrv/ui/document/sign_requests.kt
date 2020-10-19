@@ -1,6 +1,7 @@
 package de.doctag.docsrv.ui.document
 
 
+import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.DocumentSignRequest
 import de.doctag.docsrv.model.authRequired
@@ -64,7 +65,7 @@ fun ElementCreator<*>.handleSignRequestList() {
                                     td().text(req.doctagUrl ?: "")
                                     td().text (req.role ?:"")
                                     td().text (req.createdBy?.userName ?:"")
-                                    td().text(req.timestamp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")) ?: "")
+                                    td().text(req.timestamp?.formatDateTime() ?: "")
                                     td().new {
 
                                         i(fomantic.ui.key.icon).on.click {
