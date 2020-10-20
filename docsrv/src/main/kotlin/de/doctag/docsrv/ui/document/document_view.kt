@@ -26,7 +26,7 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
     val document = KVar(db().documents.findOne(Document::url eq "https://${hostname ?: db().currentConfig.hostname}/d/${docId}")!!)
     val selectedSignature = KVar<Int?>(null)
     val isSignatureValid = KVar<Boolean?>(null)
-    GlobalScope.launch { delay(500); isSignatureValid.value = document.value.validateSignatures(db()) }
+    GlobalScope.launch { delay(500); isSignatureValid.value = document.value.toEmbeddedDocument(db()).validateSignatures() }
 
     pageBorderAndTitle("Dokument") { pageArea ->
 

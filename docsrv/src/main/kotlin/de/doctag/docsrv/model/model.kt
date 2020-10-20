@@ -2,14 +2,14 @@ package de.doctag.docsrv.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import de.doctag.docsrv.api.EmbeddedDocument
 import de.doctag.lib.*
 import de.doctag.lib.model.Address
 import de.doctag.lib.model.PrivatePublicKeyPair
+import org.litote.kmongo.`in`
 import org.litote.kmongo.findOneById
-import java.security.PublicKey
 import java.time.Duration
 import java.time.ZonedDateTime
-import kotlin.random.Random
 
 data class Session(
     val sessionId:String,
@@ -118,28 +118,15 @@ data class Document(
     }
 
     fun makeSignature(ppk:PrivatePublicKeyPair, role:String?, inputs: List<WorkflowInputResult>?) : Signature {
-        return Signature.make(ppk, this.url, this.attachmentHash, role, inputs)
+        val prevSignatureHash = this.signatures?.calculateSignatureHash()
+        return Signature.make(ppk, this.url, this.attachmentHash, role, inputs, prevSignatureHash)
     }
 
-    fun validateSignatures(db: DbContext):Boolean {
-        val actualFile = db.files.findOneById(this.attachmentId!!)
-        if(actualFile?.base64Content?.toSha1HexString() != this.attachmentId){
-            kweb.logger.error("File Hash of DocTag-Document does not match. ${this.attachmentId} != ${actualFile?.base64Content?.toSha1HexString()}")
-            return false
-        }
-        if(this.signatures?.all { sig->sig.isValid() } == false){
-            kweb.logger.error("Not all signatures are valid")
-            return false
-        }
-        val workflowAttachedFileIds = this.signatures?.flatMap { sig->sig.inputs?: listOf() }?.mapNotNull { it.fileId } ?: listOf()
-        val allAttachmentsAreValid = workflowAttachedFileIds.map { db.files.findOneById(it) }.all { it != null && it._id == it.base64Content?.toSha1HexString() }
+    fun toEmbeddedDocument(db: DbContext): EmbeddedDocument {
+        val fileIdList = listOf(this.attachmentId) + (this.signatures?.flatMap { it.inputs ?:listOf() }?.map { it.fileId } ?: listOf())
+        val files = db.files.find(FileData::_id `in` fileIdList).toList()
 
-        if(!allAttachmentsAreValid){
-            kweb.logger.error("Not all file attachment hashes matched the signed version")
-            return false
-        }
-
-        return true
+        return EmbeddedDocument(files, this)
     }
 }
 
@@ -182,6 +169,10 @@ data class WorkflowInputResult(
         var value: String? = null,
         var fileId: String? = null
 )
+
+fun List<Signature>.calculateSignatureHash():String{
+    return this.map { it.doc?.signature }.joinToString(",").toSha1HexString()
+}
 
 fun List<WorkflowInputResult>.calculateSha1Hash(role:String?)  : String {
     val dataToHash = (role?:"") + "\n" + this.map { "${it.name};${it.value};${it.fileId}" }.joinToString("\n")
@@ -240,10 +231,17 @@ data class Signature(
     }
 
     companion object {
-        fun make(currentKey: PrivatePublicKeyPair, documentUrl: String?, documentHash:String?, role:String?, result: List<WorkflowInputResult>?) : Signature{
+        fun make(currentKey: PrivatePublicKeyPair, documentUrl: String?, documentHash:String?, role:String?, result: List<WorkflowInputResult>?, previousSignatureHash: String?) : Signature{
 
             val workflowHash = result?.calculateSha1Hash(role )
-            val sig = DoctagSignature.makeWithPPK(currentKey, Duration.ofSeconds(60), documentUrl, documentHash, workflowHash)
+            val sig = DoctagSignature.makeWithPPK(
+                    currentKey,
+                    Duration.ofSeconds(60),
+                    documentUrl,
+                    documentHash,
+                    workflowHash,
+                    previousSignatureHash
+            )
 
             return Signature(
                     sig,

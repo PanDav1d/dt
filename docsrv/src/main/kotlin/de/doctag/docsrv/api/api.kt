@@ -70,12 +70,7 @@ fun Routing.docsrvApi(){
             val doc = docId?.let { db().documents.findOne(Document::url eq "https://${db().currentConfig.hostname}/d/${docId}") } ?: throw NotFound("Document with id ${docId}")
             //val signature = call.request.header("X-Message-Signature") ?: throw BadRequest("No X-Message-Signature Header found. Requesting party can't be authenticated. Won't reply.")
 
-            val fileIdList = listOf(doc.attachmentId) + (doc.signatures?.flatMap { it.inputs ?:listOf() }?.map { it.fileId } ?: listOf())
-            val files = db().files.find(FileData::_id `in` fileIdList).toList()
-
-            val embeddedDocument = EmbeddedDocument(files, doc)
-
-            call.respond(HttpStatusCode.OK, embeddedDocument)
+            call.respond(HttpStatusCode.OK, doc.toEmbeddedDocument(db()))
         }
 
         post("/d/{documentId}/{hostname}"){

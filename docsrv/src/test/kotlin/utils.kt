@@ -8,14 +8,15 @@ import org.bson.internal.Base64
 import java.time.ZonedDateTime
 
 fun makeDocument(content: String) : Pair<Document, List<FileData>> {
-    val attachment = FileData("1", "test.txt", Base64.encode(content.toByteArray()))
+    val attachment = FileData("", "test.txt", Base64.encode(content.toByteArray()))
+    attachment._id = attachment.base64Content!!.toSha1HexString()
 
     val doc = Document(
             "1",
             "https://127.0.0.1:16097/d/1",
             false,
             "test.txt",
-            "1",
+            attachment._id,
             attachment.base64Content?.toSha1HexString(),
             listOf(),
             ZonedDateTime.now(),
