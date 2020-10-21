@@ -1,10 +1,10 @@
 package de.doctag.docsrv.api
 
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.Document
-import de.doctag.docsrv.model.FileData
+import de.doctag.docsrv.model.*
 import de.doctag.lib.toSha1HexString
-import org.litote.kmongo.findOneById
+import java.lang.Math.abs
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 data class HealthCheckResponse(
         val isHealthy: Boolean
@@ -34,6 +34,19 @@ data class EmbeddedDocument(
         if(!allAttachmentsAreValid){
             kweb.logger.error("Not all file attachment hashes matched the signed version")
             return false
+        }
+
+        val seenSignatures : MutableList<Signature> = mutableListOf()
+        document.signatures?.forEach { sig->
+
+            val expectedSigHash = seenSignatures.calculateSignatureHash()
+
+            if(expectedSigHash != sig.doc?.previousSignaturesHash){
+                kweb.logger.error("Expected signature hash does not match. Expected: ${expectedSigHash} != ${sig.doc?.previousSignaturesHash}")
+                return false
+            }
+
+            seenSignatures.add(sig)
         }
 
         return true

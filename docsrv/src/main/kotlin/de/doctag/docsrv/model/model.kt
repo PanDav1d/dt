@@ -10,6 +10,7 @@ import org.litote.kmongo.`in`
 import org.litote.kmongo.findOneById
 import java.time.Duration
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 data class Session(
     val sessionId:String,
@@ -171,6 +172,9 @@ data class WorkflowInputResult(
 )
 
 fun List<Signature>.calculateSignatureHash():String{
+    if(this.isEmpty()){
+        return "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    }
     return this.map { it.doc?.signature }.joinToString(",").toSha1HexString()
 }
 
@@ -222,6 +226,11 @@ data class Signature(
 
         if(currentSig.workflowHash != inputs?.calculateSha1Hash(this.role)){
             logger.info("Workflow hash does not match! Signature is not valid")
+            return false
+        }
+
+        if(!this.doc!!.validFromDateTime.isBefore(this.signed!!.plusMinutes(1)) || !this.doc!!.validFromDateTime.isAfter(this.signed!!.minusMinutes(1))) {
+            kweb.logger.error("Signature date does not match. Expected: ${this.signed!!.format(DateTimeFormatter.ISO_DATE_TIME)} != ${this.doc?.validFromDateTime!!.format(DateTimeFormatter.ISO_DATE_TIME)}")
             return false
         }
 

@@ -18,7 +18,7 @@ class SerializeDeserializeTest : StringSpec(){
             val ebs = EmbeddedSignature(
                     listOf(FileData("123", "test.txt", Base64.encode("Test".toByteArray()))),
                     Signature(
-                            DoctagSignature(1,1,"abc", "def", "000", "ksfdk", "http:", "", "", "XXX","999"),
+                            DoctagSignature("2020-02-13T18:51:00Z","abc", "def", "000", "ksfdk", "http:", "", "", "XXX","999"),
                             PublicKeyResponse("a","324", Person("1","f","E", "1","2"), Address("n","n2","s","c","z","c"), "1"),
                             ZonedDateTime.now(ZoneId.of("UTC")),
                             "1",
