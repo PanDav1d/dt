@@ -178,6 +178,18 @@ val FomanticUIClasses.eye : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.star : FomanticUIClasses
+    get() {
+        classes("star")
+        return this
+    }
+
+val FomanticUIClasses.starOutline : FomanticUIClasses
+    get() {
+        classes("star outline")
+        return this
+    }
+
 fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
     if(color != null) {
         classes(color)

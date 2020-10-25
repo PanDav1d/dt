@@ -1,6 +1,7 @@
 package de.doctag.docsrv.model
 
 import de.doctag.docsrv.ui.centeredBox
+import de.doctag.docsrv.ui.navigateTo
 import io.ktor.features.callId
 import io.ktor.features.origin
 import io.ktor.request.host
@@ -32,10 +33,10 @@ fun ElementCreator<*>.authRequired(block: ElementCreator<*>.()->Unit) {
     }
     else {
         if(this.browser.url.value != "/") {
-            this.browser.url.value = "/login?next=${this.browser.url.value}"
+            this.browser.navigateTo("/login?next=${this.browser.url.value}")
         }
         else {
-            this.browser.url.value = "/login"
+            this.browser.navigateTo("/login")
         }
     }
 }

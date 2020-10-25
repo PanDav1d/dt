@@ -6,7 +6,7 @@ import de.doctag.docsrv.model.*
 import org.litote.kmongo.findOneById
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.filePreviewModal
-import de.doctag.docsrv.ui.modals.scanStatusModal
+import de.doctag.docsrv.ui.modals.scanDoctagModal
 import de.doctag.docsrv.ui.modals.signDocumentModal
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -128,24 +128,6 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
                             }
                         }
 
-                        div(fomantic.ui.item).new {
-                            if(this.browser.authenticatedUser != null){
-                                val modal = scanStatusModal { sig->
-                                    if(sig != null) {
-                                        val sigObj = Signature(sig.signedMessage!!, sig.publicKey!!, ZonedDateTime.now(), sig.rawSignedMessage)
-                                        rDocument.signatures = (rDocument.signatures ?: listOf()).plus(sigObj)
-                                        db().documents.save(rDocument)
-
-                                        logger.info("Captured signature and saved to db")
-                                        pageArea.showToast("Status erfolgreich erfasst", ToastKind.Success)
-                                    }
-                                }
-
-                                button(fomantic.ui.button.tertiary.blue).text("Status erfassen").on.click {
-                                    modal.open()
-                                }
-                            }
-                        }
                         if(this.browser.authenticatedUser != null) {
                             div(fomantic.ui.item).new {
                                 val modal = signDocumentModal(rDocument){signedDocument,_->

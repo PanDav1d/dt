@@ -31,7 +31,7 @@ import io.ktor.http.cio.websocket.pingPeriod
 import io.ktor.http.cio.websocket.timeout
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
-import io.ktor.routing.routing
+import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.jetty.Jetty
 import io.ktor.websocket.WebSockets
@@ -75,6 +75,16 @@ fun Application.kwebFeature(){
     install(Kweb){
         plugins = listOf(fomanticUIPlugin)
         debug = true
+
+
+        routing {
+            get("/login"){
+                call.respondKwebRender {
+                    handleLogin()
+                }
+            }
+        }
+
         buildPage = {
             logger.info("Cookie SESSION / Main is ${this.httpRequestInfo.cookies.get("SESSION")}")
 
@@ -84,9 +94,9 @@ fun Application.kwebFeature(){
             }
             doc.body.new {
                 route {
-                    path("/login") {
-                        handleLogin()
-                    }
+                    //path("/login") {
+                    //    handleLogin()
+                    //}
                     path("/register"){
                         handleRegister(this)
                     }
@@ -126,12 +136,7 @@ fun Application.kwebFeature(){
                     }
                     path("/") {
                         authRequired {
-                            pageBorderAndTitle("This is the title") {
-                                div(fomantic.content).new() {
-                                    p().text("Hello test")
-                                    p().text("Session ${this.browser.httpRequestInfo.cookies.get("SESSION")}")
-                                }
-                            }
+                            this.browser.navigateTo("/documents")
                         }
                     }
                     path("/logout"){

@@ -4,6 +4,7 @@ import de.doctag.docsrv.model.Workflow
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.forms.system.workflowForm
 import de.doctag.docsrv.ui.modal
+import kotlinx.coroutines.delay
 import kweb.ElementCreator
 import org.litote.kmongo.save
 
@@ -20,7 +21,7 @@ fun ElementCreator<*>.modifyWorkflowModal(workflow: Workflow, onWorkflowModify: 
 
     workflowForm(workflow) { workflow ->
         db().workflows.save(workflow)
-        onWorkflowModify(workflow)
         modal.close()
+        onWorkflowModify(workflow)
     }
 }

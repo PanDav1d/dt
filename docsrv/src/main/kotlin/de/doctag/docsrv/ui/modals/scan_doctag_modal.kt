@@ -1,6 +1,7 @@
 package de.doctag.docsrv.ui.modals
 
 
+import de.doctag.docsrv.api.EmbeddedDocument
 import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.isUrl
 import de.doctag.docsrv.model.DbContext
@@ -16,10 +17,18 @@ import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
 
+enum class SelectedAction{
+    SIGN_DOCUMENT,
+    CREATE_SIGN_REQUEST
+}
 
+data class ScanDocTagResult(
+        val selectedAction: SelectedAction,
+        val document: EmbeddedDocument
+)
 
-fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResult?)->Unit) = modal("Status erfassen"){ modal->
-    val scannedCode = KVar<String>("")
+fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->Unit) = modal("Status erfassen"){ modal->
+    val scannedCode = KVar("")
 
     render(scannedCode){ code->
 
@@ -56,8 +65,12 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
                     }
                     button(fomantic.ui.button).text("Signieren").on.click {
                         logger.info("Signing document")
-                        DocServerClient.signDocument(doc, db().keys.find().first()!!)
-                        logger.info("Signed document")
+                        onScanSuccessful(ScanDocTagResult(SelectedAction.SIGN_DOCUMENT, embeddedDoc))
+                        modal.close()
+                    }
+                    button(fomantic.ui.tertiary.button).text("Signaturanfrage").on.click {
+                        onScanSuccessful(ScanDocTagResult(SelectedAction.CREATE_SIGN_REQUEST, embeddedDoc))
+                        logger.info("Created Signature Request")
                         modal.close()
                     }
                     button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
@@ -66,34 +79,19 @@ fun ElementCreator<*>.scanStatusModal(onScanSuccessful: (u: SignatureLoadingResu
                 }
             }
             else -> {
-                val sig = DoctagSignature.load(code)
-                if(sig.valid){
-                    div(fomantic.ui.message.success).new {
-                        div(fomantic.ui.header).text("Signatur gültig")
-                        p().text("${sig.publicKey?.owner?.firstName} ${sig.publicKey?.owner?.lastName}")
-                        p().text("${sig.publicKey?.issuer?.name1}")
-                        p().text("${sig.publicKey?.issuer?.name2}")
-                        p().text("${sig.publicKey?.issuer?.street}")
-                        p().text("${sig.publicKey?.issuer?.countryCode} - ${sig.publicKey?.issuer?.zipCode} - ${sig.publicKey?.issuer?.city}")
-                    }
-                }
-                else {
-                    div(fomantic.ui.message.warning).new {
-                        div(fomantic.ui.header).text("Signatur nicht gültig")
-                        p().text(sig.message!!)
-                    }
 
+                div(fomantic.ui.message.warning).new {
+                    div(fomantic.ui.header).text("Signatur nicht gültig")
+                    p().text("Zu dem gescannten QR-Code konnte kein gültiges Dokument erkannt werden. Bitte versuchen Sie es erneut.")
                 }
 
-                if(sig.valid){
-                    button(fomantic.ui.button).text("Übernehmen").on.click {
-                        onScanSuccessful(sig)
-                        modal.close()
-                    }
-                }
 
-                button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
+                button(fomantic.ui.button.blue).text("Erneut Scannen").on.click {
                     scannedCode.value = ""
+                }
+
+                button(fomantic.ui.tertiary.button).text("Abbrechen").on.click {
+                    modal.close()
                 }
             }
         }

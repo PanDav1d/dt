@@ -1,9 +1,10 @@
 package de.doctag.docsrv.ui
 
 import de.doctag.docsrv.Resources
-import de.doctag.docsrv.model.db
-import de.doctag.docsrv.model.host
-import de.doctag.docsrv.ui.modals.scanStatusModal
+import de.doctag.docsrv.model.*
+import de.doctag.docsrv.ui.modals.SelectedAction
+import de.doctag.docsrv.ui.modals.scanDoctagModal
+import de.doctag.docsrv.ui.modals.signDocumentModal
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -12,6 +13,8 @@ import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
 import kweb.util.gson
+import org.litote.kmongo.save
+import java.time.ZonedDateTime
 
 fun WebBrowser.navigateTo(path:String){
     this.evaluate("window.location = \"${path}\"")
@@ -143,8 +146,27 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
                 }
             }
 
-            val scanModal = scanStatusModal{ sig ->
-
+            val scanModal = scanDoctagModal{ sig ->
+                when(sig.selectedAction){
+                    SelectedAction.CREATE_SIGN_REQUEST->{
+                        db().signRequests.insertOne(DocumentSignRequest(
+                                doctagUrl = sig.document.document.url,
+                                createdBy = DocumentSignRequestUser(
+                                        userId = this.browser.authenticatedUser?._id,
+                                        userName = this.browser.authenticatedUser?.firstName + " " + this.browser.authenticatedUser?.lastName
+                                ),
+                                timestamp = ZonedDateTime.now()
+                        ))
+                        area.showToast("Signaturanfrage erstellt", ToastKind.Success)
+                    }
+                    SelectedAction.SIGN_DOCUMENT->{
+                        val modal = signDocumentModal(sig.document.document){signedDocument,_->
+                            db().documents.save(signedDocument)
+                            area.showToast("Dokument signiert", ToastKind.Success)
+                        }
+                        modal.open()
+                    }
+                }
             }
 
             a(fomantic.item, href="#").apply { on.click { scanModal.open()} }.new {
@@ -186,6 +208,7 @@ class ModalView(val ec: ElementCreator<*>, val id: String = (modalCounter++).toS
 
     fun close(){
         ec.browser.evaluate("""
+            console.log("Hiding Modal " + ${this.id})
             $('#${this.id}').modal(${gson.toJson(options)}).modal('hide');
         """.trimIndent())
 
@@ -217,6 +240,24 @@ fun ElementCreator<*>.modal(header: String, autoFocus: Boolean=true, content: El
 
     return mv
 }
+
+fun <P : Element,T> ElementCreator<P>.useState(initialState:T, renderInline: Boolean=false, viewFunc: ElementCreator<*>.(state:T, setState: (T)->Unit)->Unit) {
+    val stateContainer = KVar(initialState)
+
+    render(stateContainer, container = {
+        if(!renderInline){
+            div()
+        } else {
+            span()
+        }
+    })
+    {
+        viewFunc(stateContainer.value) {
+            newState -> stateContainer.value = newState
+        }
+    }
+}
+
 
 class TabPane(val title:String, val block: ElementCreator<*>.()->Unit)
 fun ElementCreator<*>.tab(vararg panes: TabPane){

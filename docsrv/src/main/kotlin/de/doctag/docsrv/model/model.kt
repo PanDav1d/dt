@@ -22,7 +22,12 @@ data class DocsrvConfig(
         var hostname: String = "",
         var outboundMail: OutboundMailConfig? = null,
         var inboundMail: InboundMailConfig? = null,
-        var design: DesignConfig? = null
+        var design: DesignConfig? = null,
+        var workflow: WorkflowConfig? = null
+)
+
+data class WorkflowConfig(
+        var defaultWorkflowId: String? = null
 )
 
 data class DesignConfig(

@@ -75,7 +75,7 @@ class AttachmentImporter(val dbContext: DbContext){
             val messages = recv?.receive()
 
             messages?.filter { it.contentType.contains("multipart") }?.forEach { msg->
-                processMessage(msg)
+                processMessage(msg, null)
                 recv?.markAsRead(msg)
             }
 
@@ -83,7 +83,7 @@ class AttachmentImporter(val dbContext: DbContext){
         }
     }
 
-    private fun processMessage(msg: Message){
+    private fun processMessage(msg: Message, fromAddress: String?){
         kweb.logger.info ("Checking if message from ${msg.from?.first()} / ${msg.sentDate?.toString()} with content Type ${msg.contentType}")
 
         val content = msg.content
@@ -93,12 +93,12 @@ class AttachmentImporter(val dbContext: DbContext){
             }
             is Multipart ->{
                 kweb.logger.info("Received content of type multipart. Handling each part")
-                processMultipart(content)
+                processMultipart(content, fromAddress ?: msg.from?.first()?.toString())
             }
         }
     }
 
-    private fun processMultipart(multiPart: Multipart){
+    private fun processMultipart(multiPart: Multipart, fromAddress: String?){
         for (i in 0 until multiPart.count) {
 
             val part = multiPart.getBodyPart(i)
@@ -112,16 +112,16 @@ class AttachmentImporter(val dbContext: DbContext){
                     kweb.logger.info("Received content of type inputStream. ${part.fileName}")
                     if(part.fileName.toLowerCase().endsWith(".pdf")) {
                         kweb.logger.info("Importing attachment ${part.fileName}")
-                        processInputStream(part.fileName, content)
+                        processInputStream(part.fileName, content, fromAddress)
                     }
                 }
                 is Message -> {
                     kweb.logger.info("Received content of type Message")
-                    processMessage(content)
+                    processMessage(content, fromAddress)
                 }
                 is Multipart -> {
                     kweb.logger.info("Received content of type Multipart")
-                    processMultipart(content)
+                    processMultipart(content, fromAddress)
                 }
             }
         }
@@ -131,7 +131,7 @@ class AttachmentImporter(val dbContext: DbContext){
     private fun DocumentId?.isOwnedByOtherMachine() = this != null && this.hostname != dbContext.currentConfig.hostname
     private fun DocumentId?.isNotPresent() = this != null && this.hostname == dbContext.currentConfig.hostname
 
-    private fun processInputStream(fileName: String, stream: InputStream){
+    private fun processInputStream(fileName: String, stream: InputStream, fromAddress: String?){
         val documentData = Base64.getEncoder().encodeToString(stream.readBytes())
 
         val doctagId = extractDocumentIdOrNull(documentData)
@@ -145,19 +145,35 @@ class AttachmentImporter(val dbContext: DbContext){
         val fd = FileData(_id = documentData.toSha1HexString(), name = fileName, base64Content = documentData, contentType = "application/pdf")
         fd.apply { dbContext.files.save(fd) }
 
-        val doc = Document()
+
 
         when{
             doctagId.isOwnedByThisMaching()-> {
                 kweb.logger.info("Importing document which is owned by this host.")
+                val doc = Document()
                 doc._id = doctagId?.id
                 doc.url = doctagId?.fullUrl
+
+                doc.attachmentId = fd._id
+                doc.attachmentHash = fd.base64Content?.toSha1HexString()
+                doc.originalFileName = fileName
+                doc.created = ZonedDateTime.now()
+
+                doc.apply { dbContext.documents.save(doc) }
             }
             doctagId.isOwnedByOtherMachine() -> {
                 kweb.logger.info("Importing document which is not owned by this host.")
-                doc.url = doctagId?.fullUrl
-                doc.isMirrored = true
-                // TODO: Register at remote machine for changes
+
+                val docSignRequest = DocumentSignRequest(
+                        doctagUrl = doctagId?.fullUrl,
+                        createdBy = DocumentSignRequestUser(
+                                userId = null,
+                                userName = fromAddress
+                        ),
+                        timestamp = ZonedDateTime.now(),
+                        role = null
+                )
+                dbContext.signRequests.save(docSignRequest)
             }
             doctagId.isNotPresent() -> {
                 kweb.logger.info("Importing document where no doctag is present")
@@ -166,20 +182,5 @@ class AttachmentImporter(val dbContext: DbContext){
                 kweb.logger.info("Unknown case")
             }
         }
-
-        doc.attachmentId = fd._id
-        doc.attachmentHash = fd.base64Content?.toSha1HexString()
-        doc.originalFileName = fileName
-        doc.created = ZonedDateTime.now()
-
-        doc.apply { dbContext.documents.save(doc) }
-
-        if(doc.url == null) {
-            doc.url = "https://${dbContext.currentConfig.hostname}/d/${doc._id}"
-        }
-
-        dbContext.documents.save(doc)
-
-        kweb.logger.info("Doc is reachable at ${doc.url}")
     }
 }
