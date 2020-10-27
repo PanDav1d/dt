@@ -105,6 +105,23 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                             }
                         }
                     }
+                    WorkflowInputKind.Sign -> {
+                        div(fomantic.ui.field).new {
+                            label().text(input.name ?: "")
+                            p().text(input.description ?: "")
+                            inputSignatureElement { signature ->
+                                logger.info("Received signature")
+
+                                signature.apply {
+                                    db().files.save(signature)
+                                }
+                                filesToAdd.add(signature)
+                                result.value.fileId = signature._id
+
+                                logger.info("Stored signature: ok")
+                            }
+                        }
+                    }
                 }
 
                 result

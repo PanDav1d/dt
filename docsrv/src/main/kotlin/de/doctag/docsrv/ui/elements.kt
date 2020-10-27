@@ -1,12 +1,21 @@
 package de.doctag.docsrv.ui
 
 import com.github.salomonbrys.kotson.fromJson
+import de.doctag.docsrv.*
+import de.doctag.docsrv.model.FileData
+import de.doctag.docsrv.model.db
+import de.doctag.docsrv.ui.forms.ImagePositionOnCanvas
+import de.doctag.lib.toSha1HexString
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
 import kweb.util.gson
 import kweb.util.random
+import kotlin.random.Random
 
 class GetCamerasResponse(
         val cameras: List<CameraDevice>? = null,
@@ -140,6 +149,38 @@ fun ElementCreator<*>.scanQrCode(onScanSuccessful:(String)->Unit){
         if(isScanning) {
             stopScanning()
             logger.info("Abort scanning for QR Codes")
+        }
+    }
+}
+
+
+data class SignatureData(val base64Content: String)
+fun ElementCreator<*>.inputSignatureElement(onSubmit:(signature: FileData)->Unit) {
+    element("script", mapOf("src" to "/ressources/signature_pad.min.js"))
+    val canvas = canvas(420, 300).apply {
+        this.setAttributeRaw("style", "border: 1px solid black;)")
+    }//.focus()
+
+    GlobalScope.launch {
+        delay(100)
+        browser.execute("""
+        canvas = document.getElementById("${canvas.id}");
+        window.signaturePad = new SignaturePad(canvas);
+
+        canvas.focus();
+        """.trimIndent())
+    }
+
+    div(fomantic.divider.hidden)
+
+    buttonWithLoader("Übernehmen"){
+        val callbackId = Random.nextInt()
+        browser.executeWithCallback("callbackWs($callbackId,{base64Content:window.signaturePad.toDataURL()});", callbackId){inputData->
+            logger.info("Did fetch signature")
+            val pos : SignatureData = gson.fromJson(inputData.toString())
+            val (contentType, data) = pos.base64Content.fromDataUrl()
+            val fd = FileData(_id=data.toSha1HexString(), base64Content = data, contentType = contentType, name = "signature.png")
+            onSubmit(fd)
         }
     }
 }

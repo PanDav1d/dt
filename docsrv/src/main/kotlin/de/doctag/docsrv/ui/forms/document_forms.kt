@@ -93,7 +93,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                         formField.retrieveFile { file ->
                             logger.info("Received file ${file.fileName}")
 
-                            val (contentType, data) = file.base64Content.removePrefix("data:").split(";base64,")
+                            val (contentType, data) = file.base64Content.fromDataUrl()
                             val docId = extractDocumentIdOrNull(data)
 
                             logger.info("Has doctag? ${docId != null}. Full url ${docId?.fullUrl}")

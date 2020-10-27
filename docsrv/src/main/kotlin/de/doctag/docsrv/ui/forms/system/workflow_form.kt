@@ -165,7 +165,8 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
             dropdown(mapOf(
                     WorkflowInputKind.Checkbox.name to "Checkbox",
                     WorkflowInputKind.FileInput.name to "Datei anfügen",
-                    WorkflowInputKind.TextInput.name to "Texteingabe"
+                    WorkflowInputKind.TextInput.name to "Texteingabe",
+                    WorkflowInputKind.Sign.name to "Signieren"
             )).onSelect{ selectedKey->
                 val kind = WorkflowInputKind.valueOf(selectedKey!!)
                 input.value.kind = kind

@@ -264,9 +264,24 @@ fun FomanticUIClasses.loading(isLoading: Boolean):FomanticUIClasses{
     if(isLoading){
         classes("loading")
     }
+    else{
+        removeClass("loading")
+    }
     return this
 }
 
+
+fun Map<String, Any>.removeClass(cssClassName: String): Map<String, Any> {
+
+    val classAttributeValue = get("class")
+    val existing: List<String> = when (classAttributeValue) {
+        is String -> classAttributeValue.split(' ').filter { it!=cssClassName }
+        else -> listOf()
+    }
+    // TODO: This is inefficient when classes() is called multiple times
+    return set("class", (existing).joinToString(separator = " "))
+
+}
 
 enum class DisplayMessageKind{
     Error,

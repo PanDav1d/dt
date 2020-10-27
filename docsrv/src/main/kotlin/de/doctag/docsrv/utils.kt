@@ -3,8 +3,10 @@ package de.doctag.docsrv
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
+import de.doctag.docsrv.model.FileData
 import de.doctag.lib.hexStringToByteArray
 import de.doctag.lib.toHex
+import de.doctag.lib.toSha1HexString
 import kweb.WebBrowser
 import kweb.state.KVar
 import kweb.state.ReversibleFunction
@@ -107,3 +109,9 @@ object Resources {
 }
 
 fun String.isUrl(): Boolean = this.startsWith("https://")
+
+data class DataUrlResult(val contentType:String,val base64Content:String )
+fun String.fromDataUrl(): DataUrlResult {
+    val (contentType, fileData) = this.removePrefix("data:").split(";base64,")
+    return DataUrlResult(contentType, fileData)
+}

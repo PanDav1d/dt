@@ -192,7 +192,8 @@ enum class WorkflowInputKind {
     TextInput,
     FileInput,
     SelectFromList,
-    Checkbox
+    Checkbox,
+    Sign
 }
 
 data class EmbeddedSignature(
