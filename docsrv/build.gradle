@@ -47,7 +47,13 @@ task fatJar(type: Jar) {
         attributes 'Main-Class': 'de.doctag.docsrv.MainKt'
     }
     archivesBaseName = 'docsrv'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from( { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }){
+        // remove all signature files
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+
     with jar
 }
 

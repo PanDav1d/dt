@@ -155,7 +155,40 @@ fun ElementCreator<*>.scanQrCode(onScanSuccessful:(String)->Unit){
 
 
 data class SignatureData(val base64Content: String)
-fun ElementCreator<*>.inputSignatureElement(onSubmit:(signature: FileData)->Unit) {
+
+class SignatureElement(
+        private val canvasElement: CanvasElement
+) {
+    fun onBeginDraw(callback:()->Unit) {
+        val callbackId = Random.nextInt()
+        canvasElement.browser.executeWithCallback("""
+            window.signaturePad.onBegin = function(){
+                callbackWs($callbackId,{});
+            }
+        """.trimIndent(), callbackId){inputData ->
+            callback()
+        }
+    }
+
+    fun onEndDraw(callback:()->Unit) {
+        val callbackId = Random.nextInt()
+        canvasElement.browser.executeWithCallback("""
+            window.signaturePad.onEnd = function(){
+                callbackWs($callbackId,{});
+            }
+        """.trimIndent(), callbackId){inputData ->
+            callback()
+        }
+    }
+
+    fun clear(){
+        canvasElement.browser.execute("""
+            window.signaturePad.clear()
+        """.trimIndent())
+    }
+}
+
+fun ElementCreator<*>.inputSignatureElement(onSubmit:(signature: FileData)->Unit) : SignatureElement {
     element("script", mapOf("src" to "/ressources/signature_pad.min.js"))
     val canvas = canvas(420, 300).apply {
         this.setAttributeRaw("style", "border: 1px solid black;)")
@@ -183,4 +216,6 @@ fun ElementCreator<*>.inputSignatureElement(onSubmit:(signature: FileData)->Unit
             onSubmit(fd)
         }
     }
+
+    return SignatureElement(canvas)
 }

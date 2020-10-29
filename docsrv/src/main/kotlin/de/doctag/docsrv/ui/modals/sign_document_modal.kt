@@ -5,6 +5,9 @@ import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kweb.*
 import kweb.logger
 import kweb.plugins.fomanticUI.fomantic
@@ -109,7 +112,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                         div(fomantic.ui.field).new {
                             label().text(input.name ?: "")
                             p().text(input.description ?: "")
-                            inputSignatureElement { signature ->
+                            val sigPad = inputSignatureElement { signature ->
                                 logger.info("Received signature")
 
                                 signature.apply {
@@ -119,6 +122,12 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                                 result.value.fileId = signature._id
 
                                 logger.info("Stored signature: ok")
+                            }
+
+                            GlobalScope.launch {
+                                delay(150)
+                                sigPad.onBeginDraw { logger.info("Begin drawing") }
+                                sigPad.onEndDraw { logger.info("Finished drawing") }
                             }
                         }
                     }
