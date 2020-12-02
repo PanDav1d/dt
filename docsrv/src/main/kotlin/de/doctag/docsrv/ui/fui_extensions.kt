@@ -1,8 +1,5 @@
 package de.doctag.docsrv.ui
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
@@ -190,6 +187,12 @@ val FomanticUIClasses.starOutline : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.rail : FomanticUIClasses
+    get() {
+        classes("rail")
+        return this
+    }
+
 fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
     if(color != null) {
         classes(color)
@@ -197,75 +200,32 @@ fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
     return this
 }
 
-fun FomanticUIClasses.active(isActive: Boolean):FomanticUIClasses{
-    if(isActive){
-        classes("active")
-    }
-    return this
-}
+fun FomanticUIClasses.active(isActive: Boolean) = withOptionalAttribute("active", isActive)
 
-fun FomanticUIClasses.checked(isChecked: Boolean):FomanticUIClasses{
-    if(isChecked){
-        classes("checked")
-    }
-    return this
-}
+fun FomanticUIClasses.checked(isChecked: Boolean) = withOptionalAttribute("checked", isChecked)
 
-fun FomanticUIClasses.visible(isVisible: Boolean):FomanticUIClasses{
-    if(isVisible){
-        classes("visible")
-    }
-    return this
-}
+fun FomanticUIClasses.visible(isVisible: Boolean) = withOptionalAttribute("visible", isVisible)
 
-fun FomanticUIClasses.negative(isNegative: Boolean):FomanticUIClasses{
-    if(isNegative){
-        classes("negative")
-    }
-    return this
-}
+fun FomanticUIClasses.negative(isNegative: Boolean) = withOptionalAttribute("negative", isNegative)
 
-fun FomanticUIClasses.warning(isWarning: Boolean):FomanticUIClasses{
-    if(isWarning){
-        classes("warning")
-    }
-    return this
-}
+fun FomanticUIClasses.warning(isWarning: Boolean) = withOptionalAttribute("warning", isWarning)
 
-fun FomanticUIClasses.info(isInfo: Boolean):FomanticUIClasses{
-    if(isInfo){
-        classes("info")
-    }
-    return this
-}
+fun FomanticUIClasses.info(isInfo: Boolean) = withOptionalAttribute("info", isInfo)
 
-fun FomanticUIClasses.inverted(isInverted: Boolean): FomanticUIClasses{
-    if(isInverted){
-        classes("inverted")
-    }
-    return this
-}
+fun FomanticUIClasses.inverted(isInverted: Boolean) = withOptionalAttribute("inverted", isInverted)
 
-fun FomanticUIClasses.positive(isPositive: Boolean):FomanticUIClasses{
-    if(isPositive){
-        classes("positive")
-    }
-    return this
-}
+fun FomanticUIClasses.positive(isPositive: Boolean)= withOptionalAttribute("positive", isPositive)
 
-fun FomanticUIClasses.disabled(isDisabled: Boolean):FomanticUIClasses{
-    if(isDisabled){
-        classes("positive")
-    }
-    return this
-}
+fun FomanticUIClasses.disabled(isDisabled: Boolean) = withOptionalAttribute("disabled", isDisabled)
 
-fun FomanticUIClasses.loading(isLoading: Boolean):FomanticUIClasses{
-    if(isLoading){
-        classes("loading")
+fun FomanticUIClasses.loading(isLoading: Boolean) = withOptionalAttribute("loading", isLoading)
+
+fun FomanticUIClasses.withOptionalAttribute(name: String, isEnabled: Boolean) : FomanticUIClasses {
+    if(isEnabled){
+        classes(name)
     }
     else{
-        removeClass("loading")
+        removeClass(name)
     }
     return this
 }

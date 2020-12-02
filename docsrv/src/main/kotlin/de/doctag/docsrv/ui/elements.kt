@@ -3,8 +3,6 @@ package de.doctag.docsrv.ui
 import com.github.salomonbrys.kotson.fromJson
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.FileData
-import de.doctag.docsrv.model.db
-import de.doctag.docsrv.ui.forms.ImagePositionOnCanvas
 import de.doctag.lib.toSha1HexString
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -15,6 +13,7 @@ import kweb.state.KVar
 import kweb.state.render
 import kweb.util.gson
 import kweb.util.random
+import java.util.concurrent.CompletableFuture
 import kotlin.random.Random
 
 class GetCamerasResponse(
@@ -154,7 +153,8 @@ fun ElementCreator<*>.scanQrCode(onScanSuccessful:(String)->Unit){
 }
 
 
-data class SignatureData(val base64Content: String)
+data class SignaturePadData(val base64Content: String)
+data class SignaturePadEmptyResult(val isEmpty: Boolean)
 
 class SignatureElement(
         private val canvasElement: CanvasElement
@@ -186,13 +186,45 @@ class SignatureElement(
             window.signaturePad.clear()
         """.trimIndent())
     }
+
+    fun fetchContent(onFetchCompleted: (pad:SignaturePadData)->Unit){
+        val callbackId = Random.nextInt()
+        //GlobalScope.launch {
+            canvasElement.browser.executeWithCallback("callbackWs($callbackId,{base64Content:window.signaturePad.toDataURL()});", callbackId) { inputData ->
+                val pos: SignaturePadData = gson.fromJson(inputData.toString())
+                onFetchCompleted(pos)
+            }
+        //}
+    }
+
+    fun isEmpty(): CompletableFuture<Boolean>{
+        val callbackId = Random.nextInt()
+        logger.info("SignaturePad->isEmpty() :: called (cb = $callbackId)")
+
+        val response = CompletableFuture<Boolean>()
+
+        //GlobalScope.launch {
+            canvasElement.browser.executeWithCallback("""
+                callbackWs($callbackId,{"isEmpty": window.signaturePad.isEmpty()});
+            """.trimIndent(), callbackId){inputData ->
+                logger.info("SignaturePad->isEmpty() :: Received result from client")
+                val result: SignaturePadEmptyResult = gson.fromJson(inputData.toString())
+
+                response.complete(result.isEmpty)
+            }
+        //}
+
+        return response
+    }
 }
 
-fun ElementCreator<*>.inputSignatureElement(onSubmit:(signature: FileData)->Unit) : SignatureElement {
+fun ElementCreator<*>.inputSignatureElement() : SignatureElement {
     element("script", mapOf("src" to "/ressources/signature_pad.min.js"))
     val canvas = canvas(420, 300).apply {
         this.setAttributeRaw("style", "border: 1px solid black;)")
     }//.focus()
+
+    val pad  = SignatureElement(canvas)
 
     GlobalScope.launch {
         delay(100)
@@ -204,18 +236,5 @@ fun ElementCreator<*>.inputSignatureElement(onSubmit:(signature: FileData)->Unit
         """.trimIndent())
     }
 
-    div(fomantic.divider.hidden)
-
-    buttonWithLoader("Übernehmen"){
-        val callbackId = Random.nextInt()
-        browser.executeWithCallback("callbackWs($callbackId,{base64Content:window.signaturePad.toDataURL()});", callbackId){inputData->
-            logger.info("Did fetch signature")
-            val pos : SignatureData = gson.fromJson(inputData.toString())
-            val (contentType, data) = pos.base64Content.fromDataUrl()
-            val fd = FileData(_id=data.toSha1HexString(), base64Content = data, contentType = contentType, name = "signature.png")
-            onSubmit(fd)
-        }
-    }
-
-    return SignatureElement(canvas)
+    return pad
 }

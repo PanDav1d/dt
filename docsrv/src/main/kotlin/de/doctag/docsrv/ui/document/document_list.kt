@@ -76,10 +76,10 @@ fun ElementCreator<*>.handleDocumentList() {
                                         val hostname = document.url!!.split("/d/")[0].removePrefix("https://")
 
                                         if(hostname != db().currentConfig.hostname){
-                                            browser.url.value="/d/${docIdPart}/${hostname}"
+                                            browser.navigateTo("/d/${docIdPart}/${hostname}")
                                         }
                                         else {
-                                            browser.url.value="/d/${docIdPart}"
+                                            browser.navigateTo("/d/${docIdPart}")
                                         }
                                     }
                                 }.new {

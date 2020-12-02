@@ -1,6 +1,7 @@
 package de.doctag.docsrv.ui
 
 import com.github.salomonbrys.kotson.fromJson
+import kotlinx.coroutines.future.await
 import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
@@ -8,6 +9,7 @@ import kweb.state.KVar
 import kweb.state.render
 import kweb.util.random
 import kweb.util.gson
+import java.util.concurrent.CompletableFuture
 import kotlin.math.abs
 
 class FormControl{
@@ -15,6 +17,7 @@ class FormControl{
     private val inputs: MutableList<FormInput> = mutableListOf()
     val errors: KVar<List<String>> = KVar(listOf())
     val formLevelValidations = mutableListOf<()->String?>()
+    val submitActions = mutableListOf<()->Unit>()
 
     fun add(fi:FormInput){
         inputs.add(fi)
@@ -30,6 +33,12 @@ class FormControl{
         }
     }
 
+    fun submit(){
+        submitActions.map {
+            it()
+        }
+    }
+
     val isValid: Boolean
         get() {
             validate()
@@ -38,6 +47,10 @@ class FormControl{
 
     fun withValidation(func: ()->String?){
         formLevelValidations.add(func)
+    }
+
+    fun withSubmitAction(func:()->Unit){
+        submitActions.add(func)
     }
 }
 

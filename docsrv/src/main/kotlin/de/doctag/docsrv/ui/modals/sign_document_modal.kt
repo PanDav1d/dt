@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.modals
 
+import de.doctag.docsrv.fromDataUrl
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
@@ -19,6 +20,7 @@ import org.litote.kmongo.findOneById
 import org.litote.kmongo.save
 import java.time.Duration
 import java.time.ZonedDateTime
+import java.util.concurrent.CompletableFuture
 
 fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document, addedSig: Signature)->Unit) = modal("Dokument signieren", autoFocus = false) { modal ->
 
@@ -112,21 +114,38 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                         div(fomantic.ui.field).new {
                             label().text(input.name ?: "")
                             p().text(input.description ?: "")
-                            val sigPad = inputSignatureElement { signature ->
-                                logger.info("Received signature")
+                            val sigPad = inputSignatureElement()
 
-                                signature.apply {
-                                    db().files.save(signature)
+                            /*
+                            formCtrl.withValidation {
+                                when{
+                                    sigPad.isEmpty().get()==true-> "Die Unterschrift wird benötigt!"
+                                    else -> null
                                 }
-                                filesToAdd.add(signature)
-                                result.value.fileId = signature._id
+                            }*/
 
-                                logger.info("Stored signature: ok")
+                            formCtrl.withSubmitAction {
+                                val cf = CompletableFuture<Boolean>()
+                                sigPad.fetchContent { pos ->
+                                    val (contentType, data) = pos.base64Content.fromDataUrl()
+                                    val fd = FileData(_id=data.toSha1HexString(), base64Content = data, contentType = contentType, name = "signature.png")
+                                    logger.info("Received signature")
+
+                                    fd.apply {
+                                        db().files.save(fd)
+                                    }
+                                    filesToAdd.add(fd)
+                                    result.value.fileId = fd._id
+
+                                    logger.info("Stored signature: ok")
+                                    cf.complete(true)
+                                }
+
+                                //cf.get()
                             }
 
                             GlobalScope.launch {
-                                delay(150)
-                                sigPad.onBeginDraw { logger.info("Begin drawing") }
+                                delay(100)
                                 sigPad.onEndDraw { logger.info("Finished drawing") }
                             }
                         }
@@ -141,6 +160,8 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
 
         formSubmitButton(formCtrl, "Dokument signieren"){
             logger.info("Make signature for document ${doc.url}")
+
+            formCtrl.submit()
 
             val currentKey = key.value!!
 

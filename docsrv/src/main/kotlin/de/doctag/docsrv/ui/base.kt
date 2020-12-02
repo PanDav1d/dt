@@ -104,7 +104,7 @@ class PageArea(val ec: ElementCreator<*>){
     }
 }
 
-fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<DivElement>.(page:PageArea) -> Unit) {
+fun ElementCreator<*>.pageHeader(title: String) : PageArea {
     val area = PageArea(this)
 
     this.browser.doc.head.new(){
@@ -180,8 +180,13 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
 
     }
 
-    div(fomantic.ui.main.container).new {
+    return area
+}
 
+fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<DivElement>.(page:PageArea) -> Unit) {
+    val area = pageHeader(title)
+
+    div(fomantic.ui.main.container).new {
         div(fomantic.column).new {
             div(fomantic.ui.vertical.segment).new {
 
@@ -189,7 +194,6 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
                 div(fomantic.ui.content).new {
                     content(this,area)
                 }
-
             }
         }
     }

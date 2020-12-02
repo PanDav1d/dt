@@ -97,7 +97,10 @@ fun BufferedImage.asDataUrlImage() : String{
 private val source = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 fun generateRandomString(length: Long) = java.util.Random().ints(length, 0, source.length).asSequence().map(source::get).joinToString("")
 
-fun ZonedDateTime.formatDateTime() = this.withZoneSameInstant(ZoneId.of("Europe/Berlin")).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+fun ZonedDateTime.formatDateTime(shortYearFormat: Boolean = false) : String {
+    val yearFormat = if(shortYearFormat) "yy" else "yyyy"
+    return this.withZoneSameInstant(ZoneId.of("Europe/Berlin")).format(DateTimeFormatter.ofPattern("dd.MM.${yearFormat} HH:mm"))
+}
 
 fun ZonedDateTime.formatDate() = this.withZoneSameInstant(ZoneId.of("Europe/Berlin")).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
