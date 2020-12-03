@@ -1,6 +1,8 @@
 package de.doctag.docsrv.ui.document
 
 import de.doctag.docsrv.formatDateTime
+import de.doctag.docsrv.isImage
+import de.doctag.docsrv.isPdf
 import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
@@ -12,6 +14,7 @@ import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
 import org.litote.kmongo.descending
+import org.litote.kmongo.findOneById
 import java.time.format.DateTimeFormatter
 
 
@@ -19,7 +22,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
     authRequired {
         val documents = KVar(db().documents.find().sort(descending(Document::created)).toList())
         val isImportRunning = KVar(false)
-
+        val documentToPreview = KVar(documents.value.firstOrNull())
 
         val pageArea = pageHeader("Dokumentenliste")
 
@@ -71,7 +74,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                 }
 
                 div(fomantic.row).new {
-                    div(fomantic.four.wide.column).new {
+                    div(fomantic.five.wide.column).new {
                         render(documents, container = {div()}){ rDocuments ->
                             logger.info("List of documents did change")
                             table(fomantic.ui.selectable.celled.table).new {
@@ -84,13 +87,20 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                         }
                                     }
                                 }
-                                tbody().new {
+                                render(documentToPreview, container={tbody(attributes = mapOf("style" to "display: block;height:70vh;overflow-y:scroll"))}) {
                                     rDocuments.forEach { document ->
 
-                                        tr().apply {
+                                        val classN = if(document._id == documentToPreview.value?._id){
+                                            fomantic.active
+                                        }
+                                        else {
+                                            mapOf<String, Any>()
+                                        }
+
+                                        tr(classN).apply {
                                             this.on.click {
                                                 logger.info("Clicked")
-                                                val docIdPart = document.url!!.split("/d/")[1]
+                                                /*val docIdPart = document.url!!.split("/d/")[1]
                                                 val hostname = document.url!!.split("/d/")[0].removePrefix("https://")
 
                                                 if(hostname != db().currentConfig.hostname){
@@ -98,7 +108,8 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                                 }
                                                 else {
                                                     browser.navigateTo("/d/${docIdPart}")
-                                                }
+                                                }*/
+                                                documentToPreview.value = document
                                             }
                                         }.new {
                                             td().new {
@@ -120,8 +131,37 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                             }
                         }
                     }
-                    div(fomantic.twelve.wide.column).new {
-                        h1().text("Preview goes hiere")
+                    div(fomantic.eleven.wide.column).new {
+
+                        render(documentToPreview){rFile->
+                            val file = rFile?.attachmentId?.let{db().files.findOneById(it)}
+
+                            div(fomantic.ui.placeholder.segment).also{
+                                it.setAttributeRaw("style", "height:calc(65px + 70vh);")
+                            }.new{
+                                h1().text(file?.name ?: "Keine Vorschau verfügbar")
+
+                                if(file!=null) {
+                                    when {
+                                        file.contentType.isImage() -> {
+                                            img("/f/${file._id}/download", fomantic.ui.medium.centered.image)
+                                            div(fomantic.ui.divider.hidden)
+                                        }
+                                        file.contentType.isPdf() -> {
+                                            element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
+                                            div(fomantic.ui.divider.hidden)
+                                        }
+                                        else -> {
+                                            div(fomantic.ui.icon.header).new {
+                                                i(fomantic.icon.file.pdf.outline)
+                                                span().text("Keine Vorschau verfügbar")
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
                     }
                 }
             }

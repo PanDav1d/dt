@@ -118,3 +118,11 @@ fun String.fromDataUrl(): DataUrlResult {
     val (contentType, fileData) = this.removePrefix("data:").split(";base64,")
     return DataUrlResult(contentType, fileData)
 }
+
+fun String?.isImage():Boolean {
+    return this!= null && ( this.contains("png") || this.contains("gif") || this.contains("jpg"))
+}
+
+fun String?.isPdf():Boolean {
+    return this!=null && this.contains("pdf")
+}

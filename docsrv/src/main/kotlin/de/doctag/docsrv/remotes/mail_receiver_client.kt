@@ -110,7 +110,7 @@ class AttachmentImporter(val dbContext: DbContext){
                 }
                 is InputStream ->{
                     kweb.logger.info("Received content of type inputStream. ${part.fileName}")
-                    if(part.fileName.toLowerCase().endsWith(".pdf")) {
+                    if(part.fileName?.toLowerCase()?.endsWith(".pdf") == true) {
                         kweb.logger.info("Importing attachment ${part.fileName}")
                         processInputStream(part.fileName, content, fromAddress)
                     }

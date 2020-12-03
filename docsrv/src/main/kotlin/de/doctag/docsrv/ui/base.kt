@@ -116,6 +116,11 @@ fun ElementCreator<*>.pageHeader(title: String) : PageArea {
             .actionIcon{
               color: black;
             }
+            
+            body{
+                height: calc(100vh - 60px);
+                overflow-y: auto;
+            }
         """.trimIndent())
         element("script", mapOf("src" to "/ressources/html5-qrcode.min.js"))
     }

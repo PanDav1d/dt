@@ -13,13 +13,7 @@ import kweb.plugins.fomanticUI.fomantic
 import java.time.Duration
 import java.time.format.DateTimeFormatter
 
-private fun String?.isImage():Boolean {
-    return this!= null && ( this.contains("png") || this.contains("gif") || this.contains("jpg"))
-}
 
-private fun String?.isPdf():Boolean {
-    return this!=null && this.contains("pdf")
-}
 
 fun ElementCreator<*>.filePreviewModal(file: FileData) = modal("Vorschau"){ modal->
     div(fomantic.ui.placeholder.segment).new{
