@@ -44,6 +44,19 @@ fun Routing.docsrvApi(){
         } ?: call.respond(HttpStatusCode.NotFound, "No document found with id $docId")
     }
 
+    get("/d/{documentId}/viewSignSheet"){
+        val docId = call.parameters["documentId"]
+        val doc = docId?.let{db(call.request.host()).documents.findOneById(docId)}
+
+        val renderer = doc?.let{PdfBuilder(doc)}
+
+
+        renderer?.let { fd ->
+            //call.response.header("Content-Disposition", """attachment; filename="${doc.originalFileName}"""")
+            call.respondBytes(renderer.render().toByteArray(),ContentType.parse("application/pdf"))
+        } ?: call.respond(HttpStatusCode.NotFound, "No document found with id $docId")
+    }
+
     get("/f/{fileId}/view"){
         val fileId = call.parameters["fileId"]
         val fileData = fileId?.let{db(call.request.host()).files.findOneById(fileId)}

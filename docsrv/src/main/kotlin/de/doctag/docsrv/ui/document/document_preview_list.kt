@@ -139,7 +139,28 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                             div(fomantic.ui.placeholder.segment).also{
                                 it.setAttributeRaw("style", "height:calc(65px + 70vh);")
                             }.new{
-                                h1().text(file?.name ?: "Keine Vorschau verfügbar")
+
+                                div(fomantic.ui.grid).new {
+                                    div(fomantic.ui.column.twelve.wide).new {
+                                        h1().text(file?.name ?: "Keine Vorschau verfügbar")
+                                    }
+                                    div(fomantic.ui.column.four.wide).new {
+                                        button(fomantic.ui.button.tertiary.blue).apply {
+                                            this.on.click {
+                                                val docIdPart = rFile?.url!!.split("/d/")[1]
+                                                val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")
+                                                if(hostname != db().currentConfig.hostname){
+                                                    browser.navigateTo("/d/${docIdPart}/${hostname}")
+                                                }
+                                                else {
+                                                    browser.navigateTo("/d/${docIdPart}")
+                                                }
+                                            }
+                                        }.new {
+                                            i(fomantic.ui.icon.eye)
+                                        }
+                                    }
+                                }
 
                                 if(file!=null) {
                                     when {
@@ -148,7 +169,8 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                             div(fomantic.ui.divider.hidden)
                                         }
                                         file.contentType.isPdf() -> {
-                                            element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
+                                            //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
+                                            element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/d/${rFile._id}/viewSignSheet"))
                                             div(fomantic.ui.divider.hidden)
                                         }
                                         else -> {
@@ -159,7 +181,6 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                         }
                                     }
                                 }
-
                             }
                         }
                     }
