@@ -31,20 +31,23 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
 
         val pageArea = pageHeader("Dokumentenliste")
 
-        var lastChange = 0L
+        var lastChange: Long
         searchTerm.addListener { _, newValue ->
             logger.info("New search term value is $newValue")
             lastChange = System.currentTimeMillis()
             GlobalScope.launch {
                 delay(250)
-                if(System.currentTimeMillis()-lastChange > 250){
+                if(System.currentTimeMillis()-lastChange >= 250){
                     logger.info("Search term not changed for >250ms. Updating search query")
                     if(newValue.isNotEmpty()) {
-                        documents.value = db().documents.find(Document::fullText regex newValue).sort(descending(Document::created)).toList()
+                        documents.value = db().documents.find(Document::fullText.regex(newValue, "i")).sort(descending(Document::created)).toList()
                     }
                     else {
                         documents.value = db().documents.find().sort(descending(Document::created)).toList()
                     }
+                }
+                else {
+                    logger.info("Not triggering search as last change was ${System.currentTimeMillis()-lastChange}ms ago")
                 }
             }
         }
