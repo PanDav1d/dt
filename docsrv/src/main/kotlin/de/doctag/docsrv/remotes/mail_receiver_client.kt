@@ -1,6 +1,7 @@
 package de.doctag.docsrv.remotes
 
 import de.doctag.docsrv.extractDocumentIdOrNull
+import de.doctag.docsrv.extractTextFromPdf
 import de.doctag.docsrv.model.*
 import de.doctag.lib.logger
 import de.doctag.lib.sha1
@@ -158,6 +159,8 @@ class AttachmentImporter(val dbContext: DbContext){
                 doc.attachmentHash = fd.base64Content?.toSha1HexString()
                 doc.originalFileName = fileName
                 doc.created = ZonedDateTime.now()
+                doc.fullText = fd.base64Content?.let { extractTextFromPdf(it) }
+
 
                 doc.apply { dbContext.documents.save(doc) }
             }

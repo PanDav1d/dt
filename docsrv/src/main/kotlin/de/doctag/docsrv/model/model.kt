@@ -110,7 +110,8 @@ data class Document(
     var signatures: List<Signature>? = null,
     var created: ZonedDateTime? = null,
     var mirrors: List<String>? = null,
-    var workflow: Workflow? = null
+    var workflow: Workflow? = null,
+    var fullText: String? = null
 ) {
     @JsonIgnore
     fun getWorkflowStatus() : List<Pair<String, Signature?>>{

@@ -9,22 +9,45 @@ import de.doctag.docsrv.model.db
 import de.doctag.docsrv.remotes.AttachmentImporter
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addDocumentModal
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
 import org.litote.kmongo.descending
 import org.litote.kmongo.findOneById
+import org.litote.kmongo.regex
 import java.time.format.DateTimeFormatter
 
 
 fun ElementCreator<*>.handleDocumentPreviewList() {
     authRequired {
+        val searchTerm = KVar("")
         val documents = KVar(db().documents.find().sort(descending(Document::created)).toList())
         val isImportRunning = KVar(false)
         val documentToPreview = KVar(documents.value.firstOrNull())
 
         val pageArea = pageHeader("Dokumentenliste")
+
+        var lastChange = 0L
+        searchTerm.addListener { _, newValue ->
+            logger.info("New search term value is $newValue")
+            lastChange = System.currentTimeMillis()
+            GlobalScope.launch {
+                delay(250)
+                if(System.currentTimeMillis()-lastChange > 250){
+                    logger.info("Search term not changed for >250ms. Updating search query")
+                    if(newValue.isNotEmpty()) {
+                        documents.value = db().documents.find(Document::fullText regex newValue).sort(descending(Document::created)).toList()
+                    }
+                    else {
+                        documents.value = db().documents.find().sort(descending(Document::created)).toList()
+                    }
+                }
+            }
+        }
 
         div(fomantic.ui.main.container).new {
 
@@ -82,7 +105,9 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                     tr().new {
                                         th().new{
                                             div(fomantic.ui.input.fluid).new() {
-                                                input(InputType.text, placeholder = "suche")
+                                                input(InputType.text, placeholder = "suche").apply {
+                                                    value=searchTerm
+                                                }.focus()
                                             }
                                         }
                                     }
@@ -169,8 +194,8 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                             div(fomantic.ui.divider.hidden)
                                         }
                                         file.contentType.isPdf() -> {
-                                            //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
-                                            element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/d/${rFile._id}/viewSignSheet"))
+                                            element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
+                                            //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/d/${rFile._id}/viewSignSheet"))
                                             div(fomantic.ui.divider.hidden)
                                         }
                                         else -> {

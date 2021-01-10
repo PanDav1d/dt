@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.modals
 
+import de.doctag.docsrv.extractTextFromPdf
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.db
@@ -21,6 +22,8 @@ fun ElementCreator<*>.addDocumentModal(onDocumentAdd: (d: Document)->Unit) = mod
         docObj.attachmentHash = fileObj.base64Content?.toSha1HexString()
         docObj.created = ZonedDateTime.now()
         docObj.originalFileName = fileObj.name
+        docObj.fullText = fileObj.base64Content?.let { extractTextFromPdf(it) }
+
 
         docObj.apply {
             db().documents.save(docObj)

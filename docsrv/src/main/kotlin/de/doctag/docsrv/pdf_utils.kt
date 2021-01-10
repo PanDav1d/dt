@@ -9,17 +9,16 @@ import com.google.zxing.qrcode.QRCodeReader
 import de.doctag.docsrv.model.DocumentId
 import kweb.logger
 import org.apache.pdfbox.multipdf.Overlay
+import org.apache.pdfbox.pdfparser.PDFParser
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.common.PDRectangle
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
 import org.apache.pdfbox.rendering.PDFRenderer
+import org.apache.pdfbox.text.PDFTextStripper
 import java.awt.image.BufferedImage
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.InputStream
+import java.io.*
 import java.util.*
 import javax.imageio.ImageIO
 
@@ -72,18 +71,19 @@ fun makePdfWithDoctag(url: String, xRel: Float, yRel: Float, relativeWidth: Floa
 fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, relativeWidth: Float):String{
     val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
     val pdf = PDDocument.load(stream)
+    pdf.use{
+        val watermark = makePdfWithDoctag(url, xRel, yRel, relativeWidth)
+        val overlay = Overlay()
+        overlay.setInputPDF(pdf)
+        overlay.setFirstPageOverlayPDF(watermark)
+        overlay.setOverlayPosition(Overlay.Position.FOREGROUND);
+        val watermarkedDoc = overlay.overlay(mapOf())
 
-    val watermark = makePdfWithDoctag(url, xRel, yRel, relativeWidth)
-    val overlay = Overlay()
-    overlay.setInputPDF(pdf)
-    overlay.setFirstPageOverlayPDF(watermark)
-    overlay.setOverlayPosition(Overlay.Position.FOREGROUND);
-    val watermarkedDoc = overlay.overlay(mapOf())
-
-    val output = ByteArrayOutputStream()
-    watermarkedDoc.save(output)
-    watermarkedDoc.save("test.pdf")
-    return Base64.getEncoder().encodeToString(output.toByteArray())
+        val output = ByteArrayOutputStream()
+        watermarkedDoc.save(output)
+        watermarkedDoc.save("test.pdf")
+        return Base64.getEncoder().encodeToString(output.toByteArray())
+    }
 }
 
 fun getImagesFromBase64Content(b64: String) : List<BufferedImage> {
@@ -93,9 +93,20 @@ fun getImagesFromBase64Content(b64: String) : List<BufferedImage> {
 
 fun renderPdfAsImage(b64: String): BufferedImage{
     val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
+    PDDocument.load(stream).use{ pdf ->
+        val renderer = PDFRenderer(pdf)
+        return renderer.renderImageWithDPI(0, 120.0f)
+    }
+}
+
+fun extractTextFromPdf(b64: String): String {
+
+    val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
     val pdf = PDDocument.load(stream)
-    val renderer = PDFRenderer(pdf)
-    return renderer.renderImageWithDPI(0, 120.0f)
+    pdf.use {
+        val pdfStripper = PDFTextStripper()
+        return pdfStripper.getText(pdf)
+    }
 }
 
 

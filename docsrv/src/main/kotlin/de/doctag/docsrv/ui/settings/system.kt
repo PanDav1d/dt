@@ -3,10 +3,7 @@ package de.doctag.docsrv.ui.settings
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.ToastKind
 import de.doctag.docsrv.ui.active
-import de.doctag.docsrv.ui.forms.system.designForm
-import de.doctag.docsrv.ui.forms.system.hostnameEditForm
-import de.doctag.docsrv.ui.forms.system.mailSettingsEditForm
-import de.doctag.docsrv.ui.forms.system.workflowListEditForm
+import de.doctag.docsrv.ui.forms.system.*
 import de.doctag.docsrv.ui.pageBorderAndTitle
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
@@ -74,6 +71,9 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                         pageArea.showToast("Design Einstellungen geändert", ToastKind.Success)
                                     }
                                 }
+                                SystemSettingsActiveItem.SEARCH->{
+                                    search_settings_form()
+                                }
                             }
                         }
                     }
@@ -87,7 +87,8 @@ enum class SystemSettingsActiveItem {
     HOST,
     MAIL,
     WORKFLOW,
-    DESIGN
+    DESIGN,
+    SEARCH
 }
 
 fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
@@ -96,5 +97,6 @@ fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.MAIL), "/settings/system/mail").text("E-Mail")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.WORKFLOW), "/settings/system/workflow").text("Workflows")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.DESIGN), "/settings/system/design").text("Design")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SEARCH), "/settings/system/search").text("Suche")
     }
 }
