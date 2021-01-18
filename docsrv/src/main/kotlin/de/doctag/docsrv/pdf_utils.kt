@@ -9,7 +9,6 @@ import com.google.zxing.qrcode.QRCodeReader
 import de.doctag.docsrv.model.DocumentId
 import kweb.logger
 import org.apache.pdfbox.multipdf.Overlay
-import org.apache.pdfbox.pdfparser.PDFParser
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream

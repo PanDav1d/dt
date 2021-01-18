@@ -14,8 +14,13 @@ import io.ktor.response.respondBytes
 import io.ktor.routing.*
 import kweb.logger
 import kweb.util.gson
+import org.apache.pdfbox.io.MemoryUsageSetting
+import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.bson.internal.Base64
 import org.litote.kmongo.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.time.ZonedDateTime
 
 
@@ -48,12 +53,24 @@ fun Routing.docsrvApi(){
         val docId = call.parameters["documentId"]
         val doc = docId?.let{db(call.request.host()).documents.findOneById(docId)}
 
-        val renderer = doc?.let{PdfBuilder(doc)}
+        val docToSign = db().files.findOneById(doc?.attachmentId!!)
 
+        val renderer = doc?.let{PdfBuilder(doc, db())}
 
         renderer?.let { fd ->
             //call.response.header("Content-Disposition", """attachment; filename="${doc.originalFileName}"""")
-            call.respondBytes(renderer.render().toByteArray(),ContentType.parse("application/pdf"))
+
+            val signaturePage = renderer.render().toByteArray()
+
+            val merger = PDFMergerUtility()
+            merger.addSource(ByteArrayInputStream(java.util.Base64.getDecoder().decode(docToSign?.base64Content)))
+            merger.addSource(ByteArrayInputStream(signaturePage))
+
+            val output = ByteArrayOutputStream()
+            merger.destinationStream = output
+            merger.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly())
+
+            call.respondBytes(output.toByteArray(), ContentType.parse("application/pdf"))
         } ?: call.respond(HttpStatusCode.NotFound, "No document found with id $docId")
     }
 

@@ -197,8 +197,8 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                             div(fomantic.ui.divider.hidden)
                                         }
                                         file.contentType.isPdf() -> {
-                                            element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
-                                            //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/d/${rFile._id}/viewSignSheet"))
+                                            //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
+                                            element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/d/${rFile._id}/viewSignSheet"))
                                             div(fomantic.ui.divider.hidden)
                                         }
                                         else -> {

@@ -1,15 +1,16 @@
 package de.doctag.docsrv
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
-import de.doctag.docsrv.model.Document
+import de.doctag.docsrv.model.*
+import org.litote.kmongo.findOneById
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
 
-class PdfBuilder(doc: Document)  {
+class PdfBuilder(val doc: Document, val db: DbContext)  {
 
-    fun interpolateHtmlTemplate() : String{
+    private fun interpolateHtmlTemplate() : String{
         return """<html>
             <head>
             <style>
@@ -19,27 +20,78 @@ class PdfBuilder(doc: Document)  {
             table {
                 width: 100%;
             }
+            .tbl-key {
+                width: 200px;
+                font-weight: bold;
+            }
             </style>
             </head>
             <body>
-            <h3>Warenempfänger</h3>
-            <hr/>
-            <table>
-            <tr>
-                <th>Name</th>
-                <th>Addresse</th>
-                <th>Signiert von</th>
-                <th>Datum</th>
-            </tr>
-            <tr>
-                <td>Frank Englert</td>
-                <td>Elisabeth-H.Str </td>
-                <td>Frank Englert</td>
-                <td>21.12.2020</td>
-            </tr>
-            </table>
+            <h1>Signaturen</h1>
+            ${doc.signatures?.map { sig-> interpolateSignature2(sig)}?.joinToString("\n") ?: "Noch keine Signaturen vorhanden"}
             </body>
             </html>""".trimIndent()
+    }
+
+    private fun renderWorkflowInput(input: WorkflowInputResult): String  {
+
+        val value = when{
+            input.fileId != null -> {
+                val attachment = db.files.findOneById(input.fileId!!)
+                if(attachment?.contentType?.contains("image") == true){
+                    "<img src=\"data:${attachment.contentType};base64,${attachment.base64Content}\"/>"
+                }
+                else {
+                    "Datei ${attachment?.name}"
+                }
+            }
+            input.value != null -> input.value
+            else -> "---"
+        }
+
+        return """
+            <tr>
+            <td class="tbl-key">
+                ${input.name}
+            </td>
+            <td>
+                $value
+            </td>
+            </tr>
+        """
+    }
+
+    private fun interpolateSignature2(sig: Signature)  : String{
+        return """
+            <br/>
+            <br/>
+            <h3>${sig.role}</h3>
+        <hr/>
+        <table>
+        <tr>
+        <td class="tbl-key">Datum</td>
+        <td>${sig.signed?.formatDateTime(false)}</td>
+        </tr>
+        <tr>
+        <td class="tbl-key">Name</td>
+        <td>${sig.doc?.signingUser}</td>
+        </tr>
+        <tr>
+        <td class="tbl-key">Addresse</td>
+        <td>
+            ${sig.publicKey?.issuer?.name1}<br />
+            ${sig.publicKey?.issuer?.name2?.plus("<br/>") ?:""}
+            ${sig.publicKey?.issuer?.street?.plus("<br/>")}
+            ${sig.publicKey?.issuer?.countryCode} - ${sig.publicKey?.issuer?.zipCode} ${sig.publicKey?.issuer?.city}<br />
+        </td>
+        </tr>
+        <tr>
+        <td class="tbl-key">Doctag-System</td>
+        <td>${sig.doc?.signingParty}</td>
+        </tr>
+        ${sig?.inputs?.map { renderWorkflowInput(it)}?.joinToString("\n") ?: ""}
+        </table>
+        """
     }
 
     fun render(): ByteArrayOutputStream {
