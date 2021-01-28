@@ -181,6 +181,18 @@ val FomanticUIClasses.star : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.filter : FomanticUIClasses
+    get() {
+        classes("filter")
+        return this
+    }
+
+val FomanticUIClasses.calendar : FomanticUIClasses
+    get() {
+        classes("calendar")
+        return this
+    }
+
 val FomanticUIClasses.starOutline : FomanticUIClasses
     get() {
         classes("star outline")

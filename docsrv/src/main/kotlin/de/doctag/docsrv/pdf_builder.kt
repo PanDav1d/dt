@@ -20,6 +20,9 @@ class PdfBuilder(val doc: Document, val db: DbContext)  {
             table {
                 width: 100%;
             }
+            .sig-section {
+                page-break-inside: avoid;
+            }
             .tbl-key {
                 width: 200px;
                 font-weight: bold;
@@ -65,6 +68,7 @@ class PdfBuilder(val doc: Document, val db: DbContext)  {
         return """
             <br/>
             <br/>
+            <div class="sig-section">
             <h3>${sig.role}</h3>
         <hr/>
         <table>
@@ -91,6 +95,7 @@ class PdfBuilder(val doc: Document, val db: DbContext)  {
         </tr>
         ${sig?.inputs?.map { renderWorkflowInput(it)}?.joinToString("\n") ?: ""}
         </table>
+        </div>
         """
     }
 

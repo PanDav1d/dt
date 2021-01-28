@@ -1,14 +1,17 @@
 package de.doctag.docsrv.ui.document
 
+import SearchFilter
 import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.isImage
 import de.doctag.docsrv.isPdf
+import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.remotes.AttachmentImporter
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addDocumentModal
+import documentSearchFilterComponent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -16,40 +19,56 @@ import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
-import org.litote.kmongo.descending
-import org.litote.kmongo.findOneById
-import org.litote.kmongo.regex
-import java.time.format.DateTimeFormatter
+import org.bson.conversions.Bson
+import org.litote.kmongo.*
 
+
+fun <T> debounce(delayInMs: Long = 250, func: (T) -> Unit): (T) -> Unit {
+    var lastChange: Long
+
+    return { tVal: T ->
+        lastChange = System.currentTimeMillis()
+
+        GlobalScope.launch {
+            delay(delayInMs)
+            if (System.currentTimeMillis() - lastChange >= 250) {
+                func(tVal)
+            }
+        }
+    }
+}
+
+fun DbContext.handleSearchQueryChange(sf: SearchFilter) : List<Document>{
+    logger.info("Search Term did change. Term: ${sf.searchString}. From ${sf.fromDate} till ${sf.tillDate}")
+
+    val findBson = mutableListOf<Bson>()
+    if(sf.searchString.isNotEmpty()) {
+        findBson.add(Document::fullText.regex(sf.searchString, "i"))
+    }
+
+    if(sf.fromDate != null){
+        findBson.add(Document::created gte sf.fromDate)
+    }
+
+    if(sf.tillDate != null){
+        findBson.add(Document::created lte sf.tillDate)
+    }
+
+    return this.documents.find(and(findBson)).sort(descending(Document::created)).toList()
+
+}
 
 fun ElementCreator<*>.handleDocumentPreviewList() {
     authRequired {
-        val searchTerm = KVar("")
         val documents = KVar(db().documents.find().sort(descending(Document::created)).toList())
+        val searchQuery = KVar(SearchFilter(""))
         val isImportRunning = KVar(false)
         val documentToPreview = KVar(documents.value.firstOrNull())
 
         val pageArea = pageHeader("Dokumentenliste")
 
-        var lastChange: Long
-        searchTerm.addListener { _, newValue ->
-            logger.info("New search term value is $newValue")
-            lastChange = System.currentTimeMillis()
-            GlobalScope.launch {
-                delay(250)
-                if(System.currentTimeMillis()-lastChange >= 250){
-                    logger.info("Search term not changed for >250ms. Updating search query")
-                    if(newValue.isNotEmpty()) {
-                        documents.value = db().documents.find(Document::fullText.regex(newValue, "i")).sort(descending(Document::created)).toList()
-                    }
-                    else {
-                        documents.value = db().documents.find().sort(descending(Document::created)).toList()
-                    }
-                }
-                else {
-                    logger.info("Not triggering search as last change was ${System.currentTimeMillis()-lastChange}ms ago")
-                }
-            }
+        searchQuery.addListener{old, new ->
+            documents.value = db().handleSearchQueryChange(new)
         }
 
         div(fomantic.ui.main.container).new {
@@ -107,11 +126,9 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                 thead().new {
                                     tr().new {
                                         th().new{
-                                            div(fomantic.ui.input.fluid).new() {
-                                                input(InputType.text, placeholder = "suche").apply {
-                                                    value=searchTerm
-                                                }.focus()
-                                            }
+                                            documentSearchFilterComponent(searchQuery.value, debounce {
+                                                searchQuery.value = it
+                                            })
                                         }
                                     }
                                 }
@@ -128,19 +145,11 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                         tr(classN).apply {
                                             this.on.click {
                                                 logger.info("Clicked")
-                                                /*val docIdPart = document.url!!.split("/d/")[1]
-                                                val hostname = document.url!!.split("/d/")[0].removePrefix("https://")
 
-                                                if(hostname != db().currentConfig.hostname){
-                                                    browser.navigateTo("/d/${docIdPart}/${hostname}")
-                                                }
-                                                else {
-                                                    browser.navigateTo("/d/${docIdPart}")
-                                                }*/
                                                 documentToPreview.value = document
                                             }
                                         }.new {
-                                            td().new {
+                                            td(mapOf("style" to "width:100vw")).new {
                                                 div().text(document.originalFileName?.take(35) ?: "")
                                                 document.getWorkflowStatus().forEach { (role, signature) ->
                                                     if(signature != null) {
@@ -160,56 +169,8 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                         }
                     }
                     div(fomantic.eleven.wide.column).new {
-
-                        render(documentToPreview){rFile->
-                            val file = rFile?.attachmentId?.let{db().files.findOneById(it)}
-
-                            div(fomantic.ui.placeholder.segment).also{
-                                it.setAttributeRaw("style", "height:calc(65px + 70vh);")
-                            }.new{
-
-                                div(fomantic.ui.grid).new {
-                                    div(fomantic.ui.column.twelve.wide).new {
-                                        h1().text(file?.name ?: "Keine Vorschau verfügbar")
-                                    }
-                                    div(fomantic.ui.column.four.wide).new {
-                                        button(fomantic.ui.button.tertiary.blue).apply {
-                                            this.on.click {
-                                                val docIdPart = rFile?.url!!.split("/d/")[1]
-                                                val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")
-                                                if(hostname != db().currentConfig.hostname){
-                                                    browser.navigateTo("/d/${docIdPart}/${hostname}")
-                                                }
-                                                else {
-                                                    browser.navigateTo("/d/${docIdPart}")
-                                                }
-                                            }
-                                        }.new {
-                                            i(fomantic.ui.icon.eye)
-                                        }
-                                    }
-                                }
-
-                                if(file!=null) {
-                                    when {
-                                        file.contentType.isImage() -> {
-                                            img("/f/${file._id}/download", fomantic.ui.medium.centered.image)
-                                            div(fomantic.ui.divider.hidden)
-                                        }
-                                        file.contentType.isPdf() -> {
-                                            //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
-                                            element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/d/${rFile._id}/viewSignSheet"))
-                                            div(fomantic.ui.divider.hidden)
-                                        }
-                                        else -> {
-                                            div(fomantic.ui.icon.header).new {
-                                                i(fomantic.icon.file.pdf.outline)
-                                                span().text("Keine Vorschau verfügbar")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                        render(documentToPreview) { rFile ->
+                            renderDocumentPreview(rFile)
                         }
                     }
                 }
@@ -217,3 +178,56 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
         }
     }
 }
+
+fun ElementCreator<*>.renderDocumentPreview(rFile: Document?){
+
+    val file = rFile?.attachmentId?.let{db().files.findOneById(it)}
+
+    div(fomantic.ui.placeholder.segment).also{
+        it.setAttributeRaw("style", "height:calc(65px + 70vh);")
+    }.new{
+
+        div(fomantic.ui.grid).new {
+            div(fomantic.ui.column.twelve.wide).new {
+                h1().text(file?.name ?: "Keine Vorschau verfügbar")
+            }
+            div(fomantic.ui.column.four.wide).new {
+                button(fomantic.ui.button.tertiary.blue).apply {
+                    this.on.click {
+                        val docIdPart = rFile?.url!!.split("/d/")[1]
+                        val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")
+                        if(hostname != db().currentConfig.hostname){
+                            browser.navigateTo("/d/${docIdPart}/${hostname}")
+                        }
+                        else {
+                            browser.navigateTo("/d/${docIdPart}")
+                        }
+                    }
+                }.new {
+                    i(fomantic.ui.icon.eye)
+                }
+            }
+        }
+
+        if(file!=null) {
+            when {
+                file.contentType.isImage() -> {
+                    img("/f/${file._id}/download", fomantic.ui.medium.centered.image)
+                    div(fomantic.ui.divider.hidden)
+                }
+                file.contentType.isPdf() -> {
+                    //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
+                    element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/d/${rFile._id}/viewSignSheet"))
+                    div(fomantic.ui.divider.hidden)
+                }
+                else -> {
+                    div(fomantic.ui.icon.header).new {
+                        i(fomantic.icon.file.pdf.outline)
+                        span().text("Keine Vorschau verfügbar")
+                    }
+                }
+            }
+        }
+    }
+}
+
