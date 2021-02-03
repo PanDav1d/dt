@@ -8,12 +8,11 @@ import de.doctag.lib.model.PrivatePublicKeyPair
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import java.time.Duration
-import java.time.format.DateTimeFormatter
 
 fun ElementCreator<*>.showSignatureModal(key: PrivatePublicKeyPair) = modal("Signatur anzeigen"){ modal->
     div(fomantic.ui.card).new{
 
-        val sig = DoctagSignature.make(key.privateKey!!, key.publicKey!!, Duration.ofMinutes(5), key.signingParty!!, browser.authenticatedUser!!.let { "${it.firstName} ${it.lastName}" })
+        val sig = DoctagSignature.make(key.privateKey!!, key.publicKey!!, Duration.ofMinutes(5), key.signingDoctagInstance!!, browser.authenticatedUser!!.let { "${it.firstName} ${it.lastName}" })
 
         logger.info("Created signature qr code with content ${sig.toDataString()}")
 
@@ -22,7 +21,7 @@ fun ElementCreator<*>.showSignatureModal(key: PrivatePublicKeyPair) = modal("Sig
         }
         div(fomantic.ui.content).new{
             div().text("Von Nutzer: ${sig.signingUser}")
-            div().text("Von Org: ${sig.signingParty}/${sig.keyFingerprint}")
+            div().text("Von Org: ${sig.signingDoctagInstance}/${sig.keyFingerprint}")
             div().text("Vorgang: ${sig.randomBuffer}")
             div().text("Gültigkeit: ${sig.validFromDateTime.formatDateTime()} + 5min")
         }

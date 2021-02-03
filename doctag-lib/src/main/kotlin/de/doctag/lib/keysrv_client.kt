@@ -10,27 +10,38 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
+import java.time.ZonedDateTime
 
 
-var BASE_URL = "https://keysrv.englert.xyz"
+var BASE_URL = "https://keysvr.doctag.de/"
 
 val logger = LoggerFactory.getLogger("de.doctag.lib.keysrv_client");
 
 data class PublicKeyAddRequest(
-        var publicKey : String? = null,
-        val verboseName: String? = null,
-        var owner: Person = Person(),
-        var issuer: Address = Address(),
-        var signingParty: String? = null
+    var publicKey : String? = null,
+    val verboseName: String? = null,
+    var owner: Person = Person(),
+    var ownerAddress: Address = Address(),
+    var signingDoctagInstance: String? = null
 )
 
 data class PublicKeyResponse(
-        var publicKey : String? = null,
-        val verboseName: String? = null,
-        var owner: Person = Person(),
-        var issuer: Address = Address(),
-        var signingParty: String? = null
+    var publicKey : String? = null,
+    val verboseName: String? = null,
+    var owner: Person = Person(),
+    var ownerAddress: Address = Address(),
+    var signingDoctagInstance: String? = null,
+    var verification: PublicKeyEntryVerificationResponse? = null
 )
+
+data class PublicKeyEntryVerificationResponse(
+    var hashOfPublicKeyEntry: String? = null,
+    var signedByPublicKey: String? = null,
+    var signedByParty: String? = null,
+    var signedAt: ZonedDateTime? = null,
+    var isAddressVerified: Boolean? = null
+)
+
 
 fun PrivatePublicKeyPair.toPublicKeyAddRequest() : PublicKeyAddRequest {
     return PublicKeyAddRequest(
@@ -38,8 +49,8 @@ fun PrivatePublicKeyPair.toPublicKeyAddRequest() : PublicKeyAddRequest {
             this.verboseName,
             //this.created,
             this.owner,
-            this.issuer,
-            this.signingParty
+            this.ownerAddress,
+            this.signingDoctagInstance
     )
 }
 
@@ -51,8 +62,8 @@ object KeyServerClient {
         HttpClient.newBuilder().build()
     }
 
-    fun loadPublicKey(signingParty: String, fingerprint: String): Triple<Boolean, PublicKeyResponse?, String?> {
-        val targetUrl = BASE_URL +"/pk/${signingParty}/${fingerprint}"
+    fun loadPublicKey(signingDoctagInstance: String, fingerprint: String): Triple<Boolean, PublicKeyResponse?, String?> {
+        val targetUrl = BASE_URL +"/pk/${signingDoctagInstance}/${fingerprint}"
 
         val request = HttpRequest.newBuilder()
                 .uri(URI.create(targetUrl))
@@ -61,7 +72,7 @@ object KeyServerClient {
 
         val resp = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-        logger.info("fetching public key for ${signingParty}/${fingerprint}")
+        logger.info("fetching public key for ${signingDoctagInstance}/${fingerprint}")
 
         return when(resp.statusCode()){
             200 -> {
@@ -79,7 +90,7 @@ object KeyServerClient {
         val publicKeyReq = ppk.toPublicKeyAddRequest()
 
         //val targetUrl = "http://127.0.0.1:16098/pk/${ppk.signingParty}"
-        val targetUrl = BASE_URL +"/pk/${ppk.signingParty}"
+        val targetUrl = BASE_URL +"/pk/${ppk.signingDoctagInstance}"
 
         val data = getJackson().writeValueAsString(publicKeyReq)
         val signature = makeSignature(loadPrivateKey(ppk.privateKey!!)!!, data)

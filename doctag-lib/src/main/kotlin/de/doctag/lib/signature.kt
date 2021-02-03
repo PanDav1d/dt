@@ -22,20 +22,20 @@ data class SignatureLoadingResult(
 
 
 data class DoctagSignature(
-        val validFrom: String,
-        val randomBuffer: String,
-        val keyFingerprint: String,
-        val signingParty: String,
-        val signingUser: String,
-        val documentUrl: String?,
-        val documentHash: String?,
-        val workflowHash: String?,
-        val previousSignaturesHash: String?,
-        val signature: String
+    val validFrom: String,
+    val randomBuffer: String,
+    val keyFingerprint: String,
+    val signingDoctagInstance: String,
+    val signingUser: String,
+    val documentUrl: String?,
+    val documentHash: String?,
+    val workflowHash: String?,
+    val previousSignaturesHash: String?,
+    val signature: String
 )
 {
     fun toDataString(): String
-        = "$signature?;$validFrom;$randomBuffer;$keyFingerprint;${signingParty};${signingUser.replace(';', ',')};${documentUrl?:""};${documentHash?:""};${workflowHash?:""};${previousSignaturesHash?:""}".trimEnd(';')
+        = "$signature?;$validFrom;$randomBuffer;$keyFingerprint;${signingDoctagInstance};${signingUser.replace(';', ',')};${documentUrl?:""};${documentHash?:""};${workflowHash?:""};${previousSignaturesHash?:""}".trimEnd(';')
 
     val validFromDateTime : ZonedDateTime
         get() {
@@ -46,19 +46,18 @@ data class DoctagSignature(
 
     companion object{
 
-        fun make(priv: String, pub: String, validity: Duration, signingParty: String, signingUser: String) = make(loadPrivateKey(priv)!!, loadPublicKey(pub)!!, validity, signingParty, signingUser)
+        fun make(priv: String, pub: String, validity: Duration, signingDoctagInstance: String, signingUser: String) = make(loadPrivateKey(priv)!!, loadPublicKey(pub)!!, validity, signingDoctagInstance, signingUser)
 
-        fun make(priv: PrivateKey, pub: PublicKey, validity: Duration, signingParty: String, signingUser: String) = makeWithUrl(priv, pub, validity, signingParty, signingUser, null, null, null, null)
+        fun make(priv: PrivateKey, pub: PublicKey, validity: Duration, signingDoctagInstance: String, signingUser: String) = makeWithUrl(priv, pub, validity, signingDoctagInstance, signingUser, null, null, null, null)
 
-        fun makeWithUrl(priv: PrivateKey, pub: PublicKey, validity: Duration, signingParty: String, signingUser: String, url: String?, documentHash: String?, workflowHash: String?, previousSignatures: String?): DoctagSignature{
+        fun makeWithUrl(priv: PrivateKey, pub: PublicKey, validity: Duration, signingDoctagInstance: String, signingUser: String, url: String?, documentHash: String?, workflowHash: String?, previousSignatures: String?): DoctagSignature{
             val randomBytes = ByteArray(12)
             SecureRandom().nextBytes(randomBytes)
             val validFrom = ZonedDateTime.now().withSecond(0).withZoneSameInstant(ZoneId.of("UTC"))
-            val validOn = ZonedDateTime.now().withSecond(0).plus(validity).withZoneSameInstant(ZoneId.of("UTC"))
 
             val fingerprint = publicKeyFingerprint(pub)
 
-            val rawSig = DoctagSignature(DateTimeFormatter.ISO_DATE_TIME.format(validFrom), Base64.getEncoder().encodeToString(randomBytes), fingerprint, signingParty, signingUser, url, documentHash, workflowHash, previousSignatures, "")
+            val rawSig = DoctagSignature(DateTimeFormatter.ISO_DATE_TIME.format(validFrom), Base64.getEncoder().encodeToString(randomBytes), fingerprint, signingDoctagInstance, signingUser, url, documentHash, workflowHash, previousSignatures, "")
             val rawSigString = rawSig.toDataString()
 
             logger.info("RawSigMessage: $rawSigString")
@@ -70,7 +69,7 @@ data class DoctagSignature(
 
         fun makeWithPPK(ppk: PrivatePublicKeyPair, validity: Duration, url: String?, documentHash: String?, workflowHash: String?, previousSignatureHash: String?) : DoctagSignature{
             val user = "${ppk.owner.firstName} ${ppk.owner.lastName}"
-            return makeWithUrl(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, validity, ppk.signingParty!!, user, url, documentHash, workflowHash, previousSignatureHash)
+            return makeWithUrl(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, validity, ppk.signingDoctagInstance!!, user, url, documentHash, workflowHash, previousSignatureHash)
         }
 
         fun fromCsv(tokens: List<String>):DoctagSignature {
@@ -78,14 +77,14 @@ data class DoctagSignature(
             val validFrom = tokens[1]
             val randomBuffer = tokens[2]
             val keyFingerprint = tokens[3]
-            val signingParty = tokens[4]
+            val signingDoctagInstance = tokens[4]
             val signingUser = tokens[5]
             val url = tokens.getOrNull(6)
             val documentHash = tokens.getOrNull(7)
             val workflowHash: String? = tokens.getOrNull(8)
             val prevSigHash = tokens.getOrNull(9)
 
-            return DoctagSignature(validFrom, randomBuffer, keyFingerprint, signingParty, signingUser, url, documentHash, workflowHash, prevSigHash, signature)
+            return DoctagSignature(validFrom, randomBuffer, keyFingerprint, signingDoctagInstance, signingUser, url, documentHash, workflowHash, prevSigHash, signature)
         }
 
         fun load(msg: String): SignatureLoadingResult{
@@ -95,7 +94,7 @@ data class DoctagSignature(
             val tokens = msg.split(";")
 
             val signatureObj = fromCsv(tokens)
-            val (successfullyLoaded, sig, error) = KeyServerClient.loadPublicKey(signatureObj.signingParty, signatureObj.keyFingerprint)
+            val (successfullyLoaded, sig, error) = KeyServerClient.loadPublicKey(signatureObj.signingDoctagInstance, signatureObj.keyFingerprint)
 
             return if(successfullyLoaded) {
                 val isValid = verifySignature(loadPublicKey(sig!!.publicKey)!!, ";" + msg.substringAfter(";"), signatureObj.signature)

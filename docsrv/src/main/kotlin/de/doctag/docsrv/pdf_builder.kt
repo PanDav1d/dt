@@ -4,8 +4,6 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import de.doctag.docsrv.model.*
 import org.litote.kmongo.findOneById
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 
 
 class PdfBuilder(val doc: Document, val db: DbContext)  {
@@ -83,15 +81,15 @@ class PdfBuilder(val doc: Document, val db: DbContext)  {
         <tr>
         <td class="tbl-key">Addresse</td>
         <td>
-            ${sig.publicKey?.issuer?.name1}<br />
-            ${sig.publicKey?.issuer?.name2?.plus("<br/>") ?:""}
-            ${sig.publicKey?.issuer?.street?.plus("<br/>")}
-            ${sig.publicKey?.issuer?.countryCode} - ${sig.publicKey?.issuer?.zipCode} ${sig.publicKey?.issuer?.city}<br />
+            ${sig.publicKey?.ownerAddress?.name1}<br />
+            ${sig.publicKey?.ownerAddress?.name2?.plus("<br/>") ?:""}
+            ${sig.publicKey?.ownerAddress?.street?.plus("<br/>")}
+            ${sig.publicKey?.ownerAddress?.countryCode} - ${sig.publicKey?.ownerAddress?.zipCode} ${sig.publicKey?.ownerAddress?.city}<br />
         </td>
         </tr>
         <tr>
         <td class="tbl-key">Doctag-System</td>
-        <td>${sig.doc?.signingParty}</td>
+        <td>${sig.doc?.signingDoctagInstance}</td>
         </tr>
         ${sig?.inputs?.map { renderWorkflowInput(it)}?.joinToString("\n") ?: ""}
         </table>

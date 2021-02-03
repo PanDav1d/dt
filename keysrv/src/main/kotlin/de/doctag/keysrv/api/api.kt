@@ -21,14 +21,22 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import java.time.ZonedDateTime
 
+
+class HealthCheckResponse(val healthy:Boolean)
+
 fun Routing.publicKeys(){
-    get("/pk/{signingParty}/{fingerprint}"){
-        val signingParty = call.parameters["signingParty"]
+
+    get("/health"){
+        call.respond(HttpStatusCode.OK, HealthCheckResponse(healthy = true))
+    }
+
+    get("/pk/{signingDoctagInstance}/{fingerprint}"){
+        val signingDoctagInstance = call.parameters["signingDoctagInstance"]
         val fingerprint = call.parameters["fingerprint"]
 
         val entry = DbContext.publicKeys.findOne(
             and(
-                PublicKeyEntry::signingParty eq signingParty,
+                PublicKeyEntry::signingDoctagInstance eq signingDoctagInstance,
                 PublicKeyEntry::fingerpint eq fingerprint
             )
         )
@@ -41,8 +49,8 @@ fun Routing.publicKeys(){
         }
     }
 
-    post("/pk/{signingParty}"){
-        val signingParty = call.parameters["signingParty"]
+    post("/pk/{signingDoctagInstance}"){
+        val signingDoctagInstance = call.parameters["signingDoctagInstance"]
 
         val rawText = String(call.receiveStream().readAllBytes(), Charsets.UTF_8)
         val rawEntry = gson.fromJson<PublicKeyEntry>(rawText)
@@ -56,11 +64,11 @@ fun Routing.publicKeys(){
         rawEntry._id = null
         rawEntry.created = ZonedDateTime.now()
         rawEntry.fingerpint = publicKeyFingerprint(pk)
-        rawEntry.signingParty = signingParty
+        rawEntry.signingDoctagInstance = signingDoctagInstance
 
         val dbEntry = DbContext.publicKeys.findOne(
             and(
-                PublicKeyEntry::signingParty eq rawEntry.signingParty,
+                PublicKeyEntry::signingDoctagInstance eq rawEntry.signingDoctagInstance,
                 PublicKeyEntry::fingerpint eq rawEntry.fingerpint
             )
         )

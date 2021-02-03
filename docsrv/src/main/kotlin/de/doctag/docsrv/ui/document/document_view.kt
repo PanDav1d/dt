@@ -182,8 +182,8 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                             }
                         }.new {
                             td().text(sig.role ?: "n.v.")
-                            td().text(sig.publicKey?.issuer?.name1 ?: "")
-                            td().text("${sig.publicKey?.issuer?.zipCode ?: ""} ${sig.publicKey?.issuer?.city ?: ""}")
+                            td().text(sig.publicKey?.ownerAddress?.name1 ?: "")
+                            td().text("${sig.publicKey?.ownerAddress?.zipCode ?: ""} ${sig.publicKey?.ownerAddress?.city ?: ""}")
                             td().text("${sig.publicKey?.owner?.firstName} ${sig.publicKey?.owner?.lastName}")
                             td().text(sig.signed?.formatDateTime() ?: "")
                             td().new {

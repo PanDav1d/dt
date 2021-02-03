@@ -96,10 +96,10 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
                     div(fomantic.ui.message.success).new {
                         div(fomantic.ui.header).text("Signatur gültig")
                         p().text("${sig.publicKey?.owner?.firstName} ${sig.publicKey?.owner?.lastName}")
-                        p().text("${sig.publicKey?.issuer?.name1}")
-                        p().text("${sig.publicKey?.issuer?.name2}")
-                        p().text("${sig.publicKey?.issuer?.street}")
-                        p().text("${sig.publicKey?.issuer?.countryCode} - ${sig.publicKey?.issuer?.zipCode} - ${sig.publicKey?.issuer?.city}")
+                        p().text("${sig.publicKey?.ownerAddress?.name1}")
+                        p().text("${sig.publicKey?.ownerAddress?.name2}")
+                        p().text("${sig.publicKey?.ownerAddress?.street}")
+                        p().text("${sig.publicKey?.ownerAddress?.countryCode} - ${sig.publicKey?.ownerAddress?.zipCode} - ${sig.publicKey?.ownerAddress?.city}")
                     }
                 }
                 else {

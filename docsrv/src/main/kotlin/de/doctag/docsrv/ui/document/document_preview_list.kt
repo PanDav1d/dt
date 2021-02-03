@@ -154,7 +154,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                                 document.getWorkflowStatus().forEach { (role, signature) ->
                                                     if(signature != null) {
                                                         val signedAt = signature.signed?.formatDateTime()
-                                                        i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.publicKey?.issuer?.name1}")
+                                                        i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.publicKey?.ownerAddress?.name1}")
                                                     }
                                                     else {
                                                         i(fomantic.ui.icon.circle.outline.grey).withPopup(role, "Noch nicht signiert")

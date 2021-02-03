@@ -7,10 +7,8 @@ import kweb.logger
 import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.DocumentId
 import de.doctag.docsrv.model.EmbeddedSignature
-import de.doctag.docsrv.model.Signature
 import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
-import kweb.util.gson
 import java.lang.Exception
 import java.net.URI
 import java.net.http.HttpClient
@@ -48,7 +46,7 @@ object DocServerClient {
                 loadPrivateKey(ppk.privateKey)!!,
                 loadPublicKey(ppk.publicKey)!!,
                 Duration.ofMinutes(1),
-                ppk.signingParty!!,
+                ppk.signingDoctagInstance!!,
                 ppk.owner.firstName + " " + ppk.owner.lastName,
                 doc.url,
                 null,

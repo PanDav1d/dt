@@ -24,8 +24,17 @@ data class PublicKeyEntry(
     val verboseName: String? = null,
     var created: ZonedDateTime? = null,
     var owner: Person = Person(),
-    var issuer: Address = Address(),
-    var signingParty: String? = null
+    var ownerAddress: Address = Address(),
+    var signingDoctagInstance: String? = null,
+    var verification: PublicKeyEntryVerification? = null
+)
+
+data class PublicKeyEntryVerification(
+    var hashOfPublicKeyEntry: String? = null,
+    var signedByPublicKey: String? = null,
+    var signedByParty: String? = null,
+    var signedAt: ZonedDateTime? = null,
+    var isAddressVerified: Boolean? = null
 )
 
 data class Person(

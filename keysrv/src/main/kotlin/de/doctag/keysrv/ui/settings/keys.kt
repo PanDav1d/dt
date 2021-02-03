@@ -43,7 +43,7 @@ fun ElementCreator<*>.handleKeySettings(){
                             rKeys.forEach { key ->
 
                                 tr().new {
-                                    td().text("${key.signingParty}/${key.fingerpint}")
+                                    td().text("${key.signingDoctagInstance}/${key.fingerpint}")
                                     td().text(key.verboseName ?: "")
                                     td().text(key.created?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) ?: "")
                                     td().text("${key.owner?.firstName} ${key.owner?.lastName}")

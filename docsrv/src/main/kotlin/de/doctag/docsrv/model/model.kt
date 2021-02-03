@@ -7,7 +7,6 @@ import de.doctag.lib.*
 import de.doctag.lib.model.Address
 import de.doctag.lib.model.PrivatePublicKeyPair
 import org.litote.kmongo.`in`
-import org.litote.kmongo.findOneById
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -265,8 +264,17 @@ data class Signature(
                             currentKey.publicKey,
                             currentKey.verboseName,
                             currentKey.owner,
-                            currentKey.issuer,
-                            currentKey.signingParty
+                            currentKey.ownerAddress,
+                            currentKey.signingDoctagInstance,
+                        currentKey.verification?.let {
+                            PublicKeyEntryVerificationResponse(
+                                it.hashOfPublicKeyEntry,
+                                it.signedByPublicKey,
+                                it.signedByParty,
+                                it.signedAt,
+                                it.isAddressVerified
+                            )
+                        }
                     ),
                     ZonedDateTime.now(),
                     sig.toDataString(),
