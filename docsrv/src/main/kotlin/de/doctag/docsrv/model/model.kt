@@ -268,7 +268,7 @@ data class Signature(
                             currentKey.signingDoctagInstance,
                         currentKey.verification?.let {
                             PublicKeyEntryVerificationResponse(
-                                it.hashOfPublicKeyEntry,
+                                it.signatureOfPublicKeyEntry,
                                 it.signedByPublicKey,
                                 it.signedByParty,
                                 it.signedAt,

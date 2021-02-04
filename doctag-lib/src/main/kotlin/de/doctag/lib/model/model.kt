@@ -25,11 +25,12 @@ data class Address(
 )
 
 data class PublicKeyVerification(
-    var hashOfPublicKeyEntry: String? = null,
+    var signatureOfPublicKeyEntry: String? = null,
     var signedByPublicKey: String? = null,
     var signedByParty: String? = null,
     var signedAt: ZonedDateTime? = null,
-    var isAddressVerified: Boolean? = null
+    var isAddressVerified: Boolean? = null,
+    var isSigningDoctagInstanceVerified: Boolean? = null
 )
 
 data class PrivatePublicKeyPair(

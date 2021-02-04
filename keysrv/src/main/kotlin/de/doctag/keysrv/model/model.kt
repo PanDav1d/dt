@@ -1,6 +1,13 @@
 package de.doctag.keysrv.model
 
+import de.doctag.lib.loadPrivateKey
+import de.doctag.lib.loadPublicKey
+import de.doctag.lib.makeSignature
+import de.doctag.lib.model.PrivatePublicKeyPair
+import de.doctag.lib.verifySignature
+import java.security.PrivateKey
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 data class Session(
     val sessionId:String,
@@ -27,14 +34,67 @@ data class PublicKeyEntry(
     var ownerAddress: Address = Address(),
     var signingDoctagInstance: String? = null,
     var verification: PublicKeyEntryVerification? = null
-)
+) {
+    private fun sign(privateKey: PrivateKey) : String{
+        val signature = makeSignature(privateKey, toCsv())
+        return signature
+    }
+
+    fun makeSignedCopy(ppk: PrivatePublicKeyPair, signedByParty: String, addressVerified : Boolean, doctagInstanceVerified: Boolean ): PublicKeyEntry {
+        val preSignedCopy = this.copy(verification = PublicKeyEntryVerification(
+            signedByPublicKey = ppk.publicKey,
+            signedAt = ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
+            signedByParty = signedByParty,
+            isAddressVerified = addressVerified,
+            isSigningDoctagInstanceVerified = doctagInstanceVerified
+        ))
+
+        val signature = preSignedCopy.sign(loadPrivateKey(ppk.privateKey)!!)
+        return preSignedCopy.copy(verification = preSignedCopy.verification!!.copy(
+            signatureOfPublicKeyEntry = signature
+        ))
+    }
+
+    fun verfiySignature() : Boolean {
+        return verifySignature(loadPublicKey(verification?.signedByPublicKey!!)!!, toCsv(), verification?.signatureOfPublicKeyEntry!!)
+    }
+
+    fun toCsv() : String{
+
+        val cols = listOf(
+            publicKey,
+            verboseName,
+            owner.firstName,
+            owner.lastName,
+            owner.email,
+            owner.phone,
+            owner.userId,
+            ownerAddress.name1,
+            ownerAddress.name2,
+            ownerAddress.city,
+            ownerAddress.street,
+            ownerAddress.zipCode,
+            ownerAddress.countryCode,
+            verification?.signedByPublicKey,
+            verification?.signedByParty,
+            verification?.signedAt,
+            if(verification?.isAddressVerified == true) "true" else "false",
+            if(verification?.isSigningDoctagInstanceVerified == true) "true" else "false"
+        )
+
+        return cols.joinToString(";")
+    }
+}
+
+
 
 data class PublicKeyEntryVerification(
-    var hashOfPublicKeyEntry: String? = null,
+    var signatureOfPublicKeyEntry: String? = null,
     var signedByPublicKey: String? = null,
     var signedByParty: String? = null,
-    var signedAt: ZonedDateTime? = null,
-    var isAddressVerified: Boolean? = null
+    var signedAt: String? = null,
+    var isAddressVerified: Boolean? = null,
+    var isSigningDoctagInstanceVerified: Boolean? = null
 )
 
 data class Person(

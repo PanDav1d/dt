@@ -2,6 +2,7 @@ package de.doctag.keysrv
 
 import com.google.gson.*
 import com.google.gson.annotations.SerializedName
+import de.doctag.keysrv.model.PublicKeyEntry
 import kweb.WebBrowser
 import kweb.util.gson
 import kweb.logger
@@ -94,11 +95,6 @@ fun toHex(array: ByteArray): String {
         hex
     }
 }
-
-
-
-
-
 
 
 internal object GsonHelper {

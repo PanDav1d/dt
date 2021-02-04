@@ -9,6 +9,13 @@ import de.bwaldvogel.mongo.MongoServer
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend
 import de.doctag.keysrv.model.DbContext
 import de.doctag.keysrv.model.PublicKeyEntry
+import de.doctag.lib.loadPrivateKey
+import de.doctag.lib.loadPublicKey
+import de.doctag.lib.makeSignature
+import de.doctag.lib.model.Address
+import de.doctag.lib.model.Person
+import de.doctag.lib.model.PrivatePublicKeyPair
+import de.doctag.lib.publicKeyFingerprint
 import io.ktor.application.Application
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -21,6 +28,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.net.InetSocketAddress
+import java.security.PublicKey
 import java.time.ZonedDateTime
 
 
@@ -49,22 +57,29 @@ class AddPrivateKeyTests() {
 
 
     @Test
-    fun `Test add public key`() {
-        val test = withTestApplication(Application::kwebFeature) {
+    fun `Test add public key with generated public key`() {
+        withTestApplication(Application::kwebFeature) {
+            val ppk = PrivatePublicKeyPair.make("die 4.te", "127.0.0.1", Address("Frank ENGLERT","Frank ENGLERT","ELISABETH-HATTEMER-STRAßE 4","Darmstadt","64289","DE"), Person("5e9759eb7c44946335a65387", "Frank","Englert","f.englert@gmail.com"))
+
+
+            val bodyStr = """{"publicKey":"${ppk.publicKey}","verboseName":"die 4.te","owner":{"userId":"5e9759eb7c44946335a65387","firstName":"Frank","lastName":"Englert","email":"f.englert@gmail.com"},"ownerAddress":{"name1":"Frank ENGLERT","name2":"Frank ENGLERT","street":"ELISABETH-HATTEMER-STRAßE 4","city":"Darmstadt","zipCode":"64289","countryCode":"DE"},"signingDoctagInstance":"127.0.0.1"}"""
+            val signature = makeSignature(loadPrivateKey(ppk.privateKey)!!, bodyStr)
+
+
             with(handleRequest(HttpMethod.Post, "/pk/docsrv.englert.xyz"){
                 addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                addHeader("X-Message-Signature", "MEYCIQDnH1bJgqlh6WajoI9U60041c9x+EFfgxhGcVrje4Xn1QIhALpX9tv48F34pjd+9F9hJo3ms2tCsTO040G7I4wUU9Yu")
-                setBody("""{"publicKey":"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjzFe3IuPhq3uTKAvkWlRxP+r0xeZYRxzLBQiEGAPcEDZaKG7SoneA7CTCf+0rjjjyZhBA/uVRtnwaG5jrFawlw\u003d\u003d","verboseName":"die 4.te","owner":{"userId":"5e9759eb7c44946335a65387","firstName":"Frank","lastName":"Englert","email":"f.englert@gmail.com"},"ownerAddress":{"name1":"Frank ENGLERT","name2":"Frank ENGLERT","street":"ELISABETH-HATTEMER-STRAßE 4","city":"Darmstadt","zipCode":"64289","countryCode":"DE"},"signingDoctagInstance":"127.0.0.1"}""")
+                addHeader("X-Message-Signature", "$signature")
+                setBody(bodyStr)
             }) {
                 Assertions.assertEquals(HttpStatusCode.OK, response.status())
                     val actualKeys = DbContext.publicKeys.find().toList()
                 Assertions.assertEquals(actualKeys.count(), 1)
-                Assertions.assertEquals(actualKeys[0].fingerpint, "1d4688fb")
+                Assertions.assertEquals(actualKeys[0].fingerpint, publicKeyFingerprint(loadPublicKey(ppk.publicKey)!!))
                 Assertions.assertEquals(actualKeys[0].signingDoctagInstance, "docsrv.englert.xyz")
             }
 
 
-            with(handleRequest(HttpMethod.Get, "/pk/docsrv.englert.xyz/1d4688fb")){
+            with(handleRequest(HttpMethod.Get, "/pk/docsrv.englert.xyz/${publicKeyFingerprint(loadPublicKey(ppk.publicKey)!!)}")){
                 Assertions.assertEquals(response.status(), HttpStatusCode.OK)
 
                 val gsonW = GsonBuilder().registerTypeAdapter(ZonedDateTime::class.java, GsonHelper.ZDT_DESERIALIZER).setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create()
@@ -78,6 +93,7 @@ class AddPrivateKeyTests() {
 
                 Assertions.assertEquals(certificate.owner.firstName , "Frank")
                 Assertions.assertEquals(certificate.owner.lastName , "Englert")
+                Assertions.assertEquals(certificate.verification, null)
             }
         }
     }
