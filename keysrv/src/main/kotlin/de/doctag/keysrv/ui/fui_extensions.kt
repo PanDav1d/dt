@@ -2,6 +2,7 @@ package de.doctag.keysrv.ui
 
 import kweb.classes
 import kweb.plugins.fomanticUI.FomanticUIClasses
+import kweb.set
 
 val FomanticUIClasses.lock : FomanticUIClasses
     get() {
@@ -24,6 +25,12 @@ val FomanticUIClasses.paw : FomanticUIClasses
 val FomanticUIClasses.tertiary : FomanticUIClasses
     get() {
         classes("tertiary")
+        return this
+    }
+
+val FomanticUIClasses.random : FomanticUIClasses
+    get() {
+        classes("random")
         return this
     }
 
@@ -57,6 +64,42 @@ val FomanticUIClasses.toastContainer : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.fileSignature: FomanticUIClasses
+    get(){
+        classes("file signature")
+        return this
+    }
+
+val FomanticUIClasses.userCheck: FomanticUIClasses
+    get(){
+        classes("user check")
+        return this
+    }
+
+val FomanticUIClasses.certificate: FomanticUIClasses
+    get(){
+        classes("certificate")
+        return this
+    }
+
+val FomanticUIClasses.calendarAlternate: FomanticUIClasses
+    get(){
+        classes("calendar alternate")
+        return this
+    }
+
+val FomanticUIClasses.server: FomanticUIClasses
+    get(){
+        classes("server")
+        return this
+    }
+
+val FomanticUIClasses.city: FomanticUIClasses
+    get(){
+        classes("city")
+        return this
+    }
+
 fun FomanticUIClasses.active(isActive: Boolean):FomanticUIClasses{
     if(isActive){
         classes("active")
@@ -71,3 +114,28 @@ fun FomanticUIClasses.visible(isVisible: Boolean):FomanticUIClasses{
     return this
 }
 
+fun FomanticUIClasses.checked(isChecked: Boolean) = withOptionalAttribute("checked", isChecked)
+
+
+
+fun FomanticUIClasses.withOptionalAttribute(name: String, isEnabled: Boolean) : FomanticUIClasses {
+    if(isEnabled){
+        classes(name)
+    }
+    else{
+        removeClass(name)
+    }
+    return this
+}
+
+fun Map<String, Any>.removeClass(cssClassName: String): Map<String, Any> {
+
+    val classAttributeValue = get("class")
+    val existing: List<String> = when (classAttributeValue) {
+        is String -> classAttributeValue.split(' ').filter { it!=cssClassName }
+        else -> listOf()
+    }
+    // TODO: This is inefficient when classes() is called multiple times
+    return set("class", (existing).joinToString(separator = " "))
+
+}

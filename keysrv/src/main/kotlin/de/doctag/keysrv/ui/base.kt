@@ -1,9 +1,11 @@
 package de.doctag.keysrv.ui
 
+import de.doctag.keysrv.ui.modals.keyGeneratorModal
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kweb.*
+import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
@@ -102,6 +104,15 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
                 }
             }
 
+            a(fomantic.item, href="#").apply {
+                new {
+                    i(fomantic.ui.random.icon)
+                }
+            }.on.click {
+                val modal = keyGeneratorModal()
+                modal.open()
+            }
+
             a(fomantic.item, href="/settings/users").new {
                 i(fomantic.ui.cog.icon)
             }
@@ -110,9 +121,11 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
 
     }
 
-    div(fomantic.ui.main.container).new {
+    div(fomantic.ui.main).apply {
+        setAttributeRaw("style", "width: 98vw; margin-left: 1vw;")
+    }.new {
 
-        div(fomantic.column).new {
+        //div(fomantic.column).new {
             div(fomantic.ui.vertical.segment).new {
 
                 h1(fomantic.ui.header).text(title)
@@ -121,7 +134,7 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
                 }
 
             }
-        }
+        //}
     }
 }
 
@@ -162,6 +175,14 @@ fun ElementCreator<*>.modal(header: String, content: ElementCreator<DivElement>.
     }
 
     return mv
+}
+
+fun ElementCreator<*>.itemWithIcon(iconClass: FomanticUIClasses, header: String, description:String) = div(fomantic.ui.item).new {
+    i(iconClass)
+    div(fomantic.content).new {
+        div(fomantic.header).text(header)
+        span().text(description)
+    }
 }
 
 class TabPane(val title:String, val block: ElementCreator<*>.()->Unit)

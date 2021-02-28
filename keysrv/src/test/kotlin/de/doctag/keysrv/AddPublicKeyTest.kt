@@ -2,6 +2,7 @@ package de.doctag.keysrv
 
 import Config
 import KeySrvConfig
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.salomonbrys.kotson.fromJson
 import com.google.gson.GsonBuilder
 import com.mongodb.ServerAddress
@@ -9,13 +10,10 @@ import de.bwaldvogel.mongo.MongoServer
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend
 import de.doctag.keysrv.model.DbContext
 import de.doctag.keysrv.model.PublicKeyEntry
-import de.doctag.lib.loadPrivateKey
-import de.doctag.lib.loadPublicKey
-import de.doctag.lib.makeSignature
+import de.doctag.lib.*
 import de.doctag.lib.model.Address
 import de.doctag.lib.model.Person
 import de.doctag.lib.model.PrivatePublicKeyPair
-import de.doctag.lib.publicKeyFingerprint
 import io.ktor.application.Application
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -36,8 +34,6 @@ class TestConfig(override val dbConnection: String, override val dbName: String)
 
 
 class AddPrivateKeyTests() {
-
-
 
     companion object {
         val server = MongoServer(MemoryBackend()).also {server->
@@ -62,11 +58,11 @@ class AddPrivateKeyTests() {
             val ppk = PrivatePublicKeyPair.make("die 4.te", "127.0.0.1", Address("Frank ENGLERT","Frank ENGLERT","ELISABETH-HATTEMER-STRAßE 4","Darmstadt","64289","DE"), Person("5e9759eb7c44946335a65387", "Frank","Englert","f.englert@gmail.com"))
 
 
-            val bodyStr = """{"publicKey":"${ppk.publicKey}","verboseName":"die 4.te","owner":{"userId":"5e9759eb7c44946335a65387","firstName":"Frank","lastName":"Englert","email":"f.englert@gmail.com"},"ownerAddress":{"name1":"Frank ENGLERT","name2":"Frank ENGLERT","street":"ELISABETH-HATTEMER-STRAßE 4","city":"Darmstadt","zipCode":"64289","countryCode":"DE"},"signingDoctagInstance":"127.0.0.1"}"""
+            val bodyStr = """{"publicKey":"${ppk.publicKey}","verboseName":"die 4.te","owner":{"userId":"5e9759eb7c44946335a65387","firstName":"Frank","lastName":"Englert","email":"f.englert@gmail.com"},"ownerAddress":{"name1":"Frank ENGLERT","name2":"Frank ENGLERT","street":"ELISABETH-HATTEMER-STRAßE 4","city":"Darmstadt","zipCode":"64289","countryCode":"DE"},"signingDoctagInstance":"docsrv.englert.xyz"}"""
             val signature = makeSignature(loadPrivateKey(ppk.privateKey)!!, bodyStr)
 
 
-            with(handleRequest(HttpMethod.Post, "/pk/docsrv.englert.xyz"){
+            with(handleRequest(HttpMethod.Post, "/pk/"){
                 addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 addHeader("X-Message-Signature", "$signature")
                 setBody(bodyStr)
@@ -82,8 +78,7 @@ class AddPrivateKeyTests() {
             with(handleRequest(HttpMethod.Get, "/pk/docsrv.englert.xyz/${publicKeyFingerprint(loadPublicKey(ppk.publicKey)!!)}")){
                 Assertions.assertEquals(response.status(), HttpStatusCode.OK)
 
-                val gsonW = GsonBuilder().registerTypeAdapter(ZonedDateTime::class.java, GsonHelper.ZDT_DESERIALIZER).setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create()
-                val certificate = gsonW.fromJson<PublicKeyEntry>(response.content!!)
+                val certificate = getJackson().readValue<PublicKeyEntry>(response.content!!)
 
                 Assertions.assertEquals(certificate.ownerAddress.city , "Darmstadt")
                 Assertions.assertEquals(certificate.ownerAddress.countryCode , "DE")

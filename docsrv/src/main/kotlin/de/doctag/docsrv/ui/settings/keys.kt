@@ -1,18 +1,19 @@
 package de.doctag.docsrv.ui.settings
 
 import de.doctag.docsrv.formatDateTime
-import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addKeyModal
-import de.doctag.docsrv.ui.modals.showSignatureModal
+import de.doctag.docsrv.ui.modals.showSignatureInfoModal
 import de.doctag.lib.KeyServerClient
+import de.doctag.lib.loadPublicKey
+import de.doctag.lib.publicKeyFingerprint
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
-import java.time.format.DateTimeFormatter
+import org.litote.kmongo.save
 
 fun ElementCreator<*>.handleKeySettings(){
     authRequired {
@@ -46,27 +47,46 @@ fun ElementCreator<*>.handleKeySettings(){
                                 th().text("Anzeigename")
                                 th().text("Erstellt am")
                                 th().text("von")
+                                th().new {
+                                    span().text("Verifizierung")
+                                    i(fomantic.ui.icon.info).withPopup(null, "Gibt an, ob der Schlüssel bereits von DocTag verifiziert wurde")
+                                }
+                                th().text("Gültig bis")
                                 th().text("Aktion")
                             }
                         }
                         tbody().new {
                             rKeys.forEach { key ->
 
+                                val verificationStatus = when{
+                                    key.verification?.signatureOfPublicKeyEntry != null  -> "ja"
+                                    else -> "nicht abgeschlossen"
+                                }
+
                                 tr().new {
                                     td().text(key.verboseName ?: "")
-                                    td().text(key.created?.formatDateTime() ?: "")
+                                    td().text(key.created ?: "")
                                     td().text("${key.owner?.firstName} ${key.owner?.lastName}")
+                                    td().text(verificationStatus)
+                                    td().text(key.verification?.signatureValidUntil ?: "---")
                                     td().new {
 
                                         i(fomantic.ui.paw.icon).on.click{
-                                            val signatureModal = showSignatureModal(key)
+                                            val signatureModal = showSignatureInfoModal(key)
                                             signatureModal.open()
                                         }
 
-                                        i(fomantic.ui.upload.icon).on.click {
-                                            val (success, msg) = KeyServerClient.publishPublicKey(key)
+                                        i(fomantic.ui.syncAlternate.icon).on.click {
+                                            val (success, keyServerResult) = KeyServerClient.loadPublicKey(key.signingDoctagInstance!!, publicKeyFingerprint(
+                                                loadPublicKey(key.publicKey)!!))
+
                                             if(success){
-                                                pageArea.showToast("Schlüssel veröffentlicht", ToastKind.Success)
+                                                if(keyServerResult?.verification != null){
+                                                    key.verification = keyServerResult.verification
+                                                    db().keys.save(key)
+                                                }
+
+                                                pageArea.showToast("Schlüssel aktualisiert", ToastKind.Success)
                                             }
                                             else {
                                                 pageArea.showToast("Veröffentlichen fehlgeschlagen.", ToastKind.Error)
@@ -75,22 +95,6 @@ fun ElementCreator<*>.handleKeySettings(){
 
                                         i(fomantic.ui.edit.icon).on.click {
                                             logger.info("Editing key ${key.verboseName}")
-
-                                            /*val editModal = editUserModal(user){ user, action ->
-                                                when(action){
-                                                    UserEditAction.UserDeleted -> {
-                                                        users.value = users.value.filter { it._id!=user._id }
-                                                        pageArea.showToast("Benutzer entfernt", ToastKind.Success)
-                                                    }
-                                                    UserEditAction.UserModified -> {
-                                                        users.value = users.value.map{
-                                                            if(it._id==user._id) user else it
-                                                        }
-                                                        pageArea.showToast("Benutzer bearbeitet", ToastKind.Success)
-                                                    }
-                                                }
-                                            }
-                                            editModal.open()*/
                                         }
                                     }
                                 }

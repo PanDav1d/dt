@@ -1,10 +1,10 @@
 package de.doctag.keysrv.model
 
-import de.doctag.lib.loadPrivateKey
-import de.doctag.lib.loadPublicKey
 import de.doctag.lib.makeSignature
-import de.doctag.lib.model.PrivatePublicKeyPair
-import de.doctag.lib.verifySignature
+import de.doctag.lib.model.Address
+import de.doctag.lib.model.BasePublicKeyEntry
+import de.doctag.lib.model.Person
+import de.doctag.lib.model.PublicKeyVerification
 import java.security.PrivateKey
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -26,90 +26,34 @@ data class User(
 
 data class PublicKeyEntry(
     var _id: String? = null,
-    var publicKey : String? = null,
     var fingerpint: String? = null,
-    val verboseName: String? = null,
-    var created: ZonedDateTime? = null,
-    var owner: Person = Person(),
-    var ownerAddress: Address = Address(),
-    var signingDoctagInstance: String? = null,
-    var verification: PublicKeyEntryVerification? = null
-) {
+    override var publicKey : String? = null,
+    override var verboseName: String? = null,
+    override var created: String? = null,
+    override var owner: Person = Person(),
+    override var ownerAddress: Address = Address(),
+    override var signingDoctagInstance: String? = null,
+    override var verification: PublicKeyVerification? = null
+) : BasePublicKeyEntry(publicKey, verboseName, created, owner, ownerAddress, signingDoctagInstance, verification) {
+
     private fun sign(privateKey: PrivateKey) : String{
-        val signature = makeSignature(privateKey, toCsv())
+        val signature = makeSignature(privateKey, getSignatureMessage())
         return signature
     }
 
-    fun makeSignedCopy(ppk: PrivatePublicKeyPair, signedByParty: String, addressVerified : Boolean, doctagInstanceVerified: Boolean ): PublicKeyEntry {
-        val preSignedCopy = this.copy(verification = PublicKeyEntryVerification(
-            signedByPublicKey = ppk.publicKey,
-            signedAt = ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
+    fun makeSignedCopy(publicKey: String, privateKey: PrivateKey?, signedByParty: String, addressVerified : Boolean, doctagInstanceVerified: Boolean ): PublicKeyEntry {
+        val preSignedCopy = this.copy(verification = PublicKeyVerification(
+            signedByPublicKey = publicKey,
+            signedAt = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+            signatureValidUntil = ZonedDateTime.now().plusYears(1).format(DateTimeFormatter.ISO_LOCAL_DATE),
             signedByParty = signedByParty,
             isAddressVerified = addressVerified,
             isSigningDoctagInstanceVerified = doctagInstanceVerified
         ))
 
-        val signature = preSignedCopy.sign(loadPrivateKey(ppk.privateKey)!!)
+        val signature = preSignedCopy.sign(privateKey!!)
         return preSignedCopy.copy(verification = preSignedCopy.verification!!.copy(
             signatureOfPublicKeyEntry = signature
         ))
     }
-
-    fun verfiySignature() : Boolean {
-        return verifySignature(loadPublicKey(verification?.signedByPublicKey!!)!!, toCsv(), verification?.signatureOfPublicKeyEntry!!)
-    }
-
-    fun toCsv() : String{
-
-        val cols = listOf(
-            publicKey,
-            verboseName,
-            owner.firstName,
-            owner.lastName,
-            owner.email,
-            owner.phone,
-            owner.userId,
-            ownerAddress.name1,
-            ownerAddress.name2,
-            ownerAddress.city,
-            ownerAddress.street,
-            ownerAddress.zipCode,
-            ownerAddress.countryCode,
-            verification?.signedByPublicKey,
-            verification?.signedByParty,
-            verification?.signedAt,
-            if(verification?.isAddressVerified == true) "true" else "false",
-            if(verification?.isSigningDoctagInstanceVerified == true) "true" else "false"
-        )
-
-        return cols.joinToString(";")
-    }
 }
-
-
-
-data class PublicKeyEntryVerification(
-    var signatureOfPublicKeyEntry: String? = null,
-    var signedByPublicKey: String? = null,
-    var signedByParty: String? = null,
-    var signedAt: String? = null,
-    var isAddressVerified: Boolean? = null,
-    var isSigningDoctagInstanceVerified: Boolean? = null
-)
-
-data class Person(
-        var userId: String? = null,
-        var firstName: String? = null,
-        var lastName: String? = null,
-        var email: String? = null,
-        var phone: String? = null
-)
-
-data class Address(
-        var name1: String? = null,
-        var name2: String? = null,
-        var street: String? = null,
-        var city: String? = null,
-        var zipCode: String? = null,
-        var countryCode: String? = null
-)

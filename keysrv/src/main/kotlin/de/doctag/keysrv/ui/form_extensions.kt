@@ -1,6 +1,8 @@
 package de.doctag.keysrv.ui
 
 import com.github.salomonbrys.kotson.fromJson
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kweb.*
 import kweb.util.random
 import kweb.util.gson
@@ -231,6 +233,83 @@ fun ElementCreator<*>.fileInput(label: String?=null, placeholder:String?=null, r
     return formInput
 }
 
+fun ElementCreator<*>.loadingCheckBoxInput(label:String, bindTo: KVar<Boolean>, errorText: String? = null, validationFunc: suspend ()->Boolean){
+    val bindToStr = KVar(bindTo.toString())
+    val loading = KVar(false)
+    val validationResult = KVar(true)
+
+    bindToStr.addListener { oldVal, newVal ->
+        val currentVal = newVal.toBoolean()
+        bindTo.value = currentVal
+    }
+    div(fomantic.field).new {
+        render(bindTo){isChecked->
+            render(loading){ isLoading->
+                render(validationResult){ isValid ->
+
+                    if(loading.value){
+                        div(fomantic.ui.mini.inline.loader.active)
+                        label(attributes = mapOf("style" to "padding-left: 0.85714em;")).text(label)
+                    } else {
+                        div(fomantic.ui.checkbox.checked(bindTo.value))
+                            .apply {
+                                on.click {
+                                    GlobalScope.launch {
+                                        loading.value = true
+                                        validationResult.value = validationFunc()
+                                        loading.value = false
+
+                                        if (validationResult.value) {
+                                            bindTo.value = !bindTo.value
+                                        }
+                                    }
+                                }
+                            }
+                            .new {
+                                input(InputType.checkbox, attributes = mapOf("class" to "hidden")).apply {
+                                    if (isChecked) {
+                                        checked(true)
+                                    }
+                                }
+                                label().new{
+                                    span().text(label)
+                                    if(!isValid && errorText != null){
+                                        span(fomantic.ui.red.text).text(" $errorText")
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun ElementCreator<*>.checkBoxInput(label:String, bindTo: KVar<Boolean>) {
+    val bindToStr = KVar(bindTo.toString())
+    bindToStr.addListener { oldVal, newVal ->
+        val currentVal = newVal.toBoolean()
+        bindTo.value = currentVal
+    }
+    div(fomantic.field).new {
+        render(bindTo){isChecked->
+            div(fomantic.ui.checkbox.checked(bindTo.value))
+                .apply {
+                    on.click {
+                        bindTo.value = !bindTo.value
+                    }
+                }
+                .new {
+                    input(InputType.checkbox,attributes = mapOf("class" to "hidden")).apply {
+                        if(isChecked) {
+                            checked(true)
+                        }
+                    }
+                    label().text(label)
+                }
+        }
+    }
+}
 
 fun ElementCreator<*>.formControl(block: ElementCreator<*>.(form:FormControl)->Unit) : FormControl {
     val fc = FormControl()

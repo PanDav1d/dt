@@ -6,6 +6,7 @@ import de.doctag.docsrv.api.EmbeddedDocument
 import de.doctag.lib.*
 import de.doctag.lib.model.Address
 import de.doctag.lib.model.PrivatePublicKeyPair
+import de.doctag.lib.model.PublicKeyVerification
 import org.litote.kmongo.`in`
 import java.time.Duration
 import java.time.ZonedDateTime
@@ -263,16 +264,19 @@ data class Signature(
                     PublicKeyResponse(
                             currentKey.publicKey,
                             currentKey.verboseName,
+                            currentKey.created,
                             currentKey.owner,
                             currentKey.ownerAddress,
                             currentKey.signingDoctagInstance,
                         currentKey.verification?.let {
-                            PublicKeyEntryVerificationResponse(
+                            PublicKeyVerification(
                                 it.signatureOfPublicKeyEntry,
                                 it.signedByPublicKey,
                                 it.signedByParty,
                                 it.signedAt,
-                                it.isAddressVerified
+                                it.signatureValidUntil,
+                                it.isAddressVerified,
+                                it.isSigningDoctagInstanceVerified
                             )
                         }
                     ),

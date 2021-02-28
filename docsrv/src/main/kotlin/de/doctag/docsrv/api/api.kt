@@ -2,26 +2,27 @@ package de.doctag.docsrv.api
 
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
-import de.doctag.lib.DoctagSignature
+import de.doctag.lib.generateRandomString
+import de.doctag.lib.loadPrivateKey
+import de.doctag.lib.makeSignature
+import de.doctag.lib.model.PrivatePublicKeyPair
+import de.doctag.lib.model.PublicKeyVerification
+import de.doctag.lib.model.PublicKeyVerificationResult
 import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.request.host
-import io.ktor.request.receiveStream
+import io.ktor.request.*
 import io.ktor.response.header
 import io.ktor.response.respond
 import io.ktor.response.respondBytes
 import io.ktor.routing.*
 import kweb.logger
-import kweb.util.gson
 import org.apache.pdfbox.io.MemoryUsageSetting
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.bson.internal.Base64
 import org.litote.kmongo.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.time.ZonedDateTime
 
 
 fun Routing.docsrvApi(){
@@ -36,6 +37,43 @@ fun Routing.docsrvApi(){
         val config = db().currentConfig
 
         call.respond(HttpStatusCode.OK, DiscoveryResponse("123"))
+    }
+
+    get("/k/{publicKeyFingerprint}/verify/{seed}"){
+        val publicKeyFingerprint = call.parameters["publicKeyFingerprint"]
+        val seed = call.parameters["seed"]
+        val seed2 = generateRandomString(1024)
+
+        val ppk = db().keys.findOne(PrivatePublicKeyPair::fingerprint eq publicKeyFingerprint)
+        val privKey = ppk?.privateKey?.let{loadPrivateKey(it)}
+        if(privKey != null){
+            val msg = "$seed$$seed2"
+            val signature = makeSignature(privKey, msg)
+
+            val result = PublicKeyVerificationResult(msg, signature)
+            call.respond(HttpStatusCode.OK, result)
+        }
+        else {
+            call.respond(HttpStatusCode.BadRequest, "Public Key is unknown")
+        }
+    }
+
+    put("/k/{publicKeyFingerprint}/verification"){
+        val publicKeyFingerprint = call.parameters["publicKeyFingerprint"]
+        val verification = call.receive<PublicKeyVerification>()
+        val ppk = db().keys.findOne(PrivatePublicKeyPair::fingerprint eq publicKeyFingerprint)
+
+        if(ppk != null) {
+            ppk.verification = verification
+            if(ppk.verifySignature()){
+                db().keys.save(ppk)
+                call.respond(HttpStatusCode.OK, "Verification updated")
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "verification not valid. reject verification record")
+            }
+        } else {
+            call.respond(HttpStatusCode.BadRequest, "Public Key is unknown")
+        }
     }
 
     get("/d/{documentId}/download"){

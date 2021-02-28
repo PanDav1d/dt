@@ -2,13 +2,10 @@ package de.doctag.docsrv.remotes
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.doctag.docsrv.api.EmbeddedDocument
-import de.doctag.docsrv.fixHttps
 import kweb.logger
-import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.DocumentId
 import de.doctag.docsrv.model.EmbeddedSignature
 import de.doctag.lib.*
-import de.doctag.lib.model.PrivatePublicKeyPair
 import java.lang.Exception
 import java.net.URI
 import java.net.http.HttpClient
@@ -23,8 +20,6 @@ object DocServerClient {
 
     fun checkHealth(remote: String) : Boolean {
         val remoteUrl = remote.removePrefix("http://").removePrefix("https://").removeSuffix("/")
-
-
         try {
             val request = HttpRequest.newBuilder()
                     .uri(URI.create("https://${remoteUrl}/health"))
@@ -39,39 +34,6 @@ object DocServerClient {
             logger.info("Health check failed: ${ex.message}")
             return false
         }
-    }
-
-    fun signDocument(doc: Document, ppk: PrivatePublicKeyPair) : Boolean {
-        val sigMessage = DoctagSignature.makeWithUrl(
-                loadPrivateKey(ppk.privateKey)!!,
-                loadPublicKey(ppk.publicKey)!!,
-                Duration.ofMinutes(1),
-                ppk.signingDoctagInstance!!,
-                ppk.owner.firstName + " " + ppk.owner.lastName,
-                doc.url,
-                null,
-                null,
-                null)
-
-        val rawSigMessage = sigMessage.toDataString()
-
-        val request = HttpRequest.newBuilder()
-            .uri(URI.create(doc.url!!))
-            .timeout(Duration.ofMinutes(1))
-            .header("Accept", "application/json")
-            .header("Content-Type", "application/json; charset=utf-8")
-            .POST(HttpRequest.BodyPublishers.ofString(rawSigMessage, Charsets.UTF_8))
-            .build()
-
-        logger.info("Destination: ${doc.url}")
-        logger.info("data ${rawSigMessage}")
-
-        val resp = client.send(request, HttpResponse.BodyHandlers.ofString())
-
-        logger.info("Response status ${resp.statusCode()}")
-        logger.info("Response string ${resp.body()}")
-
-        return resp.statusCode() == 200
     }
 
     fun pushSignature(doctagUrl: String, sig:EmbeddedSignature) : Boolean {

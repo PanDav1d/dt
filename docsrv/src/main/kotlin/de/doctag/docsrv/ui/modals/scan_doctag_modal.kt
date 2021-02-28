@@ -3,15 +3,11 @@ package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.api.EmbeddedDocument
 import de.doctag.docsrv.formatDateTime
-import de.doctag.docsrv.isUrl
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.db
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.modal
 import de.doctag.docsrv.ui.scanQrCode
 import de.doctag.docsrv.ui.tertiary
-import de.doctag.lib.DoctagSignature
-import de.doctag.lib.SignatureLoadingResult
+import de.doctag.lib.isUrl
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar

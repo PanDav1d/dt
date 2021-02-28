@@ -1,6 +1,7 @@
 package de.doctag.keysrv
 
 import de.doctag.keysrv.model.PublicKeyEntry
+import de.doctag.lib.loadPrivateKey
 import de.doctag.lib.loadPublicKey
 import de.doctag.lib.model.Address
 import de.doctag.lib.model.Person
@@ -27,8 +28,8 @@ class SignPublicKeyTest {
             publicKeyFingerprint(loadPublicKey(ppkToSign.publicKey)!!),
             ppkToSign.verboseName,
             ppkToSign.created,
-            ppkToSign.owner.let{de.doctag.keysrv.model.Person(it.userId, it.firstName, it.lastName, it.email, it.phone)},
-            ppkToSign.ownerAddress.let { de.doctag.keysrv.model.Address(it.name1, it.name2, it.street, it.city, it.zipCode, it.countryCode) },
+            ppkToSign.owner.let{Person(it.userId, it.firstName, it.lastName, it.email, it.phone)},
+            ppkToSign.ownerAddress.let { Address(it.name1, it.name2, it.street, it.city, it.zipCode, it.countryCode) },
             "fe.kd.doctag.de",
             null
         )
@@ -36,10 +37,10 @@ class SignPublicKeyTest {
         //
         // When
         //
-        val signedKeyEntry = publicKeyEntry.makeSignedCopy(signingKey, "keyserver.doctag.de", false, true)
+        val signedKeyEntry = publicKeyEntry.makeSignedCopy(signingKey.publicKey!!, loadPrivateKey(signingKey.privateKey)!!, "keyserver.doctag.de", false, true)
         Assertions.assertEquals(signedKeyEntry.verification!!.isAddressVerified, false)
         Assertions.assertEquals(signedKeyEntry.verification!!.isSigningDoctagInstanceVerified, true)
         Assertions.assertEquals(signedKeyEntry.verification!!.signedByParty, "keyserver.doctag.de")
-        Assertions.assertEquals(signedKeyEntry.verfiySignature(), true)
+        Assertions.assertEquals(signedKeyEntry.verifySignature(), true)
     }
 }

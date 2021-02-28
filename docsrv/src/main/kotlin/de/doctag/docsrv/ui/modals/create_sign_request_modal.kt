@@ -1,12 +1,12 @@
 package de.doctag.docsrv.ui.modals
 
-import de.doctag.docsrv.fixHttps
 import de.doctag.docsrv.formatDateTime
-import de.doctag.docsrv.isUrl
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.DoctagSignature
+import de.doctag.lib.fixHttps
+import de.doctag.lib.isUrl
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar

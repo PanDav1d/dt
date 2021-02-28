@@ -1,8 +1,6 @@
 package de.doctag.lib
 
-import de.doctag.lib.model.Address
-import de.doctag.lib.model.Person
-import de.doctag.lib.model.PrivatePublicKeyPair
+import de.doctag.lib.model.*
 import org.slf4j.LoggerFactory
 import java.lang.Exception
 import java.net.URI
@@ -13,9 +11,11 @@ import java.time.Duration
 import java.time.ZonedDateTime
 
 
-var BASE_URL = "https://keysvr.doctag.de/"
+var BASE_URL = "https://keyserver.doctag.de/"
 
 val logger = LoggerFactory.getLogger("de.doctag.lib.keysrv_client");
+
+
 
 data class PublicKeyAddRequest(
     var publicKey : String? = null,
@@ -26,21 +26,14 @@ data class PublicKeyAddRequest(
 )
 
 data class PublicKeyResponse(
-    var publicKey : String? = null,
-    val verboseName: String? = null,
-    var owner: Person = Person(),
-    var ownerAddress: Address = Address(),
-    var signingDoctagInstance: String? = null,
-    var verification: PublicKeyEntryVerificationResponse? = null
-)
-
-data class PublicKeyEntryVerificationResponse(
-    var hashOfPublicKeyEntry: String? = null,
-    var signedByPublicKey: String? = null,
-    var signedByParty: String? = null,
-    var signedAt: ZonedDateTime? = null,
-    var isAddressVerified: Boolean? = null
-)
+    override var publicKey : String? = null,
+    override val verboseName: String? = null,
+    override var created: String? = null,
+    override var owner: Person = Person(),
+    override var ownerAddress: Address = Address(),
+    override var signingDoctagInstance: String? = null,
+    override var verification: PublicKeyVerification? = null
+): BasePublicKeyEntry(publicKey, verboseName, created, owner, ownerAddress, signingDoctagInstance, verification)
 
 
 fun PrivatePublicKeyPair.toPublicKeyAddRequest() : PublicKeyAddRequest {
@@ -87,10 +80,11 @@ object KeyServerClient {
     }
 
     fun publishPublicKey(ppk: PrivatePublicKeyPair) : Pair<Boolean, String?>{
+        logger.info("called publishPublicKey")
+
         val publicKeyReq = ppk.toPublicKeyAddRequest()
 
-        //val targetUrl = "http://127.0.0.1:16098/pk/${ppk.signingParty}"
-        val targetUrl = BASE_URL +"/pk/${ppk.signingDoctagInstance}"
+        val targetUrl = "$BASE_URL/pk/"
 
         val data = getJackson().writeValueAsString(publicKeyReq)
         val signature = makeSignature(loadPrivateKey(ppk.privateKey!!)!!, data)

@@ -4,6 +4,7 @@ import com.github.salomonbrys.kotson.fromJson
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.*
+import de.doctag.lib.generateRandomString
 import de.doctag.lib.toSha1HexString
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

@@ -25,7 +25,7 @@ data class DoctagSignature(
     val validFrom: String,
     val randomBuffer: String,
     val keyFingerprint: String,
-    val signingDoctagInstance: String,
+    val signingDoctagInstance: String?,
     val signingUser: String,
     val documentUrl: String?,
     val documentHash: String?,
@@ -94,7 +94,7 @@ data class DoctagSignature(
             val tokens = msg.split(";")
 
             val signatureObj = fromCsv(tokens)
-            val (successfullyLoaded, sig, error) = KeyServerClient.loadPublicKey(signatureObj.signingDoctagInstance, signatureObj.keyFingerprint)
+            val (successfullyLoaded, sig, error) = KeyServerClient.loadPublicKey(signatureObj.signingDoctagInstance!!, signatureObj.keyFingerprint)
 
             return if(successfullyLoaded) {
                 val isValid = verifySignature(loadPublicKey(sig!!.publicKey)!!, ";" + msg.substringAfter(";"), signatureObj.signature)

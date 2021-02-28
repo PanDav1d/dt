@@ -1,6 +1,5 @@
 package de.doctag.docsrv.ui.document
 
-import de.doctag.docsrv.fixHttps
 import de.doctag.docsrv.model.DocumentId
 import de.doctag.docsrv.model.EmbeddedSignature
 import de.doctag.docsrv.model.authRequired
@@ -10,6 +9,7 @@ import de.doctag.docsrv.ui.ToastKind
 import de.doctag.docsrv.ui.modals.signDocumentModal
 import de.doctag.docsrv.ui.pageBorderAndTitle
 import de.doctag.docsrv.ui.tertiary
+import de.doctag.lib.fixHttps
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar

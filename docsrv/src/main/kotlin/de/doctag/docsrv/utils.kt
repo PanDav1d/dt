@@ -94,8 +94,6 @@ fun BufferedImage.asDataUrlImage() : String{
     return "data:image/png;base64,"+Base64.encode(bos.toByteArray())
 }
 
-private val source = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-fun generateRandomString(length: Long) = java.util.Random().ints(length, 0, source.length).asSequence().map(source::get).joinToString("")
 
 fun ZonedDateTime.formatDateTime(shortYearFormat: Boolean = false) : String {
     val yearFormat = if(shortYearFormat) "yy" else "yyyy"
@@ -105,13 +103,9 @@ fun ZonedDateTime.formatDateTime(shortYearFormat: Boolean = false) : String {
 fun ZonedDateTime.formatDate() = this.withZoneSameInstant(ZoneId.of("Europe/Berlin")).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
 
-fun String.fixHttps() = replace("https://127.0.0.1","http://127.0.0.1")
-
 object Resources {
     fun load(relPath: String) = javaClass.classLoader.getResource(relPath).readText()
 }
-
-fun String.isUrl(): Boolean = this.startsWith("https://")
 
 data class DataUrlResult(val contentType:String,val base64Content:String )
 fun String.fromDataUrl(): DataUrlResult {
@@ -126,3 +120,5 @@ fun String?.isImage():Boolean {
 fun String?.isPdf():Boolean {
     return this!=null && this.contains("pdf")
 }
+
+fun Boolean.toYesNoString(): String = if(this) "ja" else "nein"

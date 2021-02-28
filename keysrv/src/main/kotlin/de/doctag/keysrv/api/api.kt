@@ -1,9 +1,11 @@
 package de.doctag.keysrv.api
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.salomonbrys.kotson.fromJson
 import de.doctag.keysrv.BadRequest
 import de.doctag.keysrv.model.DbContext
 import de.doctag.keysrv.model.PublicKeyEntry
+import de.doctag.lib.getJackson
 import de.doctag.lib.loadPublicKey
 import de.doctag.lib.publicKeyFingerprint
 import de.doctag.lib.verifySignature
@@ -20,6 +22,7 @@ import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 
 class HealthCheckResponse(val healthy:Boolean)
@@ -49,11 +52,18 @@ fun Routing.publicKeys(){
         }
     }
 
-    post("/pk/{signingDoctagInstance}"){
-        val signingDoctagInstance = call.parameters["signingDoctagInstance"]
+    post("/pk/"){
 
         val rawText = String(call.receiveStream().readAllBytes(), Charsets.UTF_8)
-        val rawEntry = gson.fromJson<PublicKeyEntry>(rawText)
+
+        if(rawText.length > 4096){
+            throw BadRequest("Request size exceeded. Max allowed: 4096. But was ${rawText.length}")
+        }
+
+        val rawEntry = getJackson().readValue<PublicKeyEntry>(rawText) //gson.fromJson<PublicKeyEntry>(rawText)
+
+        // Todo: Verify if signingDoctagInstance is reachable and really owns the private key which belongs to the public key
+
         val signature = call.request.header("X-Message-Signature") ?: throw BadRequest("No X-Message-Signature Header found")
         val pk = loadPublicKey(rawEntry.publicKey) ?: throw BadRequest("Failed to load Public key")
 
@@ -62,9 +72,8 @@ fun Routing.publicKeys(){
         }
 
         rawEntry._id = null
-        rawEntry.created = ZonedDateTime.now()
+        rawEntry.created = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         rawEntry.fingerpint = publicKeyFingerprint(pk)
-        rawEntry.signingDoctagInstance = signingDoctagInstance
 
         val dbEntry = DbContext.publicKeys.findOne(
             and(
@@ -76,6 +85,6 @@ fun Routing.publicKeys(){
             DbContext.publicKeys.insertOne(rawEntry)
         }
 
-        call.respond(HttpStatusCode.OK, rawEntry)
+        call.respond(HttpStatusCode.OK, rawEntry.copy(verification = dbEntry?.verification))
     }
 }
