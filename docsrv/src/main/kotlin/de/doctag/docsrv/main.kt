@@ -34,7 +34,6 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.jetty.Jetty
 import io.ktor.websocket.WebSockets
 import kweb.*
-import kweb.plugins.fomanticUI.fomantic
 import kweb.plugins.fomanticUI.fomanticUIPlugin
 import kweb.state.KVar
 import java.time.Duration

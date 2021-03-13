@@ -43,7 +43,6 @@ fun WebBrowser.clearSession() {
     val sessionId = getOrCreateSessionId()
     doc.cookie.set("SESSION", UUID.randomUUID().toString(), expires = Duration.ofDays(14))
     sessionId?.let{Sessions.remove(sessionId)}
-
 }
 
 object Sessions {

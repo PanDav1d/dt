@@ -37,35 +37,38 @@ fun ElementCreator<*>.drawDoctagElement(file: FileData, onSubmit:(file:FileData,
     val doctagImg = getQRCodeImageAsDataUrl(doctag, 90, 90)
     val documentImg = renderPdfAsImage(file.base64Content!!).asDataUrlImage()
 
-    element("script", mapOf("src" to "/ressources/canvas.js"))
+
+
     val canvas = canvas(420, 594).apply {
         this.setAttributeRaw("style", "border: 1px solid black;)")
     }//.focus()
 
-    GlobalScope.launch {
-        delay(100)
-        browser.execute("""
-        canvas = document.getElementById("${canvas.id}");
-        context = canvas.getContext("2d");
-        
-        
-        currentX = canvas.width/2;
-        currentY = canvas.height/2;
-        
-        star_img.onload = function() {
-            _Go();
-        };
-        
-        background_img.onload = function() {
-            context.drawImage(background_img, 0, 0);
+    element("script").text("""
+        function displayCanvas() {
+            canvas = document.getElementById("${canvas.id}");
+            context = canvas.getContext("2d");
+            
+            
+            currentX = canvas.width/2;
+            currentY = canvas.height/2;
+            
+            star_img.onload = function() {
+                _Go();
+            };
+            
+            background_img.onload = function() {
+                context.drawImage(background_img, 0, 0);
+            }
+            
+            background_img.src='${documentImg}';
+            star_img.src='${doctagImg}';
+            
+            canvas.focus();
         }
-        
-        background_img.src='${documentImg}';
-        star_img.src='${doctagImg}';
-        
-        canvas.focus();
-        """.trimIndent())
-    }
+    """.trimIndent())
+
+    element("script", mapOf("src" to "/ressources/canvas.js", "onload" to "displayCanvas()"))
+
 
     div(fomantic.divider.hidden)
     buttonWithLoader("Übernehmen"){
