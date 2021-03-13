@@ -271,17 +271,18 @@ enum class DisplayMessageKind{
 data class UserMessage(val kind:DisplayMessageKind, val header:String, val text:String)
 
 
-fun Element.withPopup(title:String?, content:String?){
-    content?.let {
-        setAttributeRaw("data-content", content)
-    }
-    title?.let {
-        setAttributeRaw("data-title", title)
-    }
+fun Element.withPopup(title:String?, content:String?, distanceAway: Int = 60){
+    setAttributeRaw("data-position", "top left")
 
     browser.execute("""
         $('#${this@withPopup.id}')
-          .popup()
+          .popup({
+            position : 'top left',
+            title    : '${title?:""}',
+            content  : '${content?:""}',
+            forcePosition : true,
+            distanceAway: $distanceAway
+          })
         ;
     """.trimIndent())
 

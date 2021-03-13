@@ -6,6 +6,7 @@ import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.generateRandomString
 import de.doctag.lib.toSha1HexString
+import io.ktor.util.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ import org.litote.kmongo.findOne
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.regex
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 import java.time.ZonedDateTime
 import javax.imageio.ImageIO
 import kotlin.random.Random
@@ -98,7 +100,13 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                             logger.info("Received file ${file.fileName}")
 
                             val (contentType, data) = file.base64Content.fromDataUrl()
-                            val docId = extractDocumentIdOrNull(data)
+                            val docId = try {
+                                extractDocumentIdOrNull(data)
+                            } catch(ex:Exception){
+                                logger.error(ex)
+                                logger.error("Failed to extract document id. Assume no document id is present")
+                                null
+                            }
 
                             logger.info("Has doctag? ${docId != null}. Full url ${docId?.fullUrl}")
 
