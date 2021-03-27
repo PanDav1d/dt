@@ -7,6 +7,7 @@ import de.doctag.lib.toSha1HexString
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
@@ -132,6 +133,7 @@ fun ElementCreator<*>.scanQrCode(onScanSuccessful:(String)->Unit){
             }
 
             cameraResponse?.cameras?.get(rActiveCamera)?.id?.let {cameraId ->
+                runBlocking { delay(1000) }
                 startScanning(cameraId) { qrCode ->
                     isScanning = true
                     qrCode.qrCode?.let {

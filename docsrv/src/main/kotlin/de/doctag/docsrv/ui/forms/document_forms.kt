@@ -144,6 +144,11 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                     div(fomantic.ui.field).new {
                         label().text("Workflow wählen")
                         val initial = db().currentConfig.workflow?.defaultWorkflowId
+
+                        initial?.let {
+                            document.value.workflow = db().workflows.findOneById(initial)
+                        }
+
                         dropdown(db().workflows.find().map { it._id to (it.name ?:"") }.toMap(), KVar(initial)).onSelect { selectedWorkflowId->
                             if(selectedWorkflowId != null) {
                                 document.value.workflow = db().workflows.findOneById(selectedWorkflowId)
