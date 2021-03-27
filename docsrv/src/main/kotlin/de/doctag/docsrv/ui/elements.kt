@@ -102,7 +102,7 @@ private fun ElementCreator<*>.stopScanning(){
 fun ElementCreator<*>.scanQrCode(onScanSuccessful:(String)->Unit){
 
     val cameras = KVar<GetCamerasResponse?>(null)
-    val activeCamera = KVar<Int>(0)
+    val activeCamera = KVar(0)
     var isScanning = false
 
     listCameras { cameraResponse ->

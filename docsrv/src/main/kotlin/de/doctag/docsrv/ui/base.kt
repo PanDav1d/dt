@@ -166,6 +166,7 @@ fun ElementCreator<*>.pageHeader(title: String) : PageArea {
                     }
                     SelectedAction.SIGN_DOCUMENT->{
                         val modal = signDocumentModal(sig.document.document){signedDocument,_->
+                            db().files.insertMany(sig.document.files)
                             db().documents.save(signedDocument)
                             area.showToast("Dokument signiert", ToastKind.Success)
                         }

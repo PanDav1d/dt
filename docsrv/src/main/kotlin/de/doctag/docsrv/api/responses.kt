@@ -2,9 +2,6 @@ package de.doctag.docsrv.api
 
 import de.doctag.docsrv.model.*
 import de.doctag.lib.toSha1HexString
-import java.lang.Math.abs
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 data class HealthCheckResponse(
         val isHealthy: Boolean
@@ -41,8 +38,8 @@ data class EmbeddedDocument(
 
             val expectedSigHash = seenSignatures.calculateSignatureHash()
 
-            if(expectedSigHash != sig.doc?.previousSignaturesHash){
-                kweb.logger.error("Expected signature hash does not match. Expected: ${expectedSigHash} != ${sig.doc?.previousSignaturesHash}")
+            if(expectedSigHash != sig.data?.previousSignaturesHash){
+                kweb.logger.error("Expected signature hash does not match. Expected: ${expectedSigHash} != ${sig.data?.previousSignaturesHash}")
                 return false
             }
 

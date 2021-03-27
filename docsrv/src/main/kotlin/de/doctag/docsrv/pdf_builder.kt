@@ -76,20 +76,20 @@ class PdfBuilder(val doc: Document, val db: DbContext)  {
         </tr>
         <tr>
         <td class="tbl-key">Name</td>
-        <td>${sig.doc?.signingUser}</td>
+        <td>${sig.data?.signingUser}</td>
         </tr>
         <tr>
         <td class="tbl-key">Addresse</td>
         <td>
-            ${sig.publicKey?.ownerAddress?.name1}<br />
-            ${sig.publicKey?.ownerAddress?.name2?.plus("<br/>") ?:""}
-            ${sig.publicKey?.ownerAddress?.street?.plus("<br/>")}
-            ${sig.publicKey?.ownerAddress?.countryCode} - ${sig.publicKey?.ownerAddress?.zipCode} ${sig.publicKey?.ownerAddress?.city}<br />
+            ${sig.signedByKey?.ownerAddress?.name1}<br />
+            ${sig.signedByKey?.ownerAddress?.name2?.plus("<br/>") ?:""}
+            ${sig.signedByKey?.ownerAddress?.street?.plus("<br/>")}
+            ${sig.signedByKey?.ownerAddress?.countryCode} - ${sig.signedByKey?.ownerAddress?.zipCode} ${sig.signedByKey?.ownerAddress?.city}<br />
         </td>
         </tr>
         <tr>
         <td class="tbl-key">Doctag-System</td>
-        <td>${sig.doc?.signingDoctagInstance}</td>
+        <td>${sig.data?.signingDoctagInstance}</td>
         </tr>
         ${sig?.inputs?.map { renderWorkflowInput(it)}?.joinToString("\n") ?: ""}
         </table>

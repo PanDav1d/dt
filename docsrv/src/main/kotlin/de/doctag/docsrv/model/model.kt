@@ -23,7 +23,12 @@ data class DocsrvConfig(
         var outboundMail: OutboundMailConfig? = null,
         var inboundMail: InboundMailConfig? = null,
         var design: DesignConfig? = null,
-        var workflow: WorkflowConfig? = null
+        var workflow: WorkflowConfig? = null,
+        var security: SecurityConfig? = null
+)
+
+data class SecurityConfig(
+    var acceptSignaturesByUnverifiedKeys: Boolean? = null
 )
 
 data class WorkflowConfig(
@@ -84,6 +89,12 @@ data class DocumentId(
     }
 }
 
+enum class DocumentSignRequestStatus {
+    REQUESTED,
+    SIGNED,
+    REJECTED
+}
+
 data class DocumentSignRequest(
         var _id: String? = null,
         var doctagUrl: String? = null,
@@ -91,7 +102,8 @@ data class DocumentSignRequest(
         val requestingParty: Address? = null,
         val createdBy: DocumentSignRequestUser? = null,
         val timestamp: ZonedDateTime? = ZonedDateTime.now(),
-        var signed: Boolean = false
+        var signedTimestamp: ZonedDateTime? = null,
+        var status: DocumentSignRequestStatus = DocumentSignRequestStatus.REQUESTED
 )
 
 data class DocumentSignRequestUser(
@@ -181,7 +193,7 @@ fun List<Signature>.calculateSignatureHash():String{
     if(this.isEmpty()){
         return "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     }
-    return this.map { it.doc?.signature }.joinToString(",").toSha1HexString()
+    return this.map { it.data?.signature }.joinToString(",").toSha1HexString()
 }
 
 fun List<WorkflowInputResult>.calculateSha1Hash(role:String?)  : String {
@@ -213,31 +225,31 @@ data class EmbeddedSignature(
 }
 
 data class Signature(
-        var doc : DoctagSignature? = null,
-        var publicKey: PublicKeyResponse? = null,
-        var signed: ZonedDateTime? = null,
-        var originalMessage: String? = null,
-        var role: String? = null,
-        var inputs: List<WorkflowInputResult>? = null
+    var data : DoctagSignatureData? = null,
+    var signedByKey: PublicKeyResponse? = null,
+    var signed: ZonedDateTime? = null,
+    var originalMessage: String? = null,
+    var role: String? = null,
+    var inputs: List<WorkflowInputResult>? = null
 ) {
     @JsonIgnore
     fun isValid(): Boolean {
 
         val msg = this.originalMessage ?: return false
-        val sig = this.doc?.signature ?: return false
-        val pk = publicKey?.publicKey?.let {
+        val sig = this.data?.signature ?: return false
+        val pk = signedByKey?.publicKey?.let {
             loadPublicKey(it)
         } ?: return false
 
-        val currentSig = DoctagSignature.fromCsv(msg.split(";"))
+        val currentSig = DoctagSignatureData.fromCsv(msg.split(";"))
 
-        if(currentSig.workflowHash != inputs?.calculateSha1Hash(this.role)){
+        if(currentSig.workflowHash != inputs?.calculateSha1Hash(this.role) ?: ""){
             logger.info("Workflow hash does not match! Signature is not valid")
             return false
         }
 
-        if(!this.doc!!.validFromDateTime.isBefore(this.signed!!.plusMinutes(1)) || !this.doc!!.validFromDateTime.isAfter(this.signed!!.minusMinutes(1))) {
-            kweb.logger.error("Signature date does not match. Expected: ${this.signed!!.format(DateTimeFormatter.ISO_DATE_TIME)} != ${this.doc?.validFromDateTime!!.format(DateTimeFormatter.ISO_DATE_TIME)}")
+        if(!this.data!!.validFromDateTime.isBefore(this.signed!!.plusMinutes(1)) || !this.data!!.validFromDateTime.isAfter(this.signed!!.minusMinutes(1))) {
+            kweb.logger.error("Signature date does not match. Expected: ${this.signed!!.format(DateTimeFormatter.ISO_DATE_TIME)} != ${this.data?.validFromDateTime!!.format(DateTimeFormatter.ISO_DATE_TIME)}")
             return false
         }
 
@@ -250,7 +262,7 @@ data class Signature(
         fun make(currentKey: PrivatePublicKeyPair, documentUrl: String?, documentHash:String?, role:String?, result: List<WorkflowInputResult>?, previousSignatureHash: String?) : Signature{
 
             val workflowHash = result?.calculateSha1Hash(role )
-            val sig = DoctagSignature.makeWithPPK(
+            val sig = DoctagSignatureData.makeWithPPK(
                     currentKey,
                     Duration.ofSeconds(60),
                     documentUrl,

@@ -96,8 +96,6 @@ fun Routing.docsrvApi(){
         val renderer = doc?.let{PdfBuilder(doc, db())}
 
         renderer?.let { fd ->
-            //call.response.header("Content-Disposition", """attachment; filename="${doc.originalFileName}"""")
-
             val signaturePage = renderer.render().toByteArray()
 
             val merger = PDFMergerUtility()
@@ -150,16 +148,15 @@ fun Routing.docsrvApi(){
             val rawSignature = String(call.receiveStream().readAllBytes(), Charsets.UTF_8)
             val signedMessage = EmbeddedSignature.load(rawSignature)
 
+            logger.info("Signature is loaded")
+            logger.info("Is signature valid? ${signedMessage.signature.isValid()}")
+            logger.info("Is signing key verified? ${signedMessage.signature.signedByKey?.verifySignature()}")
 
+            val doc = docId?.let { db().documents.findOne(Document::url eq "https://$hostName/d/$docId") } ?: throw NotFound("Document with id $docId")
 
-            logger.info("Signature is valid")
-
-            val doc = docId?.let { db().documents.findOne(Document::url eq "https://$hostName/d/$docId") } ?: throw NotFound("Document with id ${docId}")
-
-            if(signedMessage.signature.doc?.documentUrl != doc.url){
-                throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature. ${signedMessage.signature.doc?.documentUrl} != ${doc.url}")
+            if(signedMessage.signature.data?.documentUrl != doc.url){
+                throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature. ${signedMessage.signature.data?.documentUrl} != ${doc.url}")
             }
-
 
             signedMessage.files.forEach {
                 db().files.save(it)

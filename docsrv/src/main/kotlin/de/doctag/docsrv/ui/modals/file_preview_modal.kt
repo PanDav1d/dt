@@ -2,17 +2,11 @@ package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.FileData
-import de.doctag.docsrv.model.authenticatedUser
 import de.doctag.docsrv.ui.file
 import de.doctag.docsrv.ui.modal
 import de.doctag.docsrv.ui.pdf
-import de.doctag.lib.DoctagSignature
-import de.doctag.lib.model.PrivatePublicKeyPair
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
-import java.time.Duration
-import java.time.format.DateTimeFormatter
-
 
 
 fun ElementCreator<*>.filePreviewModal(file: FileData) = modal("Vorschau"){ modal->

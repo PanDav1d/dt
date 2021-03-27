@@ -3,6 +3,7 @@ package de.doctag.docsrv.ui.modals
 import de.doctag.docsrv.fromDataUrl
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
+import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
@@ -169,6 +170,10 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
             val addSignature = doc.makeSignature(currentKey, role.value?.role, realResults)
 
             doc.signatures = (doc.signatures ?:listOf()) + addSignature
+
+            val files = addSignature.inputs?.mapNotNull { it.fileId }?.distinct()?.mapNotNull { db().files.findOneById(it) }
+            val embeddedSignature = EmbeddedSignature(files ?: listOf(), addSignature)
+            DocServerClient.pushSignature(doc.url!!, embeddedSignature)
 
             db().documents.save(doc)
             onSignFunc(doc, addSignature)

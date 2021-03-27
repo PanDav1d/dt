@@ -122,7 +122,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
             rDocument.url?.let {url->
 
                 val m = modal("Dokumentenaddresse"){
-                    img(src= getQRCodeImageAsDataUrl(url, 400,400))
+                    img(src= getQRCodeImageAsDataUrl(url, 400,400, 5))
                     a(href=url).text(url)
                 }
 
@@ -182,9 +182,9 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                             }
                         }.new {
                             td().text(sig.role ?: "n.v.")
-                            td().text(sig.publicKey?.ownerAddress?.name1 ?: "")
-                            td().text("${sig.publicKey?.ownerAddress?.zipCode ?: ""} ${sig.publicKey?.ownerAddress?.city ?: ""}")
-                            td().text("${sig.publicKey?.owner?.firstName} ${sig.publicKey?.owner?.lastName}")
+                            td().text(sig.signedByKey?.ownerAddress?.name1 ?: "")
+                            td().text("${sig.signedByKey?.ownerAddress?.zipCode ?: ""} ${sig.signedByKey?.ownerAddress?.city ?: ""}")
+                            td().text("${sig.signedByKey?.owner?.firstName} ${sig.signedByKey?.owner?.lastName}")
                             td().text(sig.signed?.formatDateTime() ?: "")
                             td().new {
                             }

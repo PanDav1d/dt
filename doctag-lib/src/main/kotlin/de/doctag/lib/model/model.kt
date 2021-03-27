@@ -53,8 +53,11 @@ open class BasePublicKeyEntry(
     open var verification: PublicKeyVerification? = null
 ) {
     fun verifySignature() : Boolean {
+
+        val publicKey = verification?.signedByPublicKey?.let { loadPublicKey(it) } ?: return false
+
         return de.doctag.lib.verifySignature(
-            loadPublicKey(verification?.signedByPublicKey!!)!!,
+            publicKey,
             getSignatureMessage(),
             verification?.signatureOfPublicKeyEntry!!
         )

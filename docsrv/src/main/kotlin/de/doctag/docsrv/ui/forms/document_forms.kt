@@ -36,9 +36,8 @@ enum class DocumentAddState{
 data class ImagePositionOnCanvas(val x: Float, val y: Float)
 fun ElementCreator<*>.drawDoctagElement(file: FileData, onSubmit:(file:FileData, doctag:String)->Unit) {
     val doctag = "https://${db().currentConfig.hostname}/d/${generateRandomString(16)}"
-    val doctagImg = getQRCodeImageAsDataUrl(doctag, 90, 90)
+    val doctagImg = getQRCodeImageAsDataUrl(doctag, 60, 60, 1)
     val documentImg = renderPdfAsImage(file.base64Content!!).asDataUrlImage()
-
 
 
     val canvas = canvas(420, 594).apply {

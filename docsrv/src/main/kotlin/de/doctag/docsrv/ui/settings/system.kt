@@ -74,6 +74,14 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                 SystemSettingsActiveItem.SEARCH->{
                                     search_settings_form()
                                 }
+                                SystemSettingsActiveItem.SECURITY->{
+                                    security_settings_form {
+                                        db().currentConfig.let { config ->
+                                            config.security = it
+                                            db().config.save(config)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -88,7 +96,8 @@ enum class SystemSettingsActiveItem {
     MAIL,
     WORKFLOW,
     DESIGN,
-    SEARCH
+    SEARCH,
+    SECURITY
 }
 
 fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
@@ -98,5 +107,6 @@ fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.WORKFLOW), "/settings/system/workflow").text("Workflows")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.DESIGN), "/settings/system/design").text("Design")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SEARCH), "/settings/system/search").text("Suche")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SECURITY), "/settings/system/security").text("Sicherheit")
     }
 }

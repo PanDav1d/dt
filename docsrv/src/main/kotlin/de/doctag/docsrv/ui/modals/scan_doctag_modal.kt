@@ -61,6 +61,7 @@ fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->U
                     }
                     button(fomantic.ui.button).text("Signieren").on.click {
                         logger.info("Signing document")
+                        logger.info("Embedded document contains the following files:")
                         onScanSuccessful(ScanDocTagResult(SelectedAction.SIGN_DOCUMENT, embeddedDoc))
                         modal.close()
                     }

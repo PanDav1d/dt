@@ -2,10 +2,7 @@ package de.doctag.docsrv.ui.document
 
 
 import de.doctag.docsrv.formatDateTime
-import de.doctag.docsrv.model.Document
-import de.doctag.docsrv.model.DocumentSignRequest
-import de.doctag.docsrv.model.authRequired
-import de.doctag.docsrv.model.db
+import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.AttachmentImporter
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addDocumentModal
@@ -50,6 +47,7 @@ fun ElementCreator<*>.handleSignRequestList() {
                                 th().text("Rolle")
                                 th().text("Erfasst von")
                                 th().text("Erstellt am")
+                                th().text("Status")
                                 th().text("Aktion")
                             }
                         }
@@ -67,10 +65,17 @@ fun ElementCreator<*>.handleSignRequestList() {
                                     td().text (req.createdBy?.userName ?:"")
                                     td().text(req.timestamp?.formatDateTime() ?: "")
                                     td().new {
+                                        when(req.status){
+                                            DocumentSignRequestStatus.REQUESTED -> span().text("Angefragt")
+                                            DocumentSignRequestStatus.REJECTED -> span().text("Abgelehnt")
+                                            DocumentSignRequestStatus.SIGNED -> span().text("Signiert")
+                                        }
+                                    }
+                                    td().new {
 
                                         i(fomantic.ui.key.icon).on.click {
                                             logger.info("Opening document ${req._id}")
-                                            browser.url.value = "/doc_sign_requests/${req._id}"
+                                            browser.navigateTo("/doc_sign_requests/${req._id}")
                                         }
                                     }
                                 }

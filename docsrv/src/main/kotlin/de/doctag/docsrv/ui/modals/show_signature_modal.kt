@@ -1,16 +1,13 @@
 package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.*
-import de.doctag.docsrv.model.authenticatedUser
 import de.doctag.docsrv.ui.modal
 import de.doctag.docsrv.ui.selectable
-import de.doctag.lib.DoctagSignature
 import de.doctag.lib.loadPublicKey
 import de.doctag.lib.model.PrivatePublicKeyPair
 import de.doctag.lib.publicKeyFingerprint
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
-import java.time.Duration
 
 fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal("Schlüssel ${
     publicKeyFingerprint(loadPublicKey(key.publicKey)!!)} anzeigen"){ modal->

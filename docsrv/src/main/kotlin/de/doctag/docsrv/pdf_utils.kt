@@ -44,7 +44,7 @@ fun makePdfWithDoctag(url: String, xRel: Float, yRel: Float, relativeWidth: Floa
 
 
     //val firstPage = pdf.getDocumentCatalog().pages.get(0)
-    val imgToAdd = PDImageXObject.createFromByteArray(pdf, getQRCodeImageAsPng(url, 300, 300).toByteArray(), "doctag_img.png")
+    val imgToAdd = PDImageXObject.createFromByteArray(pdf, getQRCodeImageAsPng(url, 100, 100, margin = 5).toByteArray(), "doctag_img.png")
 
     val contentStream = PDPageContentStream(pdf, firstPage, PDPageContentStream.AppendMode.APPEND, true)
 
@@ -61,7 +61,7 @@ fun makePdfWithDoctag(url: String, xRel: Float, yRel: Float, relativeWidth: Floa
 
     val boxWidth = firstPage.cropBox.width/relativeWidth
 
-    contentStream.drawImage(imgToAdd, (startX) * xRel - boxWidth / 2, height - (startY) * yRel - boxWidth / 2, boxWidth, boxWidth)
+    contentStream.drawImage(imgToAdd, (startX) * xRel - boxWidth / 2 + 0.1f*boxWidth, height - (startY) * yRel - boxWidth / 2+ 0.1f*boxWidth, 0.8f*boxWidth, 0.8f*boxWidth)
     contentStream.close()
 
     return pdf

@@ -4,7 +4,7 @@ import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.*
-import de.doctag.lib.DoctagSignature
+import de.doctag.lib.DoctagSignatureData
 import de.doctag.lib.fixHttps
 import de.doctag.lib.isUrl
 import kweb.*
@@ -91,7 +91,7 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
                 }
             }
             else -> {
-                val sig = DoctagSignature.load(code)
+                val sig = DoctagSignatureData.load(code)
                 if(sig.valid){
                     div(fomantic.ui.message.success).new {
                         div(fomantic.ui.header).text("Signatur gültig")

@@ -1,6 +1,7 @@
 package de.doctag.docsrv
 
 import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
 import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
 import de.doctag.docsrv.model.FileData
@@ -76,16 +77,16 @@ fun getSalt(): ByteArray {
 }
 
 
-fun getQRCodeImageAsPng(text: String, width: Int, height:Int):ByteArrayOutputStream {
+fun getQRCodeImageAsPng(text: String, width: Int, height:Int, margin: Int=10):ByteArrayOutputStream {
     val qrCodeWriter = QRCodeWriter()
-    val bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height)
+    val bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, mapOf(EncodeHintType.MARGIN to margin))
     val pngOutputStream = ByteArrayOutputStream()
     MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
     return pngOutputStream
 }
 
-fun getQRCodeImageAsDataUrl(text: String, width: Int, height: Int): String {
-    return "data:image/png;base64,"+Base64.encode(getQRCodeImageAsPng(text, width, height).toByteArray())
+fun getQRCodeImageAsDataUrl(text: String, width: Int, height: Int, margin: Int): String {
+    return "data:image/png;base64,"+Base64.encode(getQRCodeImageAsPng(text, width, height, margin).toByteArray())
 }
 
 fun BufferedImage.asDataUrlImage() : String{
