@@ -4,9 +4,7 @@ import kweb.plugins.fomanticUI.fomantic
 import kotlin.random.Random
 
 import de.doctag.docsrv.generatePasswordHash
-import de.doctag.docsrv.model.DocsrvConfig
-import de.doctag.docsrv.model.User
-import de.doctag.docsrv.model.db
+import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.centeredBox
 import de.doctag.docsrv.ui.forms.userAddForm
@@ -30,6 +28,17 @@ enum class SetupSteps {
     LOADING_PAGE,
     RESULT_PAGE
 }
+
+private fun defaultWorkflow() = Workflow(name = "Default", actions = listOf(
+    WorkflowAction("Verlader", inputs = listOf()),
+    WorkflowAction("Transporteur", inputs = listOf(WorkflowInput("FZG", "Zum Transport eingesetztes Fahrzeug", kind = WorkflowInputKind.TextInput))),
+    WorkflowAction("Warenempfänger", inputs = listOf(
+                WorkflowInput("Vorbehalte", "Abweichungen bei der Zustellung / Freitext", kind = WorkflowInputKind.TextInput),
+                WorkflowInput("Schadensdoku", "Fotos von etwaigen Beschädigungen", kind = WorkflowInputKind.FileInput)
+            )
+        )
+    )
+)
 
 fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
@@ -115,10 +124,20 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
                         setupState.value = setupState.value.plus("Caddy Server neu starten")
                         shellExec("sudo service caddy reload")
 
+
                         logger.info("Saving setup to db")
+
+
                         setupState.value = setupState.value.plus("Datenbank erzeugen")
                         db(instance.domainName!!).users.save(userInstance.value!!)
-                        db(instance.domainName!!).config.save(DocsrvConfig(_id = "1", hostname = instance.domainName!!))
+
+                        val wf = defaultWorkflow()
+                        wf.apply {
+                            db(instance.domainName!!).workflows.save(wf)
+                        }
+                        db(instance.domainName!!).config.save(DocsrvConfig(_id = "1", hostname = instance.domainName!!, workflow = WorkflowConfig(defaultWorkflowId = wf._id)))
+
+
                         DbContext.hostedInstances.save(instance)
 
 
@@ -140,6 +159,7 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
                         }
                     }
+
                     SetupSteps.RESULT_PAGE -> {
                         h2().text("Einrichtung abgeschlossen")
                         span().text("Das System wurde erfolgreich eingerichtet. Weiter zur ")
