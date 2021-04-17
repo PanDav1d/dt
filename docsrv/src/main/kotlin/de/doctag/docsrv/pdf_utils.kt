@@ -20,6 +20,16 @@ import java.awt.image.BufferedImage
 import java.io.*
 import java.util.*
 import javax.imageio.ImageIO
+import org.apache.pdfbox.pdmodel.interactive.form.PDField
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog
+import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission
+import kotlin.random.Random
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature
+
+
 
 
 fun extractDocumentIdOrNull(b64: String): DocumentId? {
@@ -67,10 +77,51 @@ fun makePdfWithDoctag(url: String, xRel: Float, yRel: Float, relativeWidth: Floa
     return pdf
 }
 
-fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, relativeWidth: Float):String{
+fun PDDocument.enableProtection(){
+    val ap = AccessPermission()
+    ap.setCanModify(false)
+    ap.setCanFillInForm(false)
+    ap.setCanModifyAnnotations(false)
+    ap.setReadOnly()
+    val spp = StandardProtectionPolicy(Random.nextLong().toString(), "", ap)
+    spp.encryptionKeyLength = 128
+    this.protect(spp)
+}
+
+fun signDetached(document: PDDocument) {
+
+    // create signature dictionary
+    val signature = PDSignature()
+    signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE)
+    signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED)
+    signature.name = "Example User"
+    signature.location = "Los Angeles, CA"
+    signature.reason = "Testing"
+    // TODO extract the above details from the signing certificate? Reason as a parameter?
+
+    // the signing date, needed for valid signature
+    signature.signDate = Calendar.getInstance()
+
+    // Optional: certify
+
+    val signatureOptions = SignatureOptions()
+    // Size can vary, but should be enough for purpose.
+    signatureOptions.preferredSignatureSize = SignatureOptions.DEFAULT_SIGNATURE_SIZE * 2
+    // register signature dictionary and sign interface
+    document.addSignature(signature, signatureOptions)
+
+
+}
+
+fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, relativeWidth: Float, formData: Map<String, String>? = null):String{
     val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
     val pdf = PDDocument.load(stream)
+
     pdf.use{
+        formData?.forEach { fieldName, value ->
+            pdf.setField(fieldName, value)
+        }
+
         val watermark = makePdfWithDoctag(url, xRel, yRel, relativeWidth)
         val overlay = Overlay()
         overlay.setInputPDF(pdf)
@@ -79,9 +130,24 @@ fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, rela
         val watermarkedDoc = overlay.overlay(mapOf())
 
         val output = ByteArrayOutputStream()
+
+        watermarkedDoc.enableProtection()
         watermarkedDoc.save(output)
         watermarkedDoc.save("test.pdf")
         return Base64.getEncoder().encodeToString(output.toByteArray())
+    }
+}
+
+
+
+fun PDDocument.setField(name: String, value: String?) {
+    val docCatalog: PDDocumentCatalog = this.documentCatalog
+    val acroForm = docCatalog.acroForm
+    val field = acroForm.getField(name)
+    if (field != null) {
+        field.setValue(value)
+    } else {
+        System.err.println("No field found with name:$name")
     }
 }
 
@@ -106,6 +172,31 @@ fun extractTextFromPdf(b64: String): String {
         val pdfStripper = PDFTextStripper()
         return pdfStripper.getText(pdf)
     }
+}
+
+fun extractFormFieldsFromPdf(b64: String) : List<PDField> {
+    val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
+    val pdf = PDDocument.load(stream)
+
+    val docCatalog: PDDocumentCatalog = pdf.documentCatalog
+    val acroForm = docCatalog.acroForm
+    return acroForm?.fields?.flatMap { extractFieldList(it).toList() } ?: listOf()
+}
+
+private fun extractFieldList(field: PDField) : List<PDField> {
+
+    val result = mutableListOf<PDField>()
+
+    if (field is PDNonTerminalField) {
+        for (child in field.children) {
+            val subfields : List<PDField> = extractFieldList(child).toList()
+            result.addAll(subfields)
+        }
+    }
+    else {
+        result.add(field)
+    }
+    return result
 }
 
 

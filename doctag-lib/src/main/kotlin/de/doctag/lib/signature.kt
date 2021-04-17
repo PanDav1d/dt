@@ -1,6 +1,7 @@
 package de.doctag.lib
 
 import de.doctag.lib.model.PrivatePublicKeyPair
+import java.lang.IllegalStateException
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.SecureRandom
@@ -69,7 +70,12 @@ data class DoctagSignatureData(
 
         fun makeWithPPK(ppk: PrivatePublicKeyPair, validity: Duration, url: String?, documentHash: String?, workflowHash: String?, previousSignatureHash: String?) : DoctagSignatureData{
             val user = "${ppk.owner.firstName} ${ppk.owner.lastName}"
-            return makeWithUrl(loadPrivateKey(ppk.privateKey)!!, loadPublicKey(ppk.publicKey)!!, validity, ppk.signingDoctagInstance!!, user, url, documentHash, workflowHash, previousSignatureHash)
+
+            val privKey = loadPrivateKey(ppk.privateKey) ?: throw IllegalStateException("Unable to load private key")
+            val pubKey = loadPublicKey(ppk.publicKey) ?: throw IllegalStateException("Unable to load public key")
+            val instanceUrl = ppk.signingDoctagInstance ?: throw IllegalStateException("Unable to detect signingInstanceUrl")
+
+            return makeWithUrl(privKey, pubKey, validity, instanceUrl, user, url, documentHash, workflowHash, previousSignatureHash)
         }
 
         fun fromCsv(tokens: List<String>):DoctagSignatureData {

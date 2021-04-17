@@ -19,6 +19,7 @@ import io.ktor.routing.*
 import kweb.logger
 import org.apache.pdfbox.io.MemoryUsageSetting
 import org.apache.pdfbox.multipdf.PDFMergerUtility
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.bson.internal.Base64
 import org.litote.kmongo.*
 import java.io.ByteArrayInputStream
@@ -106,7 +107,14 @@ fun Routing.docsrvApi(){
             merger.destinationStream = output
             merger.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly())
 
-            call.respondBytes(output.toByteArray(), ContentType.parse("application/pdf"))
+            val outputDoc = output.toByteArray()
+            val pdf = PDDocument.load(outputDoc)
+            pdf.enableProtection()
+
+            val finalOutput = ByteArrayOutputStream()
+            pdf.save(finalOutput)
+
+            call.respondBytes(finalOutput.toByteArray(), ContentType.parse("application/pdf"))
         } ?: call.respond(HttpStatusCode.NotFound, "No document found with id $docId")
     }
 

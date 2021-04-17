@@ -57,9 +57,8 @@ object Sessions {
 
     fun start(browser: WebBrowser, sessionId: String, user: User){
         openSessions[sessionId] = user
-        user.sessions = (user.sessions?:listOf()).plus(Session(sessionId, ZonedDateTime.now().plusDays(14)))
+        user.sessions = (user.sessions?:listOf()).plus(Session(sessionId, ZonedDateTime.now().plusDays(14), browser.httpRequestInfo.userAgent ?: ""))
         db(browser.host()).users.replaceOneById(user._id!!, user)
-
     }
 
     fun get(browser: WebBrowser, sessionId: String) : User? {

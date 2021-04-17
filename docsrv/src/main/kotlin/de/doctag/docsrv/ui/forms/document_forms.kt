@@ -38,13 +38,17 @@ fun ElementCreator<*>.drawDoctagElement(file: FileData, onSubmit:(file:FileData,
     val doctag = "https://${db().currentConfig.hostname}/d/${generateRandomString(16)}"
     val doctagImg = getQRCodeImageAsDataUrl(doctag, 60, 60, 1)
     val documentImg = renderPdfAsImage(file.base64Content!!).asDataUrlImage()
+    val fieldResult = KVar<Map<String, KVar<String>>>(mapOf())
 
 
-    val canvas = canvas(420, 594).apply {
-        this.setAttributeRaw("style", "border: 1px solid black;)")
-    }//.focus()
+    div(fomantic.ui.two.column.grid).new {
+        div(fomantic.ui.column).new {
+            val canvas = canvas(420, 594).apply {
+                this.setAttributeRaw("style", "border: 1px solid black;)")
+            }//.focus()
 
-    element("script").text("""
+            element("script").text(
+                """
         function displayCanvas() {
             canvas = document.getElementById("${canvas.id}");
             context = canvas.getContext("2d");
@@ -66,10 +70,17 @@ fun ElementCreator<*>.drawDoctagElement(file: FileData, onSubmit:(file:FileData,
             
             canvas.focus();
         }
-    """.trimIndent())
+    """.trimIndent()
+            )
 
-    element("script", mapOf("src" to "/ressources/canvas.js", "onload" to "displayCanvas()"))
-
+            element("script", mapOf("src" to "/ressources/canvas.js", "onload" to "displayCanvas()"))
+        }
+        div(fomantic.ui.column).new {
+            renderDocumentInputFields(file)?.let {
+                fieldResult.value = it
+            }
+        }
+    }
 
     div(fomantic.divider.hidden)
     buttonWithLoader("Übernehmen"){
@@ -77,9 +88,39 @@ fun ElementCreator<*>.drawDoctagElement(file: FileData, onSubmit:(file:FileData,
         browser.executeWithCallback("callbackWs($callbackId,{x: 1.0*currentX/canvas.width, y: 1.0*currentY/canvas.height});", callbackId){inputData->
             val pos : ImagePositionOnCanvas = gson.fromJson(inputData.toString())
             logger.info("QR Code shall be placed at position ${pos.x}/${pos.y}")
-            file.base64Content = insertDoctagIntoPDF(file.base64Content!!, doctag, pos.x, pos.y, 4.29f)
+
+
+            logger.info("Received form data: ${fieldResult.value}")
+
+            file.base64Content = insertDoctagIntoPDF(file.base64Content!!, doctag, pos.x, pos.y, 4.29f, fieldResult.value.map { it.key to it.value.value }.toMap())
             onSubmit(file, doctag)
         }
+    }
+}
+
+
+fun ElementCreator<*>.renderDocumentInputFields(fileObj: FileData) : Map<String, KVar<String>>? {
+
+    return fileObj.base64Content?.let {
+        val fields = extractFormFieldsFromPdf(it)
+
+        val inputData = mutableMapOf<String, KVar<String>>()
+
+        formControl { form ->
+            fields.forEach { field ->
+
+                logger.info("Field is of type ${field.fieldType}")
+                val boundKv = inputData.getOrPut(field.fullyQualifiedName, {KVar("")})
+
+                formInput( field.fullyQualifiedName, "", false,  boundKv, InputType.text)
+                    .with(form)
+            }
+
+        }
+
+        logger.info("Form data is $inputData")
+
+        inputData
     }
 }
 
@@ -92,7 +133,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
         render(state){rState->
             when(rState){
                 DocumentAddState.UPLOAD-> {
-                    val formField = fileInput("Datei", "", false, KVar(""))
+                    val formField = fileInput("Datei", "", false, KVar(""), accept = "application/pdf")
 
                     buttonWithAsyncLoader("Hochladen"){whenDone->
                         formField.retrieveFile { file ->
@@ -127,7 +168,8 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
 
                     h4(fomantic.ui.header).text("Doctag einfügen")
                     p().text("Positionieren Sie das DocTag mit der Maus an der gewünschten Position")
-                    drawDoctagElement(fileObj) {fileWithDoctag, doctag->
+
+                    drawDoctagElement(fileObj) { fileWithDoctag, doctag->
                         document.value.url = doctag
                         state.value = DocumentAddState.SAVE
                     }

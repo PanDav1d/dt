@@ -354,7 +354,7 @@ fun ElementCreator<*>.absFormInput(label: String?=null, required:Boolean=false, 
     return formInput
 }
 
-fun ElementCreator<*>.fileInput(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>) : FileFormInput{
+fun ElementCreator<*>.fileInput(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, accept:String? = null) : FileFormInput{
     val formInput = FileFormInput(bindTo, required, label)
 
     val class_ = if(required){
@@ -378,7 +378,12 @@ fun ElementCreator<*>.fileInput(label: String?=null, placeholder:String?=null, r
             label().text(label)
         }
         div(fomantic.ui.input).new() {
-            val input = input(InputType.file, placeholder = placeholder)
+            val attrs = if( accept!= null){
+                mapOf("accept" to accept)
+            } else {
+                mapOf()
+            }
+            val input = input(InputType.file, placeholder = placeholder, attributes = attrs)
             formInput.setInputElement(input)
         }
     }

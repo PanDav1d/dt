@@ -121,6 +121,12 @@ val FomanticUIClasses.toast : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.sub : FomanticUIClasses
+    get() {
+        classes("sub")
+        return this
+    }
+
 val FomanticUIClasses.toastContainer : FomanticUIClasses
     get() {
         classes("toast-container")

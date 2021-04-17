@@ -13,8 +13,9 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 data class Session(
-    val sessionId:String,
-    val expires: ZonedDateTime
+    val sessionId: String,
+    val expires: ZonedDateTime,
+    val name: String? = null
 )
 
 data class DocsrvConfig(

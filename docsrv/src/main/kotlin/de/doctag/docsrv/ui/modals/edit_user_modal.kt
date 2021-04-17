@@ -5,9 +5,7 @@ import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.TabPane
-import de.doctag.docsrv.ui.forms.userDeleteForm
-import de.doctag.docsrv.ui.forms.userEditForm
-import de.doctag.docsrv.ui.forms.userPasswordEditForm
+import de.doctag.docsrv.ui.forms.*
 import de.doctag.docsrv.ui.modal
 import de.doctag.docsrv.ui.tab
 import kweb.ElementCreator
@@ -23,31 +21,43 @@ enum class UserEditAction{
 
 fun ElementCreator<*>.editUserModal(user: User, onEdit: (u:User, action: UserEditAction)->Unit) =
         modal("${user.firstName} ${user.lastName} bearbeiten") { modal ->
+
             tab(TabPane("Profil") {
-                userEditForm(user) { user ->
-                    logger.info("Saving changed user")
-                    db().users.replaceOneById(user._id!!, user)
+                    userEditForm(user) { user ->
+                        logger.info("Saving changed user")
+                        db().users.replaceOneById(user._id!!, user)
 
-                    onEdit(user, UserEditAction.UserModified)
-                }
-            },
-            TabPane("Passwort ändern") {
-                userPasswordEditForm(user) { newPassword ->
-                    user.passwordHash = generatePasswordHash(newPassword)
-                    db().users.replaceOneById(user._id!!, user)
+                        onEdit(user, UserEditAction.UserModified)
+                    }
+                },
+                TabPane("Passwort ändern") {
+                    userPasswordEditForm(user) { newPassword ->
+                        user.passwordHash = generatePasswordHash(newPassword)
+                        db().users.replaceOneById(user._id!!, user)
 
-                    onEdit(user, UserEditAction.PasswordChanged)
+                        onEdit(user, UserEditAction.PasswordChanged)
+                    }
+                },
+                TabPane("Anmeldungen"){
+                    userSessionsForm(user){
+                        db().users.replaceOneById(user._id!!, user)
+                        onEdit(user, UserEditAction.UserModified)
+                    }
+                },
+                TabPane("Doctag App"){
+                    userAppForm(user){
+                        db().users.replaceOneById(user._id!!, user)
+                        onEdit(user, UserEditAction.UserModified)
+                    }
+                },
+                TabPane("Löschen") {
+                    userDeleteForm(user){
+                        logger.info("User ${user.emailAdress} will be removed")
 
-                }
-            },
-            TabPane("Löschen") {
-                userDeleteForm(user){
-                    logger.info("User ${user.emailAdress} will be removed")
+                        db().users.deleteOne(User::_id eq user._id)
+                        onEdit(user, UserEditAction.UserDeleted)
 
-                    db().users.deleteOne(User::_id eq user._id)
-                    onEdit(user, UserEditAction.UserDeleted)
-
-                    modal.close()
-                }
-            })
+                        modal.close()
+                    }
+                })
         }
