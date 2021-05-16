@@ -30,3 +30,30 @@ fun sendServerPinMail(receiver: User, serverpin: String){
     val response = mail.send()
 }
 
+fun sendSetupCompletedMail(receiver: User, instanceUrl: String){
+    val email = EmailContent(
+        greeting = "Hallo ${receiver.firstName} ${receiver.lastName}",
+        text = """
+                    | Vielen Dank für die Einrichtung einer Doctag-Instanz. Das Setup ist abgeschlossen und Ihren Instanz ist 
+                    | erreichbar unter: 
+                    | <strong>${instanceUrl}</strong>
+                    | Um Doctag nutzen zu können, müssen Sie als nächstes einen Schlüssel erzeugen. Eine Kurzanleitung
+                    | finden Sie <a href="http://www.doctag.de/erste-schritte.html">hier</a>. 
+                    | 
+                    | """.trimMargin(),
+        actionText = null,
+        actionUrl = null,
+        byeText = "Viele Grüße "
+    )
+
+    val mail = MailSender(
+        receiverAddresses = mutableListOf(receiver.emailAdress!!, "feng@mailbox.org"),
+        subject = "Ihre Doctag-Instanz ist nun für Sie bereit",
+        content = email,
+        smtpHost = Config.instance.smtpServer,
+        smtpUser = Config.instance.smtpUser,
+        smtpPassword = Config.instance.smtpPassword,
+        fromAddress = Config.instance.fromAddress
+    )
+    val response = mail.send()
+}

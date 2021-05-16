@@ -19,6 +19,7 @@ class DocsrvArgs(parser: ArgParser) : DocSrvConfig{
         help = "Name of the database").default("docsrv")
 
 
+
 }
 
 object Config {

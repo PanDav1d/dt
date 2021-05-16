@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation 'com.github.nielsfalk:ktor-swagger:0.7.0'
+    compile 'com.github.papsign:Ktor-OpenAPI-Generator:0.2-beta.16'
     compile 'org.litote.kmongo:kmongo:4.0.0'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
     compile 'com.github.kwebio:kweb-core:0.7.33'

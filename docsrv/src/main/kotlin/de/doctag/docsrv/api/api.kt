@@ -1,5 +1,18 @@
 package de.doctag.docsrv.api
 
+import com.papsign.ktor.openapigen.annotations.Path
+import com.papsign.ktor.openapigen.annotations.parameters.PathParam
+import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
+import com.papsign.ktor.openapigen.content.type.binary.BinaryRequest
+import com.papsign.ktor.openapigen.content.type.binary.BinaryResponse
+import com.papsign.ktor.openapigen.route.info
+import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
+import com.papsign.ktor.openapigen.route.path.normal.get
+import com.papsign.ktor.openapigen.route.path.normal.post
+import com.papsign.ktor.openapigen.route.path.normal.put
+import com.papsign.ktor.openapigen.route.response.respond
+import com.papsign.ktor.openapigen.route.route
+import com.papsign.ktor.openapigen.route.throws
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
 import de.doctag.lib.generateRandomString
@@ -8,13 +21,11 @@ import de.doctag.lib.makeSignature
 import de.doctag.lib.model.PrivatePublicKeyPair
 import de.doctag.lib.model.PublicKeyVerification
 import de.doctag.lib.model.PublicKeyVerificationResult
-import io.ktor.application.call
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
+import io.ktor.application.*
+import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.header
 import io.ktor.response.respond
-import io.ktor.response.respondBytes
 import io.ktor.routing.*
 import kweb.logger
 import org.apache.pdfbox.io.MemoryUsageSetting
@@ -24,156 +35,229 @@ import org.bson.internal.Base64
 import org.litote.kmongo.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 
-fun Routing.docsrvApi(){
-    get("/health"){
-        val isHealthy = db().config.findOne(DocsrvConfig::_id eq "1") != null
-        val statusCode = if(isHealthy) HttpStatusCode.OK else HttpStatusCode.InternalServerError
+@Path("{documentId}/download")
+data class DocumentDownloadRequest(
+    @PathParam("ID of the document to download") val documentId: String
+)
 
-        call.respond(statusCode, HealthCheckResponse(isHealthy))
-    }
+@Path("{publicKeyFingerprint}/verify/{seed}")
+data class VerifyPrivateKeyRequest(
+    @PathParam("Fingerprint of the requested public key") val publicKeyFingerprint: String,
+    @PathParam("Seed that shall be used to prove the existence of the private ky") val seed: String
+)
 
-    get("/discovery"){
-        val config = db().currentConfig
+@Path("{publicKeyFingerprint}/verification")
+data class ReceivePrivateKeyVerificationRequest(
+    @PathParam("Fingerprint of the requested public key") val publicKeyFingerprint: String
+)
 
-        call.respond(HttpStatusCode.OK, DiscoveryResponse("123"))
-    }
+@Path("{documentId}/viewSignSheet")
+data class ViewSignSheetReqeuest(
+    @PathParam("ID of the document to download") val documentId: String
+)
 
-    get("/k/{publicKeyFingerprint}/verify/{seed}"){
-        val publicKeyFingerprint = call.parameters["publicKeyFingerprint"]
-        val seed = call.parameters["seed"]
-        val seed2 = generateRandomString(1024)
+@Path("{documentId}")
+data class FetchDoctagDocumentRequest(
+    @PathParam("ID of the document to fetch") val documentId: String
+)
 
-        val ppk = db().keys.findOne(PrivatePublicKeyPair::fingerprint eq publicKeyFingerprint)
-        val privKey = ppk?.privateKey?.let{loadPrivateKey(it)}
-        if(privKey != null){
-            val msg = "$seed$$seed2"
-            val signature = makeSignature(privKey, msg)
+@Path("{documentId}/{hostname}")
+data class PostDoctagDocumentRequest(
+    @PathParam("ID of the document to download") val documentId: String,
+    @PathParam("ID of the document to download") val hostname: String
+)
 
-            val result = PublicKeyVerificationResult(msg, signature)
-            call.respond(HttpStatusCode.OK, result)
-        }
-        else {
-            call.respond(HttpStatusCode.BadRequest, "Public Key is unknown")
-        }
-    }
+@Path("{fileId}/view")
+data class ViewFileRequest(
+    @PathParam("ID of the document to download") val fileId: String
+)
 
-    put("/k/{publicKeyFingerprint}/verification"){
-        val publicKeyFingerprint = call.parameters["publicKeyFingerprint"]
-        val verification = call.receive<PublicKeyVerification>()
-        val ppk = db().keys.findOne(PrivatePublicKeyPair::fingerprint eq publicKeyFingerprint)
+@Path("{fileId}/download")
+data class DownloadFileRequest(
+    @PathParam("ID of the document to download") val fileId: String
+)
 
-        if(ppk != null) {
-            ppk.verification = verification
-            if(ppk.verifySignature()){
-                db().keys.save(ppk)
-                call.respond(HttpStatusCode.OK, "Verification updated")
-            } else {
-                call.respond(HttpStatusCode.BadRequest, "verification not valid. reject verification record")
+fun NormalOpenAPIRoute.docsrvApi2(){
+    route("health"){
+        throws(HttpStatusCode.InternalServerError, "Something went wrong", {ex: Exception -> ex.toString()}) {
+            get<Unit, HealthCheckResponse>(
+                id("checkHealth")
+            ){
+                val isHealthy = pipeline.db().config.findOne(DocsrvConfig::_id eq "1") != null
+
+                if(isHealthy){
+                    respond(HealthCheckResponse(isHealthy))
+                } else{
+                    throw Exception("Failed to connect to db")
+                }
             }
-        } else {
-            call.respond(HttpStatusCode.BadRequest, "Public Key is unknown")
         }
     }
 
-    get("/d/{documentId}/download"){
-        val docId = call.parameters["documentId"]
-        val doc = docId?.let{db(call.request.host()).documents.findOneById(docId)}
-        val fd = doc?.attachmentId?.let{db().files.findOneById(it)}
-
-        fd?.let { fd ->
-            call.response.header("Content-Disposition", """attachment; filename="${doc.originalFileName}"""")
-            call.respondBytes(Base64.decode(fd.base64Content),ContentType.parse(fd.contentType!!))
-        } ?: call.respond(HttpStatusCode.NotFound, "No document found with id $docId")
-    }
-
-    get("/d/{documentId}/viewSignSheet"){
-        val docId = call.parameters["documentId"]
-        val doc = docId?.let{db(call.request.host()).documents.findOneById(docId)}
-
-        val docToSign = db().files.findOneById(doc?.attachmentId!!)
-
-        val renderer = doc?.let{PdfBuilder(doc, db())}
-
-        renderer?.let { fd ->
-            val signaturePage = renderer.render().toByteArray()
-
-            val merger = PDFMergerUtility()
-            merger.addSource(ByteArrayInputStream(java.util.Base64.getDecoder().decode(docToSign?.base64Content)))
-            merger.addSource(ByteArrayInputStream(signaturePage))
-
-            val output = ByteArrayOutputStream()
-            merger.destinationStream = output
-            merger.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly())
-
-            val outputDoc = output.toByteArray()
-            val pdf = PDDocument.load(outputDoc)
-            pdf.enableProtection()
-
-            val finalOutput = ByteArrayOutputStream()
-            pdf.save(finalOutput)
-
-            call.respondBytes(finalOutput.toByteArray(), ContentType.parse("application/pdf"))
-        } ?: call.respond(HttpStatusCode.NotFound, "No document found with id $docId")
-    }
-
-    get("/f/{fileId}/view"){
-        val fileId = call.parameters["fileId"]
-        val fileData = fileId?.let{db(call.request.host()).files.findOneById(fileId)}
-
-        fileData?.let { fd ->
-            call.respondBytes(Base64.decode(fd.base64Content),ContentType.parse(fd.contentType!!))
-        } ?: call.respond(HttpStatusCode.NotFound, "No file found with id $fileId")
-    }
-
-    get("/f/{fileId}/download"){
-        val fileId = call.parameters["fileId"]
-        val fileData = fileId?.let{db(call.request.host()).files.findOneById(fileId)}
-
-        fileData?.let { fd ->
-            call.response.header("Content-Disposition", """attachment; filename="${fileData.name}"""")
-            call.respondBytes(Base64.decode(fd.base64Content),ContentType.parse(fd.contentType!!))
-        } ?: call.respond(HttpStatusCode.NotFound, "No file found with id $fileId")
-    }
-
-
-    acceptExcludingWildcards(ContentType.Application.Json) {
-        get("/d/{documentId}") {
-            val docId = call.parameters["documentId"]
-            val doc = docId?.let { db().documents.findOne(Document::url eq "https://${db().currentConfig.hostname}/d/${docId}") } ?: throw NotFound("Document with id ${docId}")
-            //val signature = call.request.header("X-Message-Signature") ?: throw BadRequest("No X-Message-Signature Header found. Requesting party can't be authenticated. Won't reply.")
-
-            call.respond(HttpStatusCode.OK, doc.toEmbeddedDocument(db()))
+    route("discovery") {
+        get<Unit, DiscoveryResponse>(id("discoverInstance")){
+            respond(DiscoveryResponse("HELLO"))
         }
+    }
 
-        post("/d/{documentId}/{hostname}"){
-            logger.info("POST to /d/{documentId}/{hostName}")
+    route("k"){
+        throws(HttpStatusCode.NotFound, "Public Key is unknown", {ex: NotFoundException->ex.msg}) {
+            throws(HttpStatusCode.BadRequest, "Input data is invalid",{ex: BadRequestException -> ex.msg}) {
 
-            val docId = call.parameters["documentId"]
-            val hostName = call.parameters["hostname"]
+                get<VerifyPrivateKeyRequest,PublicKeyVerificationResult>(id("verifyInstanceHasPrivateKey")){ request ->
+                    val publicKeyFingerprint = request.publicKeyFingerprint
+                    val seed = request.seed
+                    val seed2 = generateRandomString(1024)
 
-            val rawSignature = String(call.receiveStream().readAllBytes(), Charsets.UTF_8)
-            val signedMessage = EmbeddedSignature.load(rawSignature)
+                    val ppk = pipeline.db().keys.findOne(PrivatePublicKeyPair::fingerprint eq publicKeyFingerprint)
+                    val privKey = ppk?.privateKey?.let{loadPrivateKey(it)}
+                    if(privKey != null){
+                        val msg = "$seed$$seed2"
+                        val signature = makeSignature(privKey, msg)
 
-            logger.info("Signature is loaded")
-            logger.info("Is signature valid? ${signedMessage.signature.isValid()}")
-            logger.info("Is signing key verified? ${signedMessage.signature.signedByKey?.verifySignature()}")
+                        val result = PublicKeyVerificationResult(msg, signature)
+                        respond(result)
+                    }
+                    else {
+                        throw NotFoundException("Public Key is unknown")
+                    }
+                }
 
-            val doc = docId?.let { db().documents.findOne(Document::url eq "https://$hostName/d/$docId") } ?: throw NotFound("Document with id $docId")
+                put<ReceivePrivateKeyVerificationRequest, PublicKeyVerificationResponse, PublicKeyVerification>(id("setVerificationOfKeyPair")){ params, verification ->
+                    val publicKeyFingerprint = params.publicKeyFingerprint
 
-            if(signedMessage.signature.data?.documentUrl != doc.url){
-                throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature. ${signedMessage.signature.data?.documentUrl} != ${doc.url}")
+                    val ppk = pipeline.db().keys.findOne(PrivatePublicKeyPair::fingerprint eq publicKeyFingerprint)
+
+                    if(ppk != null) {
+                        ppk.verification = verification
+                        if(ppk.verifySignature()){
+                            pipeline.db().keys.save(ppk)
+                            respond(PublicKeyVerificationResponse())
+                        } else {
+                            throw BadRequestException("Signature verification failed")
+                        }
+                    } else {
+                        throw NotFoundException("Public Key is unknown")
+                    }
+                }
+            }
+        }
+    }
+
+    route("d"){
+        throws(HttpStatusCode.NotFound, "Object does not exist", {ex: NotFoundException->ex.msg}) {
+
+            get<DocumentDownloadRequest, RawPdf>(id("downloadDocument")) { params ->
+                val doc = pipeline.db().documents.findOneById(params.documentId)
+                val fd = doc?.attachmentId?.let { pipeline.db().files.findOneById(it) }
+
+                fd?.let {
+                    respond(RawPdf(Base64.decode(fd.base64Content).inputStream()))
+                } ?: throw NotFoundException("Document with id ${params.documentId} not found")
             }
 
-            signedMessage.files.forEach {
-                db().files.save(it)
+
+            get<ViewSignSheetReqeuest, RawPdf>(id("downloadSignSheet")){ params ->
+                val doc = pipeline.db().documents.findOneById(params.documentId) ?: throw NotFoundException("No document found with id ${params.documentId}")
+
+                val docToSign = pipeline.db().files.findOneById(doc.attachmentId!!)
+
+                val renderer = PdfBuilder(doc, pipeline.db())
+
+                renderer.let { fd ->
+                    val signaturePage = renderer.render().toByteArray()
+
+                    val merger = PDFMergerUtility()
+                    merger.addSource(ByteArrayInputStream(java.util.Base64.getDecoder().decode(docToSign?.base64Content)))
+                    merger.addSource(ByteArrayInputStream(signaturePage))
+
+                    val output = ByteArrayOutputStream()
+                    merger.destinationStream = output
+                    merger.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly())
+
+                    val outputDoc = output.toByteArray()
+                    val pdf = PDDocument.load(outputDoc)
+                    pdf.enableProtection()
+
+                    val finalOutput = ByteArrayOutputStream()
+                    pdf.save(finalOutput)
+
+                    respond(RawPdf(finalOutput.toByteArray().inputStream()))
+                }
             }
 
-            doc.signatures = (doc.signatures?:listOf()).plus(signedMessage.signature)
-            db().documents.save(doc)
 
-            call.respond(HttpStatusCode.OK, doc)
+            acceptExcludingWildcards(ContentType.Application.Json){
+
+                get<FetchDoctagDocumentRequest, EmbeddedDocument>(id("fetchDoctagDocument")){ params->
+                    val docId = params.documentId
+                    val doc = pipeline.db().documents.findOne(
+                        Document::url eq "https://${pipeline.db().currentConfig.hostname}/d/${docId}"
+                    ) ?: throw NotFoundException("Document with id $docId")
+
+                    respond(doc.toEmbeddedDocument(pipeline.db()))
+                }
+
+                post<PostDoctagDocumentRequest, Document, RawBytesRequest>(id("addSignatureToDoctagDocument")){ params, input ->
+                    val rawSignature = String(input.stream.readAllBytes(), Charsets.UTF_8)
+                    val signedMessage = EmbeddedSignature.load(rawSignature)
+
+                    logger.info("Signature is loaded")
+                    logger.info("Is signature valid? ${signedMessage.signature.isValid()}")
+                    logger.info("Is signing key verified? ${signedMessage.signature.signedByKey?.verifySignature()}")
+
+                    val doc = pipeline.db().documents.findOne(Document::url eq "https://${params.hostname}/d/${params.documentId}")
+                        ?: throw NotFoundException("Document with id ${params.documentId}")
+
+                    if(signedMessage.signature.data?.documentUrl != doc.url){
+                        throw BadRequest("Document URL in signature does not match document url of this document. Rejecting signature. ${signedMessage.signature.data?.documentUrl} != ${doc.url}")
+                    }
+
+                    signedMessage.files.forEach {
+                        pipeline.db().files.save(it)
+                    }
+
+                    doc.signatures = (doc.signatures?:listOf()).plus(signedMessage.signature)
+                    pipeline.db().documents.save(doc)
+
+                    respond(doc)
+                }
+            }
+        }
+    }
+
+    route("f"){
+        throws(HttpStatusCode.NotFound, "Object does not exist", {ex: NotFoundException->ex.msg}) {
+
+            get<ViewFileRequest, RawPdf>(id("viewFile")){params ->
+                val fileData = pipeline.db().files.findOneById(params.fileId) ?: throw NotFoundException("No file found with id ${params.fileId}")
+
+                respond(RawPdf(Base64.decode(fileData.base64Content).inputStream()))
+            }
+
+            get<DownloadFileRequest, RawPdf>(id("downloadFile")){params ->
+                val fileData = pipeline.db().files.findOneById(params.fileId) ?: throw NotFoundException("No file found with id ${params.fileId}")
+
+                pipeline.context.response.header("Content-Disposition", """attachment; filename="${fileData.name}"""")
+                respond(RawPdf(Base64.decode(fileData.base64Content).inputStream()))
+            }
+
         }
     }
 }
+
+
+@BinaryRequest(["octet/stream"])
+data class RawBytesRequest(val stream: InputStream)
+
+@BinaryResponse(["application/pdf"])
+data class RawPdf(val stream: InputStream)
+
+class NotFoundException(val msg: String): Exception()
+
+class BadRequestException(val msg: String): Exception()
+
+class PublicKeyVerificationResponse()

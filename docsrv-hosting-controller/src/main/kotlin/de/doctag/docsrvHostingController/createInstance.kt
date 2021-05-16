@@ -139,7 +139,7 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
                         setupState.value = setupState.value.plus("Datenbank erzeugen")
                         db(instance.domainName!!).users.save(userInstance.value!!)
 
-                        val wf = vaccineWorkflow()
+                        val wf = defaultWorkflow()
                         wf.apply {
                             db(instance.domainName!!).workflows.save(wf)
                         }
@@ -148,6 +148,12 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
                         DbContext.hostedInstances.save(instance)
 
+
+                        GlobalScope.launch {
+                            withContext(Dispatchers.IO){
+                                sendSetupCompletedMail(userInstance.value!!, "https://${instance.domainName}/")
+                            }
+                        }
 
                         GlobalScope.launch {
                             delay(5000)
@@ -164,7 +170,6 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 
                                 delay(5000)
                             }
-
                         }
                     }
 

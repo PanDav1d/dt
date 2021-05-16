@@ -1,3 +1,10 @@
+import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
+import com.papsign.ktor.openapigen.route.path.normal.get
+import com.papsign.ktor.openapigen.route.path.normal.route
+import com.papsign.ktor.openapigen.route.response.respond
+import com.papsign.ktor.openapigen.route.route
+import com.papsign.ktor.openapigen.route.throws
+import de.doctag.docsrv.id
 import de.doctag.docsrv.model.Session
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.db
@@ -11,18 +18,18 @@ import org.litote.kmongo.findOne
 
 
 data class AuthInfoResponse(val authenticated: Boolean, val firstName: String?, val lastName: String?)
+class UnauthorizedException : Exception()
 
-fun Routing.appApi(){
-    get("/app/auth_info"){ req ->
-        val session = call.request.cookies["SESSION"]
+fun NormalOpenAPIRoute.appApi2(){
+    route("/app/auth_info") {
+        throws(HttpStatusCode.Unauthorized, "User not authenticated", {ex: Exception -> ex.toString()}) {
+            get<Unit, AuthInfoResponse>(id("fetchAuthInfo")) {
+                val session = pipeline.call.request.cookies["SESSION"]
+                val user = pipeline.db().users.findOne(User::sessions / Session::sessionId eq session)
+                    ?: throw UnauthorizedException()
 
-        val user = db().users.findOne(User::sessions / Session::sessionId eq session)
-
-        if(user != null) {
-            call.respond(HttpStatusCode.OK, AuthInfoResponse(true, user.firstName, user.lastName))
-        }
-        else {
-            call.respond(HttpStatusCode.Unauthorized, AuthInfoResponse(false, null, null))
+                respond(AuthInfoResponse(true, user.firstName, user.lastName))
+            }
         }
     }
 }

@@ -217,6 +217,12 @@ val FomanticUIClasses.syncAlternate : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.question : FomanticUIClasses
+    get(){
+        classes("question")
+        return this
+    }
+
 fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
     if(color != null) {
         classes(color)

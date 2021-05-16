@@ -7,8 +7,6 @@ import de.doctag.docsrv.Config
 import de.doctag.docsrv.DocSrvConfig
 import de.doctag.docsrv.kwebFeature
 import de.doctag.docsrv.model.*
-import de.doctag.lib.loadPublicKey
-import de.doctag.lib.publicKeyFingerprint
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.server.testing.*

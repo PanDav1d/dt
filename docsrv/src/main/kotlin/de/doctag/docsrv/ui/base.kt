@@ -205,6 +205,24 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
             }
         }
     }
+
+    div(attributes = mapOf("style" to "position: fixed; bottom: 3px; left: calc(50% - 75px);")).new{
+        div(attributes = mapOf("class" to "footerContent")).new{
+            div(fomantic.ui.label).new {
+                i(fomantic.ui.icon.server)
+                span().text(this.browser.host())
+            }
+            div(fomantic.ui.label).new {
+                i(fomantic.ui.icon.codeBranch)
+                span().text("Build-Nr: ")
+                span().text(Resources.load("version.txt"))
+            }
+            a(fomantic.ui.label, "/swagger-ui/index.html?url=/openapi.json").new {
+                i(fomantic.ui.icon.question.circle.outline)
+                span().text("API")
+            }
+        }
+    }
 }
 
 class ModalViewOptions(
