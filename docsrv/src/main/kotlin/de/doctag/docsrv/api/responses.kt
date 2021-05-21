@@ -1,6 +1,7 @@
 package de.doctag.docsrv.api
 
 import de.doctag.docsrv.model.*
+import de.doctag.lib.model.PrivatePublicKeyPair
 import de.doctag.lib.toSha1HexString
 
 data class HealthCheckResponse(
@@ -49,3 +50,13 @@ data class EmbeddedDocument(
         return true
     }
 }
+
+data class PrivatePublicKeyInfo(
+    val ppkId: String,
+    val verboseName: String
+)
+
+data class PreparedSignature(
+    val workflow: Workflow,
+    val availableKeys: List<PrivatePublicKeyInfo>
+)

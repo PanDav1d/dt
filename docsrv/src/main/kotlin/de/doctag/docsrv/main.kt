@@ -25,9 +25,8 @@ import de.doctag.docsrv.ui.settings.handleKeySettings
 import de.doctag.docsrv.ui.settings.handleSystemSettings
 import de.doctag.docsrv.ui.settings.handleUsersSettings
 import de.doctag.lib.fixHttps
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.install
+import io.ktor.application.*
+import io.ktor.content.*
 import io.ktor.features.Compression
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
@@ -36,6 +35,7 @@ import io.ktor.http.*
 import io.ktor.http.cio.websocket.pingPeriod
 import io.ktor.http.cio.websocket.timeout
 import io.ktor.jackson.jackson
+import io.ktor.request.*
 import io.ktor.response.respond
 import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
@@ -82,6 +82,11 @@ fun Application.kwebFeature(){
         }
         exception<NotFound>{err ->
             call.respond(HttpStatusCode.NotFound, err.message?:"")
+        }
+        status(HttpStatusCode.NotFound) { notFound ->
+            logger.error("Not found ${call.request.httpMethod.value} ${call.request.path()}")
+
+            call.respond(TextContent("${notFound.value} ${notFound.description}. Request path was ${call.request.path()}", ContentType.Text.Plain.withCharset(Charsets.UTF_8), notFound))
         }
     }
     install(WebSockets){
@@ -201,6 +206,8 @@ fun Application.kwebFeature(){
             }
 
             staticFiles()
+
+            trace { application.log.info(it.buildText()) }
         }
     }
 }

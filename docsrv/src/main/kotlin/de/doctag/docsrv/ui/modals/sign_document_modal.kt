@@ -141,7 +141,6 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                                     logger.info("Stored signature: ok")
                                     cf.complete(true)
                                 }
-
                                 //cf.get()
                             }
 

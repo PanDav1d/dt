@@ -1,5 +1,6 @@
 package api
 
+import WithTestDatabase
 import com.mongodb.ServerAddress
 import de.bwaldvogel.mongo.MongoServer
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend
@@ -14,22 +15,8 @@ import java.io.File
 import java.net.InetSocketAddress
 
 
-class DumpSwagger {
+class DumpSwagger : WithTestDatabase() {
 
-    companion object {
-        val server = MongoServer(MemoryBackend()).also { server->
-            val serverAddress: InetSocketAddress = server.bind()
-            val mongoSrvAddress = ServerAddress(serverAddress).toString()
-
-            Config._instance = TestConfig("mongodb://$mongoSrvAddress", DB_NAME)
-        }
-
-        @JvmStatic
-        @AfterAll
-        internal fun cleanupAfterTest(){
-            server.shutdown()
-        }
-    }
 
     @Test
     fun `Dump Swagger definition`(){

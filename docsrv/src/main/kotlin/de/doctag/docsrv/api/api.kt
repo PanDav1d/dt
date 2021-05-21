@@ -189,7 +189,6 @@ fun NormalOpenAPIRoute.docsrvApi2(){
                 }
             }
 
-
             acceptExcludingWildcards(ContentType.Application.Json){
 
                 get<FetchDoctagDocumentRequest, EmbeddedDocument>(id("fetchDoctagDocument")){ params->

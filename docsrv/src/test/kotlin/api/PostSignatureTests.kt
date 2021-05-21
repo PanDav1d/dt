@@ -1,5 +1,6 @@
 package api
 
+import WithTestDatabase
 import com.mongodb.ServerAddress
 import de.bwaldvogel.mongo.MongoServer
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend
@@ -19,30 +20,58 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.save
+import setupApi
+import java.io.File
 import java.net.InetSocketAddress
 
 class TestConfig(override val dbConnection: String, override val dbName: String) : DocSrvConfig
 
 const val DB_NAME = "docserver"
 
-class PostSignatureTests {
-    companion object {
-        val server = MongoServer(MemoryBackend()).also { server->
-            val serverAddress: InetSocketAddress = server.bind()
-            val mongoSrvAddress = ServerAddress(serverAddress).toString()
+class PostSignatureTests : WithTestDatabase() {
 
-            Config._instance = TestConfig("mongodb://$mongoSrvAddress", DB_NAME)
-        }
 
-        @JvmStatic
-        @AfterAll
-        internal fun cleanupAfterTest(){
-            server.shutdown()
-        }
-    }
+    @Test
+    fun `Fetch Document Test`() {
 
-    val dbContext by lazy {
-        DbContext(DB_NAME)
+        //
+        // Given
+        //
+        val doc = makeDocument("aaabbbccc")
+        dbContext.documents.save(doc.first)
+        dbContext.files.insertMany(doc.second)
+
+        val ppk = makePPK()
+        val sig = doc.first.makeSignature(ppk, null, null)
+
+        val embeddedSignature = EmbeddedSignature(listOf(), sig)
+
+        val parsedUrl = DocumentId.parse(doc.first.url!!)
+
+        //
+        // When
+        //
+
+        val signatureFile = File.createTempFile("12323", "9999")
+        signatureFile.writeText(embeddedSignature.serialize())
+
+        val api = setupApi()
+
+        val response = api.fetchDoctagDocumentWithHttpInfo(
+            parsedUrl.id
+        )
+
+        //
+        // Then
+        //
+        Assertions.assertEquals(HttpStatusCode.OK, response.statusCode)
+        val currentDocument = dbContext.documents.findOne(Document::url eq doc.first.url)
+        Assertions.assertEquals(currentDocument!!.signatures!!.size, 1)
+        val currentSignature = currentDocument.signatures!![0]
+
+        Assertions.assertEquals(currentSignature.originalMessage, embeddedSignature.signature.originalMessage)
+        Assertions.assertEquals(currentSignature.isValid(), true)
+
     }
 
     @Test
@@ -65,20 +94,28 @@ class PostSignatureTests {
         //
         // When
         //
-        withTestApplication(Application::kwebFeature) {
-            with(handleRequest(HttpMethod.Post, "/d/${parsedUrl.id}/${parsedUrl.hostname}"){
-                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                setBody(embeddedSignature.serialize())
-            }) {
-                Assertions.assertEquals(HttpStatusCode.OK, response.status())
 
-                val currentDocument = dbContext.documents.findOne(Document::url eq doc.first.url)
-                Assertions.assertEquals(currentDocument!!.signatures!!.size, 1)
-                val currentSignature = currentDocument.signatures!![0]
+        val signatureFile = File.createTempFile("12323", "9999")
+        signatureFile.writeText(embeddedSignature.serialize())
 
-                Assertions.assertEquals(currentSignature.originalMessage, embeddedSignature.signature.originalMessage)
-                Assertions.assertEquals(currentSignature.isValid(), true)
-            }
-        }
+        val api = setupApi()
+
+        val response = api.addSignatureToDoctagDocumentWithHttpInfo(
+            parsedUrl.id,
+            "abc",
+            signatureFile
+        )
+
+        //
+        // Then
+        //
+        Assertions.assertEquals(HttpStatusCode.OK, response.statusCode)
+        val currentDocument = dbContext.documents.findOne(Document::url eq doc.first.url)
+        Assertions.assertEquals(currentDocument!!.signatures!!.size, 1)
+        val currentSignature = currentDocument.signatures!![0]
+
+        Assertions.assertEquals(currentSignature.originalMessage, embeddedSignature.signature.originalMessage)
+        Assertions.assertEquals(currentSignature.isValid(), true)
+
     }
 }

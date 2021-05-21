@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.71'
+}
+
+
+group 'ktor_swagger'
+version '0.1.0'
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile "io.ktor:ktor-server-core:$ktor_version"
+    compile "io.ktor:ktor-locations:$ktor_version"
+    compile "org.webjars:swagger-ui:$swaggerUiVersion"
+}

@@ -42,8 +42,11 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       Map<String, dynamic> loginCode = jsonDecode(result.code);
-      final url = loginCode["doctagUrl"] as String?;
+      var url = loginCode["doctagUrl"] as String?;
       final sessionId = loginCode["sessionId"] as String?;
+
+      if(url?.startsWith("https://")!=true)
+        url = "https://$url";
 
       log("DocServer URL is $url");
       log("SessionID is $sessionId");
@@ -51,10 +54,10 @@ class _LoginPageState extends State<LoginPage> {
       try {
         final cli = DocServerClient(url: url!, sessionId: sessionId!);
         final auth = await cli.fetchAuthInfo();
-        log("Auth info is ${ auth.authenticated } ${auth.firstName} ${auth
-            .lastName}");
+        log("Auth info is ${ auth?.authenticated } ${auth?.firstName} ${auth
+            ?.lastName}");
 
-        if(auth.authenticated == true) {
+        if(auth?.authenticated == true) {
 
           final storage = new FlutterSecureStorage();
           await storage.write(key: "docserverUrl", value: url);

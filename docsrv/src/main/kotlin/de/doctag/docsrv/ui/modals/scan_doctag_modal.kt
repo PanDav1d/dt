@@ -82,7 +82,6 @@ fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->U
                     p().text("Zu dem gescannten QR-Code konnte kein gültiges Dokument erkannt werden. Bitte versuchen Sie es erneut.")
                 }
 
-
                 button(fomantic.ui.button.blue).text("Erneut Scannen").on.click {
                     scannedCode.value = ""
                 }
