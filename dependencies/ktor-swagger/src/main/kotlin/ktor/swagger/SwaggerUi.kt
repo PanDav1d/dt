@@ -1,4 +1,4 @@
-package de.nielsfalk.ktor.swagger
+package ktor.swagger
 
 import io.ktor.application.ApplicationCall
 import io.ktor.http.ContentType
@@ -19,7 +19,7 @@ class SwaggerUi {
             in notFound -> return
             null -> return
             else -> {
-                val resource = this::class.java.getResource("/META-INF/resources/webjars/swagger-ui/3.23.8/$filename")
+                val resource = this::class.java.getResource("/META-INF/resources/webjars/swagger-ui/3.25.0/$filename")
                 if (resource == null) {
                     notFound.add(filename)
                     return

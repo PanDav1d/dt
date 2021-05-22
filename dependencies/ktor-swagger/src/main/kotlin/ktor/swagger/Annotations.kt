@@ -1,4 +1,4 @@
-package de.nielsfalk.ktor.swagger
+package ktor.swagger
 
 @Target(AnnotationTarget.PROPERTY)
 annotation class DefaultValue(

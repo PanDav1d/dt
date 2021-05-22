@@ -64,7 +64,7 @@ object DocServerClient {
     fun loadDocument(targetUrl : String): EmbeddedDocument?{
 
         val request = HttpRequest.newBuilder()
-                .uri(URI.create(targetUrl))
+                .uri(URI.create(targetUrl.fixHttps()))
                 .header("Accept","application/json")
                 .timeout(Duration.ofMinutes(1))
                 .build()

@@ -1,4 +1,3 @@
-import api.DB_NAME
 import api.TestConfig
 import com.mongodb.ServerAddress
 import de.bwaldvogel.mongo.MongoServer
@@ -19,6 +18,8 @@ import java.net.InetSocketAddress
 import java.time.ZonedDateTime
 import de.doctag.docsrv_api.DefaultApi
 import de.doctag.docsrv_api.invoker.Configuration
+import de.doctag.lib.logger
+import org.litote.kmongo.save
 
 
 fun makeDocument(content: String, hostname: String = "127.0.0.1:16097", docId : String = "1" ) : Pair<Document, List<FileData>> {
@@ -56,6 +57,8 @@ fun setupApi() : DefaultApi {
     return apiInstance
 }
 
+const val DB_NAME = "docserver"
+
 @ExtendWith(WithTestingHttpServer::class)
 open class WithTestDatabase{
     companion object {
@@ -64,6 +67,14 @@ open class WithTestDatabase{
             val mongoSrvAddress = ServerAddress(serverAddress).toString()
 
             Config._instance = TestConfig("mongodb://$mongoSrvAddress", DB_NAME)
+
+
+            val config = DbContext(DB_NAME).currentConfig.apply {
+                hostname = "127.0.0.1:$TESTING_PORT"
+            }
+            DbContext(DB_NAME).config.save(config)
+
+            logger.info("Did setup db connection")
         }
 
         @JvmStatic

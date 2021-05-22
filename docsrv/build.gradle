@@ -26,6 +26,7 @@ dependencies {
     compile "io.ktor:ktor-jackson:$ktor_version"
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1'
     compile project(":doctag-lib")
+    compile project(":dependencies:ktor-swagger")
 
     compile group: 'com.openhtmltopdf', name: 'openhtmltopdf-core', version: '1.0.5'
     compile group: 'com.openhtmltopdf', name: 'openhtmltopdf-pdfbox', version: '1.0.5'

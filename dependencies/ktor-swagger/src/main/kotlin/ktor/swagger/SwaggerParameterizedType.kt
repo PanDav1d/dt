@@ -1,4 +1,4 @@
-package de.nielsfalk.ktor.swagger
+package ktor.swagger
 
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type

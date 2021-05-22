@@ -1,7 +1,7 @@
-package de.nielsfalk.ktor.swagger
+package ktor.swagger
 
-import de.nielsfalk.ktor.swagger.version.shared.ModelName
-import de.nielsfalk.ktor.swagger.version.v3.Example
+import ktor.swagger.version.shared.ModelName
+import ktor.swagger.version.v3.Example
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.client.call.TypeInfo

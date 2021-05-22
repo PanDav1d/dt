@@ -1,4 +1,4 @@
-package de.nielsfalk.ktor.swagger
+package ktor.swagger
 
 import java.lang.reflect.GenericArrayType
 import java.lang.reflect.ParameterizedType

@@ -1,12 +1,12 @@
-package de.nielsfalk.ktor.swagger
+package ktor.swagger
 
-import de.nielsfalk.ktor.swagger.version.shared.CommonBase
-import de.nielsfalk.ktor.swagger.version.shared.Group
-import de.nielsfalk.ktor.swagger.version.shared.ModelName
-import de.nielsfalk.ktor.swagger.version.shared.OperationBase
-import de.nielsfalk.ktor.swagger.version.shared.ParameterBase
-import de.nielsfalk.ktor.swagger.version.shared.ParameterInputType
-import de.nielsfalk.ktor.swagger.version.v3.OpenApi
+import ktor.swagger.version.shared.CommonBase
+import ktor.swagger.version.shared.Group
+import ktor.swagger.version.shared.ModelName
+import ktor.swagger.version.shared.OperationBase
+import ktor.swagger.version.shared.ParameterBase
+import ktor.swagger.version.shared.ParameterInputType
+import ktor.swagger.version.v3.OpenApi
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.ApplicationFeature
@@ -21,12 +21,10 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.PipelineContext
+import ktor.swagger.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
-import de.nielsfalk.ktor.swagger.version.v3.Operation as OperationV3
-import de.nielsfalk.ktor.swagger.version.v3.Parameter as ParameterV3
-import de.nielsfalk.ktor.swagger.version.v3.Response as ResponseV3
 
 class SwaggerSupport(
     val openApi: OpenApi?,
@@ -35,7 +33,11 @@ class SwaggerSupport(
     companion object Feature : ApplicationFeature<Application, SwaggerUiConfiguration, SwaggerSupport> {
         private val openApiJsonFileName = "openapi.json"
 
-        internal val openApiVariation = SpecVariation("#/components/schemas/", ResponseV3, OperationV3, ParameterV3)
+        internal val openApiVariation = SpecVariation("#/components/schemas/",
+            ktor.swagger.version.v3.Response,
+            ktor.swagger.version.v3.Operation,
+            ktor.swagger.version.v3.Parameter
+        )
 
         override val key = AttributeKey<SwaggerSupport>("SwaggerSupport")
 

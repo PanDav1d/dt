@@ -1,9 +1,9 @@
-package de.nielsfalk.ktor.swagger.version.shared
+package ktor.swagger.version.shared
 
-import de.nielsfalk.ktor.swagger.HttpCodeResponse
-import de.nielsfalk.ktor.swagger.Metadata
-import de.nielsfalk.ktor.swagger.toList
-import de.nielsfalk.ktor.swagger.version.v3.Example
+import ktor.swagger.HttpCodeResponse
+import ktor.swagger.Metadata
+import ktor.swagger.toList
+import ktor.swagger.version.v3.Example
 import io.ktor.http.HttpMethod
 import io.ktor.locations.Location
 

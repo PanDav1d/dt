@@ -1,19 +1,13 @@
 package de.doctag.docsrv
 
-import appApi2
+import appRoutes
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.papsign.ktor.openapigen.OpenAPIGen
-import com.papsign.ktor.openapigen.openAPIGen
-import com.papsign.ktor.openapigen.route.apiRouting
-import com.papsign.ktor.openapigen.schema.namer.DefaultSchemaNamer
-import com.papsign.ktor.openapigen.schema.namer.SchemaNamer
 import com.xenomachina.argparser.ArgParser
-import de.doctag.docsrv.api.docsrvApi2
+import de.doctag.docsrv.api.docServerApi
 import de.doctag.docsrv.model.authRequired
-import de.doctag.docsrv.model.db
-import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.static.staticFiles
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.admin.handleInstall
@@ -24,7 +18,7 @@ import de.doctag.docsrv.ui.document.*
 import de.doctag.docsrv.ui.settings.handleKeySettings
 import de.doctag.docsrv.ui.settings.handleSystemSettings
 import de.doctag.docsrv.ui.settings.handleUsersSettings
-import de.doctag.lib.fixHttps
+import ktor.swagger.SwaggerSupport
 import io.ktor.application.*
 import io.ktor.content.*
 import io.ktor.features.Compression
@@ -35,20 +29,21 @@ import io.ktor.http.*
 import io.ktor.http.cio.websocket.pingPeriod
 import io.ktor.http.cio.websocket.timeout
 import io.ktor.jackson.jackson
+import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.respond
 import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.jetty.Jetty
 import io.ktor.websocket.WebSockets
+import ktor.swagger.version.shared.Contact
+import ktor.swagger.version.shared.Information
+import ktor.swagger.version.v3.OpenApi
 import kweb.*
 import kweb.plugins.fomanticUI.fomanticUIPlugin
 import kweb.state.KVar
-import java.net.URI
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
+import java.lang.Exception
 import java.time.Duration
-import kotlin.reflect.KType
 
 
 fun main(args: Array<String>) {
@@ -68,11 +63,13 @@ fun Application.kwebFeature(){
     install(DefaultHeaders){
         header("Access-Control-Allow-Origin", "*")
     }
+    install(Locations)
     install(Compression)
     install(ContentNegotiation) {
         jackson {
             setSerializationInclusion(JsonInclude.Include.NON_NULL)
             configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             registerModule(JavaTimeModule())
         }
     }
@@ -80,6 +77,11 @@ fun Application.kwebFeature(){
         exception<BadRequest>{err ->
             call.respond(HttpStatusCode.BadRequest, err.message?:"")
         }
+        exception<Exception>{err->
+            de.doctag.lib.logger.error("Request failed with error (${err.javaClass.name}): ${err.message}")
+            call.respond(HttpStatusCode.InternalServerError, err.message?:"")
+        }
+
         exception<NotFound>{err ->
             call.respond(HttpStatusCode.NotFound, err.message?:"")
         }
@@ -93,28 +95,20 @@ fun Application.kwebFeature(){
         pingPeriod = Duration.ofSeconds(10)
         timeout = Duration.ofSeconds(30)
     }
-    install(OpenAPIGen) {
-        // basic info
-        info {
-            version = "0.0.1"
-            title = "DocServer API"
-            description = "API of the Docserver"
-            contact {
-                name = "Doctag Team"
-                email = "hallo@doctag.de"
-            }
+    install(SwaggerSupport) {
+        forwardRoot = false
+        val information = Information(
+            version = "0.1",
+            title = "DocServer",
+            description = "More Info available on https://www.doctag.de",
+            contact = Contact(
+                name = "Frank Englert",
+                url = "https://www.doctag.de"
+            )
+        )
+        openApi = OpenApi().apply {
+            info = information
         }
-        // describe the server, add as many as you want
-        server("http://localhost:8080/") {
-            description = "DocServer"
-        }
-
-        replaceModule(DefaultSchemaNamer, object: SchemaNamer {
-            val regex = Regex("[A-Za-z0-9_.]+")
-            override fun get(type: KType): String {
-                return type.toString().replace(regex) { it.value.split(".").last() }.replace(Regex(">|<|, "), "_")
-            }
-        })
     }
 
     install(Kweb){
@@ -191,23 +185,16 @@ fun Application.kwebFeature(){
             }
         }
 
-        apiRouting{
-            docsrvApi2()
-            appApi2()
-        }
 
         routing {
 
-            get("/openapi.json") {
-                val url = db().currentConfig.hostname
-                call.respond(openAPIGen.api.let{ api->
-                    api.copy(servers = api.servers.map { s->s.copy(url="https://${url}".fixHttps())  }.toMutableList())
-                }.serialize())
-            }
+            docServerApi()
+            appRoutes()
+
 
             staticFiles()
 
-            trace { application.log.info(it.buildText()) }
+            //trace { application.log.info(it.buildText()) }
         }
     }
 }

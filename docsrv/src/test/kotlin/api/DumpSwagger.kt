@@ -23,7 +23,7 @@ class DumpSwagger : WithTestDatabase() {
 
 
         withTestApplication(Application::kwebFeature) {
-            with(handleRequest(HttpMethod.Get, "openapi.json")){
+            with(handleRequest(HttpMethod.Get, "/apidocs/openapi.json")){
                 val fd = File("../docserver_openapi.json")
                 fd.writeText(response.content!!)
             }

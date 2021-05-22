@@ -9,7 +9,7 @@ allprojects {
 
     ext {
         ktor_version = '1.3.0'
-        swaggerUiVersion = "3.23.8"
+        swaggerUiVersion = "3.25.0"
     }
 }
 

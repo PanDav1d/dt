@@ -1,30 +1,32 @@
 @file:Suppress("MemberVisibilityCanPrivate", "unused")
 
-package de.nielsfalk.ktor.swagger
+package ktor.swagger
 
-import de.nielsfalk.ktor.swagger.version.shared.Group
-import de.nielsfalk.ktor.swagger.version.shared.ModelName
-import de.nielsfalk.ktor.swagger.version.shared.OperationCreator
-import de.nielsfalk.ktor.swagger.version.shared.ParameterBase
-import de.nielsfalk.ktor.swagger.version.shared.ParameterCreator
-import de.nielsfalk.ktor.swagger.version.shared.ParameterInputType
-import de.nielsfalk.ktor.swagger.version.shared.ParameterInputType.body
-import de.nielsfalk.ktor.swagger.version.shared.ParameterInputType.query
-import de.nielsfalk.ktor.swagger.version.shared.Property
-import de.nielsfalk.ktor.swagger.version.shared.PropertyName
-import de.nielsfalk.ktor.swagger.version.shared.ResponseCreator
-import de.nielsfalk.ktor.swagger.version.shared.Tag
-import de.nielsfalk.ktor.swagger.version.v3.Schema
+import ktor.swagger.version.shared.Group
+import ktor.swagger.version.shared.ModelName
+import ktor.swagger.version.shared.OperationCreator
+import ktor.swagger.version.shared.ParameterBase
+import ktor.swagger.version.shared.ParameterCreator
+import ktor.swagger.version.shared.ParameterInputType
+import ktor.swagger.version.shared.ParameterInputType.body
+import ktor.swagger.version.shared.ParameterInputType.query
+import ktor.swagger.version.shared.Property
+import ktor.swagger.version.shared.PropertyName
+import ktor.swagger.version.shared.ResponseCreator
+import ktor.swagger.version.shared.Tag
+import ktor.swagger.version.v3.Schema
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.feature
 import io.ktor.client.call.TypeInfo
+import ktor.swagger.*
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.Date
 import kotlin.reflect.KClass
 import kotlin.reflect.KClassifier
@@ -276,6 +278,7 @@ private val propertyTypes = mapOf(
     Double::class to Property("number", "double"),
     Instant::class to Property("string", "date-time"),
     Date::class to Property("string", "date-time"),
+    ZonedDateTime::class to Property("string", "date-time"),
     LocalDateTime::class to Property("string", "date-time"),
     LocalDate::class to Property("string", "date")
 ).mapKeys { it.key.qualifiedName }.mapValues { it.value to emptyList<TypeInfo>() }
