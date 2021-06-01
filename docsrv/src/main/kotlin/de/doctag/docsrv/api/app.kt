@@ -15,10 +15,8 @@ import ktor.swagger.ok
 import ktor.swagger.operationId
 import ktor.swagger.responds
 import ktor.swagger.version.shared.Group
-import org.litote.kmongo.div
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOne
-import org.litote.kmongo.findOneById
+import org.litote.kmongo.*
+import java.time.ZonedDateTime
 
 
 data class AuthInfoResponse(val authenticated: Boolean, val firstName: String?, val lastName: String?)
@@ -28,7 +26,7 @@ data class SignatureInputs(
     val role: String,
     val ppkId: String,
     val inputs: List<WorkflowInputResult>?,
-    val files: List<FileData>
+    val files: List<FileData>?
 )
 
 data class SignatureResult(
@@ -40,6 +38,12 @@ fun PipelineContext<Unit, ApplicationCall>.ensureUserIsAuthenticated() : User {
     val session = this.call.request.cookies["SESSION"]
     val user = this.db().users.findOne(User::sessions / Session::sessionId eq session)
         ?: throw UnauthorizedException()
+
+    val userSession = user.sessions?.find { it.sessionId == session }
+
+    if(userSession?.expires?.isAfter(ZonedDateTime.now()) != true)
+        throw UnauthorizedException()
+
     return user
 }
 
@@ -80,7 +84,7 @@ fun Routing.appRoutes(){
 
         call.respond(
             PreparedSignature(
-                doc?.document?.workflow!!,
+                doc?.document?.workflow,
                 db().keys.find().map {
                     PrivatePublicKeyInfo(it._id!!, it.verboseName!!)
                 }.toList()
@@ -100,7 +104,7 @@ fun Routing.appRoutes(){
 
         val doc = DocServerClient.loadDocument("https://${req.hostname}/d/${req.documentId}").ensureObjectWasFound()
 
-        val filesToInsert = data.files.map {
+        val filesToInsert = data.files?.map {
             val input = data.inputs?.find { input -> input.fileId == it._id }
             it._id = it.base64Content!!.toSha1HexString()
             if(input != null) {
@@ -108,7 +112,11 @@ fun Routing.appRoutes(){
             }
             it
         }
-        db().files.insertMany(filesToInsert)
+        filesToInsert?.let{
+            if(filesToInsert.isNotEmpty()){
+                db().files.insertMany(filesToInsert)
+            }
+        }
 
         val ppk = db().keys.findOne(PrivatePublicKeyPair::_id eq data.ppkId).ensureObjectWasFound()
 
@@ -119,6 +127,7 @@ fun Routing.appRoutes(){
         val embeddedSignature = EmbeddedSignature(files ?: listOf(), addSignature)
 
         DocServerClient.pushSignature(doc.document.url!!, embeddedSignature)
+
 
         call.respond(SignatureResult(success = true))
     }

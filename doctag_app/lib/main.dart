@@ -1,12 +1,14 @@
 import 'dart:developer';
 
+import 'package:DocTag/pdf_view.dart';
+import 'package:DocTag/remote_clients/api.dart';
 import 'package:docsrv_api/api.dart';
-import 'package:doctag_app/pdf_view.dart';
-import 'package:doctag_app/remote_clients/api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import 'constants.dart';
 import 'login.dart';
 import 'qr_scan.dart';
 
@@ -24,10 +26,12 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'DocTag',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: main,
+      builder: EasyLoading.init(),
     );
   }
 }
@@ -49,8 +53,7 @@ enum MainPageState{
   AuthNotOk
 }
 
-const DOCSERVER_URL_KEY = "docserverUrl";
-const DOCSERVER_SESSION_ID_KEY = "docserverSessionId";
+
 
 class _MainPageState extends State<MainPage> {
   String? url;

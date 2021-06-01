@@ -1,4 +1,4 @@
-name: doctag_app
+name: DocTag
 description: Doctag - Dokumente digital signieren
 
 # The following line prevents the package from being accidentally published to
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.1+4
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  qr_code_scanner: ^0.4.0
+  qr_code_scanner: ^0.5.1
   flutter_secure_storage: ^4.1.0
 
   # The following adds the Cupertino Icons font to your application.
@@ -36,6 +36,12 @@ dependencies:
 
   flutter_pdfview: ^1.0.4
   path_provider: ^2.0.1
+  flutter_easyloading: ^3.0.0
+  flutter_signature_pad: ^3.0.0
+  document_scanner:
+    git:
+      url: https://github.com/eliasteeny/flutter_document_scanner
+
 
 dev_dependencies:
   flutter_test:
@@ -45,8 +51,8 @@ dev_dependencies:
 
 
 flutter_icons:
-  image_path_android: "assets/images/icon-710x599-android.png"
-  image_path_ios: "assets/images/icon-710x599-ios.png"
+  image_path: "assets/images/app_icon.png"
+  remove_alpha_ios: true
   android: true
   ios: true
 

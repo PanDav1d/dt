@@ -2,6 +2,7 @@ package de.doctag.docsrv.api
 
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
+import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.lib.fixHttps
 import de.doctag.lib.generateRandomString
 import de.doctag.lib.loadPrivateKey
@@ -187,7 +188,6 @@ fun Routing.docServerApi(){
             val docId = req.documentId
 
             val documentUrlToSearch = "https://${db().currentConfig.hostname}/d/${docId}"
-            logger.info("Documents in db ${db().documents.find().map { it.url }.toList()}. Searching for $documentUrlToSearch")
 
             val doc = db().documents.findOne(
                 Document::url eq documentUrlToSearch
@@ -213,8 +213,6 @@ fun Routing.docServerApi(){
             logger.info("Is signature valid? ${signedMessage.signature.isValid()}")
             logger.info("Is signing key verified? ${signedMessage.signature.signedByKey?.verifySignature()}")
 
-
-
             val doc = db().documents.findOne(Document::url eq givenDocumentUrl)
                 ?: throw NotFoundException("Document with id ${req.documentId}")
 
@@ -229,7 +227,38 @@ fun Routing.docServerApi(){
             doc.signatures = (doc.signatures?:listOf()).plus(signedMessage.signature)
             db().documents.save(doc)
 
+            val distributeToUrls = doc.signatures?.map { it.data?.signingDoctagInstance }?.distinct()
+            distributeToUrls?.filterNotNull()?.forEach { url ->
+                try{
+                    DocServerClient.notifyDocumentDidChange(url, doc.url!!)
+                }
+                catch(ex: Exception){
+                    logger.error(ex.message)
+                }
+            }
+
             call.respond(HttpStatusCode.OK, doc)
+        }
+
+        @Group("DocServer")
+        @Location("/d/notifyChanges/")
+        class RefreshDocumentRequestPath()
+        post<RefreshDocumentRequestPath, NotifyRequest>(
+            "Add signature to document".responds(
+                ok<NotifyResult>()
+            ).operationId("notifyChangesOfDoctagDocument")
+        ) { req, notifyRequest  ->
+
+            val doc = DocServerClient.loadDocument(notifyRequest.url)
+
+            doc?.files?.forEach {
+                db().files.save(it)
+            }
+            doc?.document?.let {
+                db().documents.save(it)
+            }
+
+            call.respond(HttpStatusCode.OK, NotifyResult())
         }
     }
 
@@ -244,7 +273,7 @@ fun Routing.docServerApi(){
 
         val fileData = db().files.findOneById(req.fileId) ?: throw NotFoundException("No file found with id ${req.fileId}")
 
-        call.respond(Base64.decode(fileData.base64Content))
+        call.respondBytes(status = HttpStatusCode.OK, bytes=Base64.decode(fileData.base64Content))
 
     }
 
@@ -259,14 +288,14 @@ fun Routing.docServerApi(){
         val fileData = db().files.findOneById(req.fileId) ?: throw NotFoundException("No file found with id ${req.fileId}")
 
         context.response.header("Content-Disposition", """attachment; filename="${fileData.name}"""")
-        call.respond(Base64.decode(fileData.base64Content).inputStream())
+        call.respondBytes(status=HttpStatusCode.OK, bytes=Base64.decode(fileData.base64Content))
     }
 }
 
 
+class NotifyRequest(val url: String)
+class NotifyResult()
 
 class NotFoundException(val msg: String): Exception()
-
 class BadRequestException(val msg: String): Exception()
-
 class PublicKeyVerificationResponse()

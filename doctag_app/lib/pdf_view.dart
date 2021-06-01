@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:doctag_app/remote_clients/api.dart';
-import 'package:doctag_app/sign_view.dart';
+import 'package:DocTag/remote_clients/api.dart';
+import 'package:DocTag/sign_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -23,6 +24,7 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
   int? currentPage = 0;
   bool isReady = false;
   String errorMessage = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,18 +56,20 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
                 pages = _pages;
                 isReady = true;
               });
+              log("On Render called");
             },
             onError: (error) {
               setState(() {
                 errorMessage = error.toString();
               });
-              print(error.toString());
+
+              log('Error rendering PDF: ${error.toString()}');
             },
             onPageError: (page, error) {
               setState(() {
                 errorMessage = '$page: ${error.toString()}';
               });
-              print('$page: ${error.toString()}');
+              log('Error rendering PDF on page: $page: ${error.toString()}');
             },
             onViewCreated: (PDFViewController pdfViewController) {
               _controller.complete(pdfViewController);
@@ -98,12 +102,13 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
             return FloatingActionButton.extended(
               label: Text("Signieren"),
               onPressed: () async {
-                await await Navigator.push(
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => SignDocumentView(docAndFile: this.widget.docAndFile),
                   ),
                 );
+                log("Did sign document. HasData is ${snapshot.hasData}");
               },
             );
           }

@@ -3,9 +3,7 @@ import com.mongodb.ServerAddress
 import de.bwaldvogel.mongo.MongoServer
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend
 import de.doctag.docsrv.Config
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.Document
-import de.doctag.docsrv.model.FileData
+import de.doctag.docsrv.model.*
 import de.doctag.docsrv_api.invoker.ApiClient
 import de.doctag.lib.model.Address
 import de.doctag.lib.model.Person
@@ -22,24 +20,39 @@ import de.doctag.lib.logger
 import org.litote.kmongo.save
 
 
-fun makeDocument(content: String, hostname: String = "127.0.0.1:16097", docId : String = "1" ) : Pair<Document, List<FileData>> {
+fun makeDocument(content: String, hostname: String = "127.0.0.1:16097", docId : String = "1", workflow: Workflow? = null ) : Pair<Document, List<FileData>> {
     val attachment = FileData("", "test.txt", Base64.encode(content.toByteArray()))
     attachment._id = attachment.base64Content!!.toSha1HexString()
 
     val doc = Document(
-            docId,
-            "https://$hostname/d/1",
-            false,
-            "test.txt",
-            attachment._id,
-            attachment.base64Content?.toSha1HexString(),
-            listOf(),
-            ZonedDateTime.now(),
-            listOf(),
-            null
+        docId,
+        "https://$hostname/d/1",
+        false,
+        "test.txt",
+        attachment._id,
+        attachment.base64Content?.toSha1HexString(),
+        listOf(),
+        ZonedDateTime.now(),
+        listOf(),
+        workflow
     )
 
     return doc to listOf(attachment)
+}
+
+fun makeWorkflow(): Workflow {
+    return Workflow(
+        _id = "1",
+        name = "Test WF",
+        actions = listOf(
+            WorkflowAction(
+                "A",
+                inputs = listOf(
+                    WorkflowInput("Feld 1", "Eingabemöglichkeit 1", WorkflowInputKind.TextInput)
+                )
+            )
+        )
+    )
 }
 
 fun makePPK():PrivatePublicKeyPair{

@@ -23,7 +23,7 @@ import java.time.Duration
 
 
 
-fun main(args: Array<String>) {
+fun main() {
 
     de.doctag.docsrv.Config._instance = DocSrvConfigImpl(Config.instance.dbConnection, Config.instance.docSrvDbNameTemplate)
     embeddedServer(Jetty, host = "0.0.0.0", port = 16096, module = Application::kwebFeature).start()

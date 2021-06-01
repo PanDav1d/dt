@@ -1,13 +1,15 @@
 package de.doctag.docsrv.remotes
 
+import SignatureInputs
+import SignatureResult
 import com.fasterxml.jackson.module.kotlin.readValue
+import de.doctag.docsrv.api.BadRequestException
 import de.doctag.docsrv.api.EmbeddedDocument
-import de.doctag.docsrv.api.NotifyRequest
+import de.doctag.docsrv.api.PreparedSignature
 import kweb.logger
 import de.doctag.docsrv.model.DocumentId
 import de.doctag.docsrv.model.EmbeddedSignature
 import de.doctag.lib.*
-import kweb.util.toJson
 import java.lang.Exception
 import java.net.URI
 import java.net.http.HttpClient
@@ -15,17 +17,18 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
 
-object DocServerClient {
+object AppApiClient {
     val client: HttpClient by lazy{
         HttpClient.newBuilder().build()
     }
 
-    fun checkHealth(remote: String) : Boolean {
+    fun checkAuthentication(remote: String, sessionId: String) : Boolean {
         val remoteUrl = remote.removePrefix("http://").removePrefix("https://").removeSuffix("/")
         try {
             val request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://${remoteUrl}/health".fixHttps()))
+                    .uri(URI.create("https://${remoteUrl}/app/auth_info".fixHttps()))
                     .header("Accept", "application/json")
+                    .header("Cookie", "SESSION=$sessionId")
                     .timeout(Duration.ofMinutes(1))
                     .build()
             logger.info("Sending request to ${request.uri()}")
@@ -38,64 +41,40 @@ object DocServerClient {
         }
     }
 
-    fun pushSignature(doctagUrl: String, sig:EmbeddedSignature) : Boolean {
+    fun fetchWorkflowToSign(remote:String, sessionId: String, remoteHostname: String, remoteDocumentId: String) : PreparedSignature {
 
-        val rawSigMessage = sig.serialize()
-
-        val pushUrl = DocumentId.parse(doctagUrl)
 
         val request = HttpRequest.newBuilder()
-                .uri(URI.create("https://${pushUrl.hostname}/d/${pushUrl.id}/${pushUrl.hostname}".fixHttps()))
+                .uri(URI.create("https://${remote}/app/signature/prepare/${remoteDocumentId}/${remoteHostname}".fixHttps()))
                 .timeout(Duration.ofMinutes(1))
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json; charset=utf-8")
-                .POST(HttpRequest.BodyPublishers.ofString(rawSigMessage, Charsets.UTF_8))
+                .header("Cookie", "SESSION=$sessionId")
                 .build()
 
-        logger.info("Destination: $doctagUrl")
-        logger.info("data $rawSigMessage")
-
         val resp = client.send(request, HttpResponse.BodyHandlers.ofString())
 
         logger.info("Response status ${resp.statusCode()}")
-        logger.info("Response string ${resp.body()}")
 
-        return resp.statusCode() == 200
+        if(resp.statusCode() == 200)
+            return getJackson().readValue<PreparedSignature>(resp.body())
+
+        throw BadRequestException("Failed to Prepare Workflow")
     }
 
-    fun notifyDocumentDidChange(instanceUrl: String, changedDocumentUrl: String) : Boolean {
+    fun uploadWorkflowResultAndTriggerSignature(remote:String, sessionId: String, remoteHostname: String, remoteDocumentId: String, sig: SignatureInputs): SignatureResult?{
 
-
+        val postUri = "https://${remote}/app/signature/push/${remoteDocumentId}/${remoteHostname}"
         val request = HttpRequest.newBuilder()
-            .uri(URI.create("https://${instanceUrl}/d/notifyChanges/".fixHttps()))
-            .timeout(Duration.ofMinutes(1))
-            .header("Accept", "application/json")
-            .header("Content-Type", "application/json; charset=utf-8")
-            .POST(HttpRequest.BodyPublishers.ofString(NotifyRequest(changedDocumentUrl).toJson(), Charsets.UTF_8))
-            .build()
-
-        logger.info("Signaling change of document: $changedDocumentUrl to instance $instanceUrl")
-
-        val resp = client.send(request, HttpResponse.BodyHandlers.ofString())
-
-        logger.info("Response status ${resp.statusCode()}")
-        logger.info("Response string ${resp.body()}")
-
-        return resp.statusCode() == 200
-    }
-
-    fun loadDocument(targetUrl : String): EmbeddedDocument?{
-
-        val request = HttpRequest.newBuilder()
-                .uri(URI.create(targetUrl.fixHttps()))
+                .uri(URI.create(postUri.fixHttps()))
                 .header("Accept","application/json")
+                .header("Content-Type", "application/json; charset=utf-8")
+                .header("Cookie", "SESSION=$sessionId")
+                .POST(HttpRequest.BodyPublishers.ofString(getJackson().writeValueAsString(sig), Charsets.UTF_8))
                 .timeout(Duration.ofMinutes(1))
                 .build()
 
-        logger.info("fetching doc from url ${targetUrl}")
-
         val resp = client.send(request, HttpResponse.BodyHandlers.ofString())
-
 
         logger.info("Response status code ${resp.statusCode()}")
         logger.info("Response string ${resp.body()}")
@@ -104,7 +83,7 @@ object DocServerClient {
         return when(resp.statusCode()){
             200 -> {
                 try {
-                    val doc = getJackson().readValue<EmbeddedDocument>(resp.body())
+                    val doc = getJackson().readValue<SignatureResult>(resp.body())
                     doc
                 }catch(ex:Exception) {
                     logger.error("Failed to parse json")

@@ -1,5 +1,5 @@
-import 'package:doctag_app/qr_scan.dart';
-import 'package:doctag_app/remote_clients/api.dart';
+import 'package:DocTag/qr_scan.dart';
+import 'package:DocTag/remote_clients/api.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -36,12 +36,18 @@ class _LoginPageState extends State<LoginPage> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => QRCodeScanner()),
-    ) as Barcode;
+    ) as Barcode?;
 
-    log("Scanned data " + result.code);
+    if(result == null){
+      setState(() {
+        currentState = LoginState.AWAIT_SCAN;
+      });
+    }
+
+    log("Scanned data ${result?.code}");
 
     try {
-      Map<String, dynamic> loginCode = jsonDecode(result.code);
+      Map<String, dynamic> loginCode = jsonDecode(result!.code);
       var url = loginCode["doctagUrl"] as String?;
       final sessionId = loginCode["sessionId"] as String?;
 
@@ -88,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
       });
 
     }catch(ex){
-      log("Failed to process Login Code " + result.code);
+      log("Failed to process Login Code ${result?.code}");
       log("Exception $ex");
       setState(() {
         error = "Anmelde-Code nicht gültig. Bitte scannen Sie einen gültigen Doctag-Anmeldecode.";

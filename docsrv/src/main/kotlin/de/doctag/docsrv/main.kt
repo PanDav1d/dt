@@ -77,10 +77,6 @@ fun Application.kwebFeature(){
         exception<BadRequest>{err ->
             call.respond(HttpStatusCode.BadRequest, err.message?:"")
         }
-        exception<Exception>{err->
-            de.doctag.lib.logger.error("Request failed with error (${err.javaClass.name}): ${err.message}")
-            call.respond(HttpStatusCode.InternalServerError, err.message?:"")
-        }
 
         exception<NotFound>{err ->
             call.respond(HttpStatusCode.NotFound, err.message?:"")
@@ -90,6 +86,13 @@ fun Application.kwebFeature(){
 
             call.respond(TextContent("${notFound.value} ${notFound.description}. Request path was ${call.request.path()}", ContentType.Text.Plain.withCharset(Charsets.UTF_8), notFound))
         }
+
+        exception<Exception>{err->
+            de.doctag.lib.logger.error("Request failed with error (${err.javaClass.name}): ${err.message}")
+            logger.error(err.stackTraceToString())
+            call.respond(HttpStatusCode.InternalServerError, err.message?:"")
+        }
+
     }
     install(WebSockets){
         pingPeriod = Duration.ofSeconds(10)

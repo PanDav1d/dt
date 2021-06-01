@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:docsrv_api/api.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +22,54 @@ class DocServerClient{
     
     return cli.fetchAuthInfo();
   }
+
+  Future<PreparedSignature> fetchPreparedWorkflow(String documentUrl) async {
+    Completer<PreparedSignature> completer = Completer();
+
+    final cli = DefaultApi(ApiClient(basePath: this.url));
+    cli.apiClient.addDefaultHeader("Cookie", "SESSION=$sessionId");
+
+    final splittingChar = documentUrl.indexOf("/d/");
+    final hostName = documentUrl.substring(0, splittingChar).replaceAll("https://", "");
+    final documentId = documentUrl.substring(splittingChar+3);
+
+    log("Hostname is $hostName");
+    log("Document is $documentId");
+
+    final response = await cli.fetchWorkflowToSign(documentId, hostName);
+    completer.complete(response);
+
+    return completer.future;
+  }
+
+  Future<void> submitSignature(String documentUrl, SignatureInputs inputs) async {
+    Completer<void> completer = Completer();
+    try {
+      final cli = DefaultApi(ApiClient(basePath: this.url));
+      cli.apiClient.addDefaultHeader("Cookie", "SESSION=$sessionId");
+
+      final splittingChar = documentUrl.indexOf("/d/");
+      final hostName = documentUrl.substring(0, splittingChar).replaceAll(
+          "https://", "");
+      final documentId = documentUrl.substring(splittingChar + 3);
+
+      log("Inputs is ${inputs}");
+
+      final response = await cli.uploadWorkflowResultAndTriggerSignatureWithHttpInfo(
+          documentId, hostName, signatureInputs: inputs);
+
+      if(response.statusCode > 299){
+        log("Remote responded error" + response.body);
+        completer.completeError(Exception("Request failed: ${response.body}"));
+      }
+
+      log("Response is ${response.statusCode}");
+      completer.complete(null);
+    }catch (ex) {
+      completer.completeError(ex);
+    }
+    return completer.future;
+  }
 }
 
 
@@ -37,7 +84,7 @@ class RemoteDocServerClient{
 
   Future<EmbeddedDocument?> fetchDoctagDocument(String uri) async {
     final splittingChar = uri.indexOf("/d/");
-    final hostName = uri.substring(0, splittingChar);
+    final hostName = uri.substring(0, splittingChar).replaceAll("https://", "");
     final documentId = uri.substring(splittingChar+3);
 
     log("HostName $hostName");
@@ -76,4 +123,6 @@ class RemoteDocServerClient{
 
     return completer.future;
   }
+
+
 }

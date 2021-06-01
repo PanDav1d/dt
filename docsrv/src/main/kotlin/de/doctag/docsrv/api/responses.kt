@@ -57,6 +57,6 @@ data class PrivatePublicKeyInfo(
 )
 
 data class PreparedSignature(
-    val workflow: Workflow,
+    val workflow: Workflow?,
     val availableKeys: List<PrivatePublicKeyInfo>
 )

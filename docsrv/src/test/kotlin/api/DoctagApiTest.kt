@@ -18,6 +18,7 @@ import io.ktor.server.testing.*
 import kweb.util.gson
 import makeDocument
 import makePPK
+import org.bson.internal.Base64
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -32,7 +33,7 @@ import java.net.InetSocketAddress
 class TestConfig(override val dbConnection: String, override val dbName: String) : DocSrvConfig
 
 
-class PostSignatureTests : WithTestDatabase() {
+class DoctagApiTest : WithTestDatabase() {
 
 
     @Test
@@ -56,7 +57,8 @@ class PostSignatureTests : WithTestDatabase() {
         // Then
         //
         Assert.notNull(actualDoc)
-
+        val acutalAttachment = actualDoc?.files?.find { it._id  == actualDoc?.document?.attachmentId }
+        Assert.equals(acutalAttachment?.base64Content, Base64.encode("123".toByteArray()))
     }
 
     @Test
@@ -79,7 +81,6 @@ class PostSignatureTests : WithTestDatabase() {
         //
         // When
         //
-
         val result = DocServerClient.pushSignature("http://127.0.0.1:${TESTING_PORT}/d/${parsedUrl.id}", embeddedSignature)
 
 
@@ -93,6 +94,5 @@ class PostSignatureTests : WithTestDatabase() {
 
         Assertions.assertEquals(currentSignature.originalMessage, embeddedSignature.signature.originalMessage)
         Assertions.assertEquals(currentSignature.isValid(), true)
-
     }
 }

@@ -217,7 +217,7 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<
                 span().text("Build-Nr: ")
                 span().text(Resources.load("version.txt"))
             }
-            a(fomantic.ui.label, "/swagger-ui/index.html?url=/openapi.json").new {
+            a(fomantic.ui.label, "/apidocs").new {
                 i(fomantic.ui.icon.question.circle.outline)
                 span().text("API")
             }
