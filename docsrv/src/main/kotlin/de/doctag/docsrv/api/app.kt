@@ -9,6 +9,8 @@ import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ktor.swagger.get
 import ktor.swagger.post
 import ktor.swagger.ok
@@ -80,7 +82,9 @@ fun Routing.appRoutes(){
         val docId = req.documentId
         val hostname = req.hostname
 
-        val doc = DocServerClient.loadDocument("https://${hostname}/d/${docId}")
+        val doc = withContext(Dispatchers.IO){
+            DocServerClient.loadDocument("https://${hostname}/d/${docId}")
+        }
 
         call.respond(
             PreparedSignature(
@@ -102,7 +106,9 @@ fun Routing.appRoutes(){
     ) { req, data ->
         ensureUserIsAuthenticated()
 
-        val doc = DocServerClient.loadDocument("https://${req.hostname}/d/${req.documentId}").ensureObjectWasFound()
+        val doc = withContext(Dispatchers.IO){
+            DocServerClient.loadDocument("https://${req.hostname}/d/${req.documentId}").ensureObjectWasFound()
+        }
 
         val filesToInsert = data.files?.map {
             val input = data.inputs?.find { input -> input.fileId == it._id }
@@ -126,8 +132,9 @@ fun Routing.appRoutes(){
         val files = addSignature.inputs?.mapNotNull { it.fileId }?.distinct()?.mapNotNull { db().files.findOneById(it) }
         val embeddedSignature = EmbeddedSignature(files ?: listOf(), addSignature)
 
-        DocServerClient.pushSignature(doc.document.url!!, embeddedSignature)
-
+        withContext(Dispatchers.IO){
+            DocServerClient.pushSignature(doc.document.url!!, embeddedSignature)
+        }
 
         call.respond(SignatureResult(success = true))
     }

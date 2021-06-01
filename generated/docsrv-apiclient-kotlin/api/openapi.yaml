@@ -1,0 +1,1258 @@
+openapi: 3.0.0
+info:
+  contact:
+    name: Frank Englert
+    url: https://www.doctag.de
+  description: More Info available on https://www.doctag.de
+  title: DocServer
+  version: "0.1"
+servers:
+- url: /
+paths:
+  /health:
+    get:
+      operationId: checkHealth
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+          description: HealthCheckResponse
+      summary: Perform Health Check
+      tags: []
+      x-accepts: application/json
+  /discovery:
+    get:
+      operationId: discoverInstance
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/DiscoveryResponse'
+          description: DiscoveryResponse
+      summary: Perform Instance discovery
+      tags: []
+      x-accepts: application/json
+  /k/{publicKeyFingerprint}/verify/{seed}:
+    get:
+      operationId: verifyInstanceHasPrivateKey
+      parameters:
+      - deprecated: false
+        description: publicKeyFingerprint
+        examples: {}
+        explode: false
+        in: path
+        name: publicKeyFingerprint
+        required: true
+        schema:
+          type: string
+        style: simple
+      - deprecated: false
+        description: seed
+        examples: {}
+        explode: false
+        in: path
+        name: seed
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/DiscoveryResponse'
+          description: DiscoveryResponse
+      summary: Check that this instance actually owns the given private key
+      tags: []
+      x-accepts: application/json
+    put:
+      operationId: setVerificationOfKeyPair
+      parameters:
+      - deprecated: false
+        description: publicKeyFingerprint
+        examples: {}
+        explode: false
+        in: path
+        name: publicKeyFingerprint
+        required: true
+        schema:
+          type: string
+        style: simple
+      - deprecated: false
+        description: seed
+        examples: {}
+        explode: false
+        in: path
+        name: seed
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            examples: {}
+            schema:
+              $ref: '#/components/schemas/PublicKeyVerification'
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/DiscoveryResponse'
+          description: DiscoveryResponse
+      summary: Set the verification of the private public key
+      tags: []
+      x-contentType: application/json
+      x-accepts: application/json
+  /d/{documentId}/download:
+    get:
+      operationId: downloadDocument
+      parameters:
+      - deprecated: false
+        description: documentId
+        examples: {}
+        explode: false
+        in: path
+        name: documentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/DiscoveryResponse'
+          description: DiscoveryResponse
+      summary: Download document
+      tags: []
+      x-accepts: application/json
+  /d/{documentId}/viewSignSheet:
+    get:
+      operationId: downloadSignSheet
+      parameters:
+      - deprecated: false
+        description: documentId
+        examples: {}
+        explode: false
+        in: path
+        name: documentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/DiscoveryResponse'
+          description: DiscoveryResponse
+      summary: Download sign sheet
+      tags: []
+      x-accepts: application/json
+  /d/{documentId}:
+    get:
+      operationId: fetchDoctagDocument
+      parameters:
+      - deprecated: false
+        description: documentId
+        examples: {}
+        explode: false
+        in: path
+        name: documentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/EmbeddedDocument'
+          description: EmbeddedDocument
+      summary: Fetch doctag document
+      tags: []
+      x-accepts: application/json
+  /d/{documentId}/{hostname}:
+    post:
+      operationId: addSignatureToDoctagDocument
+      parameters:
+      - deprecated: false
+        description: documentId
+        examples: {}
+        explode: false
+        in: path
+        name: documentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - deprecated: false
+        description: hostname
+        examples: {}
+        explode: false
+        in: path
+        name: hostname
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            examples: {}
+            schema:
+              $ref: '#/components/schemas/EmbeddedSignature'
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: Document
+      summary: Add signature to document
+      tags: []
+      x-contentType: application/json
+      x-accepts: application/json
+  /f/{fileId}/view:
+    get:
+      operationId: viewFile
+      parameters:
+      - deprecated: false
+        description: fileId
+        examples: {}
+        explode: false
+        in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/DiscoveryResponse'
+          description: DiscoveryResponse
+      summary: Perform Instance discovery
+      tags: []
+      x-accepts: application/json
+  /f/{fileId}/download:
+    get:
+      operationId: downloadFile
+      parameters:
+      - deprecated: false
+        description: fileId
+        examples: {}
+        explode: false
+        in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/DiscoveryResponse'
+          description: DiscoveryResponse
+      summary: Perform Instance discovery
+      tags: []
+      x-accepts: application/json
+  /app/auth_info:
+    get:
+      operationId: fetchAuthInfo
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/AuthInfoResponse'
+          description: AuthInfoResponse
+      summary: Check authentication
+      tags: []
+      x-accepts: application/json
+  /app/signature/prepare/{documentId}/{hostname}:
+    get:
+      operationId: fetchWorkflowToSign
+      parameters:
+      - deprecated: false
+        description: documentId
+        examples: {}
+        explode: false
+        in: path
+        name: documentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - deprecated: false
+        description: hostname
+        examples: {}
+        explode: false
+        in: path
+        name: hostname
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/PreparedSignature'
+          description: PreparedSignature
+      summary: Check authentication
+      tags: []
+      x-accepts: application/json
+  /app/signature/push/{documentId}/{hostname}:
+    post:
+      operationId: uploadWorkflowResultAndTriggerSignature
+      parameters:
+      - deprecated: false
+        description: documentId
+        examples: {}
+        explode: false
+        in: path
+        name: documentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - deprecated: false
+        description: hostname
+        examples: {}
+        explode: false
+        in: path
+        name: hostname
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            examples: {}
+            schema:
+              $ref: '#/components/schemas/SignatureInputs'
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/AuthInfoResponse'
+          description: AuthInfoResponse
+      summary: Check authentication
+      tags: []
+      x-contentType: application/json
+      x-accepts: application/json
+components:
+  callbacks: {}
+  examples: {}
+  headers: {}
+  links: {}
+  parameters: {}
+  requestBodies: {}
+  responses: {}
+  schemas:
+    HealthCheckResponse:
+      example:
+        isHealthy: true
+      properties:
+        isHealthy:
+          type: boolean
+    DiscoveryResponse:
+      example:
+        identity: identity
+      properties:
+        identity:
+          type: string
+    PublicKeyVerification:
+      example:
+        isAddressVerified: true
+        signatureValidUntil: signatureValidUntil
+        signedByParty: signedByParty
+        signedAt: signedAt
+        signedByPublicKey: signedByPublicKey
+        signatureOfPublicKeyEntry: signatureOfPublicKeyEntry
+        isSigningDoctagInstanceVerified: true
+      properties:
+        isAddressVerified:
+          type: boolean
+        isSigningDoctagInstanceVerified:
+          type: boolean
+        signatureOfPublicKeyEntry:
+          type: string
+        signatureValidUntil:
+          type: string
+        signedAt:
+          type: string
+        signedByParty:
+          type: string
+        signedByPublicKey:
+          type: string
+    EmbeddedDocument:
+      example:
+        document:
+          originalFileName: originalFileName
+          isMirrored: true
+          attachmentHash: attachmentHash
+          mirrors:
+          - mirrors
+          - mirrors
+          workflow:
+            name: name
+            _id: _id
+            actions:
+            - role: role
+              inputs:
+              - kind: TextInput
+                name: name
+                description: description
+              - kind: TextInput
+                name: name
+                description: description
+            - role: role
+              inputs:
+              - kind: TextInput
+                name: name
+                description: description
+              - kind: TextInput
+                name: name
+                description: description
+          created:
+            dateTime: 2000-01-23T04:56:07.000+00:00
+            offset:
+              totalSeconds: 0
+              id: id
+            zone: ""
+          fullText: fullText
+          _id: _id
+          attachmentId: attachmentId
+          signatures:
+          - role: role
+            data:
+              documentHash: documentHash
+              signingDoctagInstance: signingDoctagInstance
+              workflowHash: workflowHash
+              previousSignaturesHash: previousSignaturesHash
+              randomBuffer: randomBuffer
+              signature: signature
+              validFromDateTime:
+                dateTime: 2000-01-23T04:56:07.000+00:00
+                offset:
+                  totalSeconds: 0
+                  id: id
+                zone: ""
+              documentUrl: documentUrl
+              keyFingerprint: keyFingerprint
+              validFrom: validFrom
+              signingUser: signingUser
+            signedByKey:
+              owner:
+                firstName: firstName
+                lastName: lastName
+                phone: phone
+                userId: userId
+                email: email
+              signingDoctagInstance: signingDoctagInstance
+              created: created
+              verboseName: verboseName
+              ownerAddress:
+                zipCode: zipCode
+                city: city
+                countryCode: countryCode
+                street: street
+                name2: name2
+                name1: name1
+              publicKey: publicKey
+              verification:
+                isAddressVerified: true
+                signatureValidUntil: signatureValidUntil
+                signedByParty: signedByParty
+                signedAt: signedAt
+                signedByPublicKey: signedByPublicKey
+                signatureOfPublicKeyEntry: signatureOfPublicKeyEntry
+                isSigningDoctagInstanceVerified: true
+            inputs:
+            - name: name
+              value: value
+              fileId: fileId
+            - name: name
+              value: value
+              fileId: fileId
+            signed:
+              dateTime: 2000-01-23T04:56:07.000+00:00
+              offset:
+                totalSeconds: 0
+                id: id
+              zone: ""
+            originalMessage: originalMessage
+          - role: role
+            data:
+              documentHash: documentHash
+              signingDoctagInstance: signingDoctagInstance
+              workflowHash: workflowHash
+              previousSignaturesHash: previousSignaturesHash
+              randomBuffer: randomBuffer
+              signature: signature
+              validFromDateTime:
+                dateTime: 2000-01-23T04:56:07.000+00:00
+                offset:
+                  totalSeconds: 0
+                  id: id
+                zone: ""
+              documentUrl: documentUrl
+              keyFingerprint: keyFingerprint
+              validFrom: validFrom
+              signingUser: signingUser
+            signedByKey:
+              owner:
+                firstName: firstName
+                lastName: lastName
+                phone: phone
+                userId: userId
+                email: email
+              signingDoctagInstance: signingDoctagInstance
+              created: created
+              verboseName: verboseName
+              ownerAddress:
+                zipCode: zipCode
+                city: city
+                countryCode: countryCode
+                street: street
+                name2: name2
+                name1: name1
+              publicKey: publicKey
+              verification:
+                isAddressVerified: true
+                signatureValidUntil: signatureValidUntil
+                signedByParty: signedByParty
+                signedAt: signedAt
+                signedByPublicKey: signedByPublicKey
+                signatureOfPublicKeyEntry: signatureOfPublicKeyEntry
+                isSigningDoctagInstanceVerified: true
+            inputs:
+            - name: name
+              value: value
+              fileId: fileId
+            - name: name
+              value: value
+              fileId: fileId
+            signed:
+              dateTime: 2000-01-23T04:56:07.000+00:00
+              offset:
+                totalSeconds: 0
+                id: id
+              zone: ""
+            originalMessage: originalMessage
+          url: url
+        files:
+        - base64Content: base64Content
+          name: name
+          _id: _id
+          contentType: contentType
+        - base64Content: base64Content
+          name: name
+          _id: _id
+          contentType: contentType
+      properties:
+        document:
+          $ref: '#/components/schemas/Document'
+        files:
+          items:
+            $ref: '#/components/schemas/FileData'
+          type: array
+    Document:
+      example:
+        originalFileName: originalFileName
+        isMirrored: true
+        attachmentHash: attachmentHash
+        mirrors:
+        - mirrors
+        - mirrors
+        workflow:
+          name: name
+          _id: _id
+          actions:
+          - role: role
+            inputs:
+            - kind: TextInput
+              name: name
+              description: description
+            - kind: TextInput
+              name: name
+              description: description
+          - role: role
+            inputs:
+            - kind: TextInput
+              name: name
+              description: description
+            - kind: TextInput
+              name: name
+              description: description
+        created:
+          dateTime: 2000-01-23T04:56:07.000+00:00
+          offset:
+            totalSeconds: 0
+            id: id
+          zone: ""
+        fullText: fullText
+        _id: _id
+        attachmentId: attachmentId
+        signatures:
+        - role: role
+          data:
+            documentHash: documentHash
+            signingDoctagInstance: signingDoctagInstance
+            workflowHash: workflowHash
+            previousSignaturesHash: previousSignaturesHash
+            randomBuffer: randomBuffer
+            signature: signature
+            validFromDateTime:
+              dateTime: 2000-01-23T04:56:07.000+00:00
+              offset:
+                totalSeconds: 0
+                id: id
+              zone: ""
+            documentUrl: documentUrl
+            keyFingerprint: keyFingerprint
+            validFrom: validFrom
+            signingUser: signingUser
+          signedByKey:
+            owner:
+              firstName: firstName
+              lastName: lastName
+              phone: phone
+              userId: userId
+              email: email
+            signingDoctagInstance: signingDoctagInstance
+            created: created
+            verboseName: verboseName
+            ownerAddress:
+              zipCode: zipCode
+              city: city
+              countryCode: countryCode
+              street: street
+              name2: name2
+              name1: name1
+            publicKey: publicKey
+            verification:
+              isAddressVerified: true
+              signatureValidUntil: signatureValidUntil
+              signedByParty: signedByParty
+              signedAt: signedAt
+              signedByPublicKey: signedByPublicKey
+              signatureOfPublicKeyEntry: signatureOfPublicKeyEntry
+              isSigningDoctagInstanceVerified: true
+          inputs:
+          - name: name
+            value: value
+            fileId: fileId
+          - name: name
+            value: value
+            fileId: fileId
+          signed:
+            dateTime: 2000-01-23T04:56:07.000+00:00
+            offset:
+              totalSeconds: 0
+              id: id
+            zone: ""
+          originalMessage: originalMessage
+        - role: role
+          data:
+            documentHash: documentHash
+            signingDoctagInstance: signingDoctagInstance
+            workflowHash: workflowHash
+            previousSignaturesHash: previousSignaturesHash
+            randomBuffer: randomBuffer
+            signature: signature
+            validFromDateTime:
+              dateTime: 2000-01-23T04:56:07.000+00:00
+              offset:
+                totalSeconds: 0
+                id: id
+              zone: ""
+            documentUrl: documentUrl
+            keyFingerprint: keyFingerprint
+            validFrom: validFrom
+            signingUser: signingUser
+          signedByKey:
+            owner:
+              firstName: firstName
+              lastName: lastName
+              phone: phone
+              userId: userId
+              email: email
+            signingDoctagInstance: signingDoctagInstance
+            created: created
+            verboseName: verboseName
+            ownerAddress:
+              zipCode: zipCode
+              city: city
+              countryCode: countryCode
+              street: street
+              name2: name2
+              name1: name1
+            publicKey: publicKey
+            verification:
+              isAddressVerified: true
+              signatureValidUntil: signatureValidUntil
+              signedByParty: signedByParty
+              signedAt: signedAt
+              signedByPublicKey: signedByPublicKey
+              signatureOfPublicKeyEntry: signatureOfPublicKeyEntry
+              isSigningDoctagInstanceVerified: true
+          inputs:
+          - name: name
+            value: value
+            fileId: fileId
+          - name: name
+            value: value
+            fileId: fileId
+          signed:
+            dateTime: 2000-01-23T04:56:07.000+00:00
+            offset:
+              totalSeconds: 0
+              id: id
+            zone: ""
+          originalMessage: originalMessage
+        url: url
+      properties:
+        _id:
+          type: string
+        attachmentHash:
+          type: string
+        attachmentId:
+          type: string
+        created:
+          $ref: '#/components/schemas/ZonedDateTime'
+        fullText:
+          type: string
+        isMirrored:
+          type: boolean
+        mirrors:
+          items:
+            type: string
+          type: array
+        originalFileName:
+          type: string
+        signatures:
+          items:
+            $ref: '#/components/schemas/Signature'
+          type: array
+        url:
+          type: string
+        workflow:
+          $ref: '#/components/schemas/Workflow'
+    ZonedDateTime:
+      example:
+        dateTime: 2000-01-23T04:56:07.000+00:00
+        offset:
+          totalSeconds: 0
+          id: id
+        zone: ""
+      properties:
+        dateTime:
+          format: date-time
+          type: string
+        offset:
+          $ref: '#/components/schemas/ZoneOffset'
+        zone:
+          properties: {}
+    ZoneOffset:
+      example:
+        totalSeconds: 0
+        id: id
+      properties:
+        totalSeconds:
+          format: int32
+          type: integer
+        id:
+          type: string
+    ZoneId:
+      properties: {}
+    Signature:
+      example:
+        role: role
+        data:
+          documentHash: documentHash
+          signingDoctagInstance: signingDoctagInstance
+          workflowHash: workflowHash
+          previousSignaturesHash: previousSignaturesHash
+          randomBuffer: randomBuffer
+          signature: signature
+          validFromDateTime:
+            dateTime: 2000-01-23T04:56:07.000+00:00
+            offset:
+              totalSeconds: 0
+              id: id
+            zone: ""
+          documentUrl: documentUrl
+          keyFingerprint: keyFingerprint
+          validFrom: validFrom
+          signingUser: signingUser
+        signedByKey:
+          owner:
+            firstName: firstName
+            lastName: lastName
+            phone: phone
+            userId: userId
+            email: email
+          signingDoctagInstance: signingDoctagInstance
+          created: created
+          verboseName: verboseName
+          ownerAddress:
+            zipCode: zipCode
+            city: city
+            countryCode: countryCode
+            street: street
+            name2: name2
+            name1: name1
+          publicKey: publicKey
+          verification:
+            isAddressVerified: true
+            signatureValidUntil: signatureValidUntil
+            signedByParty: signedByParty
+            signedAt: signedAt
+            signedByPublicKey: signedByPublicKey
+            signatureOfPublicKeyEntry: signatureOfPublicKeyEntry
+            isSigningDoctagInstanceVerified: true
+        inputs:
+        - name: name
+          value: value
+          fileId: fileId
+        - name: name
+          value: value
+          fileId: fileId
+        signed:
+          dateTime: 2000-01-23T04:56:07.000+00:00
+          offset:
+            totalSeconds: 0
+            id: id
+          zone: ""
+        originalMessage: originalMessage
+      properties:
+        data:
+          $ref: '#/components/schemas/DoctagSignatureData'
+        inputs:
+          items:
+            $ref: '#/components/schemas/WorkflowInputResult'
+          type: array
+        originalMessage:
+          type: string
+        role:
+          type: string
+        signed:
+          $ref: '#/components/schemas/ZonedDateTime'
+        signedByKey:
+          $ref: '#/components/schemas/PublicKeyResponse'
+    DoctagSignatureData:
+      example:
+        documentHash: documentHash
+        signingDoctagInstance: signingDoctagInstance
+        workflowHash: workflowHash
+        previousSignaturesHash: previousSignaturesHash
+        randomBuffer: randomBuffer
+        signature: signature
+        validFromDateTime:
+          dateTime: 2000-01-23T04:56:07.000+00:00
+          offset:
+            totalSeconds: 0
+            id: id
+          zone: ""
+        documentUrl: documentUrl
+        keyFingerprint: keyFingerprint
+        validFrom: validFrom
+        signingUser: signingUser
+      properties:
+        documentHash:
+          type: string
+        documentUrl:
+          type: string
+        keyFingerprint:
+          type: string
+        previousSignaturesHash:
+          type: string
+        randomBuffer:
+          type: string
+        signature:
+          type: string
+        signingDoctagInstance:
+          type: string
+        signingUser:
+          type: string
+        validFrom:
+          type: string
+        validFromDateTime:
+          $ref: '#/components/schemas/ZonedDateTime'
+        workflowHash:
+          type: string
+    WorkflowInputResult:
+      example:
+        name: name
+        value: value
+        fileId: fileId
+      properties:
+        fileId:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
+    PublicKeyResponse:
+      example:
+        owner:
+          firstName: firstName
+          lastName: lastName
+          phone: phone
+          userId: userId
+          email: email
+        signingDoctagInstance: signingDoctagInstance
+        created: created
+        verboseName: verboseName
+        ownerAddress:
+          zipCode: zipCode
+          city: city
+          countryCode: countryCode
+          street: street
+          name2: name2
+          name1: name1
+        publicKey: publicKey
+        verification:
+          isAddressVerified: true
+          signatureValidUntil: signatureValidUntil
+          signedByParty: signedByParty
+          signedAt: signedAt
+          signedByPublicKey: signedByPublicKey
+          signatureOfPublicKeyEntry: signatureOfPublicKeyEntry
+          isSigningDoctagInstanceVerified: true
+      properties:
+        created:
+          type: string
+        owner:
+          $ref: '#/components/schemas/Person'
+        ownerAddress:
+          $ref: '#/components/schemas/Address'
+        publicKey:
+          type: string
+        signingDoctagInstance:
+          type: string
+        verboseName:
+          type: string
+        verification:
+          $ref: '#/components/schemas/PublicKeyVerification'
+    Person:
+      example:
+        firstName: firstName
+        lastName: lastName
+        phone: phone
+        userId: userId
+        email: email
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        userId:
+          type: string
+    Address:
+      example:
+        zipCode: zipCode
+        city: city
+        countryCode: countryCode
+        street: street
+        name2: name2
+        name1: name1
+      properties:
+        city:
+          type: string
+        countryCode:
+          type: string
+        name1:
+          type: string
+        name2:
+          type: string
+        street:
+          type: string
+        zipCode:
+          type: string
+    Workflow:
+      example:
+        name: name
+        _id: _id
+        actions:
+        - role: role
+          inputs:
+          - kind: TextInput
+            name: name
+            description: description
+          - kind: TextInput
+            name: name
+            description: description
+        - role: role
+          inputs:
+          - kind: TextInput
+            name: name
+            description: description
+          - kind: TextInput
+            name: name
+            description: description
+      properties:
+        _id:
+          type: string
+        actions:
+          items:
+            $ref: '#/components/schemas/WorkflowAction'
+          type: array
+        name:
+          type: string
+    WorkflowAction:
+      example:
+        role: role
+        inputs:
+        - kind: TextInput
+          name: name
+          description: description
+        - kind: TextInput
+          name: name
+          description: description
+      properties:
+        inputs:
+          items:
+            $ref: '#/components/schemas/WorkflowInput'
+          type: array
+        role:
+          type: string
+    WorkflowInput:
+      example:
+        kind: TextInput
+        name: name
+        description: description
+      properties:
+        description:
+          type: string
+        kind:
+          enum:
+          - TextInput
+          - FileInput
+          - SelectFromList
+          - Checkbox
+          - Sign
+          type: string
+        name:
+          type: string
+    FileData:
+      example:
+        base64Content: base64Content
+        name: name
+        _id: _id
+        contentType: contentType
+      properties:
+        _id:
+          type: string
+        base64Content:
+          type: string
+        contentType:
+          type: string
+        name:
+          type: string
+    EmbeddedSignature:
+      example:
+        signature:
+          role: role
+          data:
+            documentHash: documentHash
+            signingDoctagInstance: signingDoctagInstance
+            workflowHash: workflowHash
+            previousSignaturesHash: previousSignaturesHash
+            randomBuffer: randomBuffer
+            signature: signature
+            validFromDateTime:
+              dateTime: 2000-01-23T04:56:07.000+00:00
+              offset:
+                totalSeconds: 0
+                id: id
+              zone: ""
+            documentUrl: documentUrl
+            keyFingerprint: keyFingerprint
+            validFrom: validFrom
+            signingUser: signingUser
+          signedByKey:
+            owner:
+              firstName: firstName
+              lastName: lastName
+              phone: phone
+              userId: userId
+              email: email
+            signingDoctagInstance: signingDoctagInstance
+            created: created
+            verboseName: verboseName
+            ownerAddress:
+              zipCode: zipCode
+              city: city
+              countryCode: countryCode
+              street: street
+              name2: name2
+              name1: name1
+            publicKey: publicKey
+            verification:
+              isAddressVerified: true
+              signatureValidUntil: signatureValidUntil
+              signedByParty: signedByParty
+              signedAt: signedAt
+              signedByPublicKey: signedByPublicKey
+              signatureOfPublicKeyEntry: signatureOfPublicKeyEntry
+              isSigningDoctagInstanceVerified: true
+          inputs:
+          - name: name
+            value: value
+            fileId: fileId
+          - name: name
+            value: value
+            fileId: fileId
+          signed:
+            dateTime: 2000-01-23T04:56:07.000+00:00
+            offset:
+              totalSeconds: 0
+              id: id
+            zone: ""
+          originalMessage: originalMessage
+        files:
+        - base64Content: base64Content
+          name: name
+          _id: _id
+          contentType: contentType
+        - base64Content: base64Content
+          name: name
+          _id: _id
+          contentType: contentType
+      properties:
+        files:
+          items:
+            $ref: '#/components/schemas/FileData'
+          type: array
+        signature:
+          $ref: '#/components/schemas/Signature'
+    AuthInfoResponse:
+      example:
+        authenticated: true
+        firstName: firstName
+        lastName: lastName
+      properties:
+        authenticated:
+          type: boolean
+        firstName:
+          type: string
+        lastName:
+          type: string
+    PreparedSignature:
+      example:
+        workflow:
+          name: name
+          _id: _id
+          actions:
+          - role: role
+            inputs:
+            - kind: TextInput
+              name: name
+              description: description
+            - kind: TextInput
+              name: name
+              description: description
+          - role: role
+            inputs:
+            - kind: TextInput
+              name: name
+              description: description
+            - kind: TextInput
+              name: name
+              description: description
+        availableKeys:
+        - ppkId: ppkId
+          verboseName: verboseName
+        - ppkId: ppkId
+          verboseName: verboseName
+      properties:
+        availableKeys:
+          items:
+            $ref: '#/components/schemas/PrivatePublicKeyInfo'
+          type: array
+        workflow:
+          $ref: '#/components/schemas/Workflow'
+    PrivatePublicKeyInfo:
+      example:
+        ppkId: ppkId
+        verboseName: verboseName
+      properties:
+        ppkId:
+          type: string
+        verboseName:
+          type: string
+    SignatureInputs:
+      example:
+        role: role
+        inputs:
+        - name: name
+          value: value
+          fileId: fileId
+        - name: name
+          value: value
+          fileId: fileId
+        ppkId: ppkId
+        files:
+        - base64Content: base64Content
+          name: name
+          _id: _id
+          contentType: contentType
+        - base64Content: base64Content
+          name: name
+          _id: _id
+          contentType: contentType
+      properties:
+        files:
+          items:
+            $ref: '#/components/schemas/FileData'
+          type: array
+        inputs:
+          items:
+            $ref: '#/components/schemas/WorkflowInputResult'
+          type: array
+        ppkId:
+          type: string
+        role:
+          type: string
+  securitySchemes: {}
+

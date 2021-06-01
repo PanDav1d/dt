@@ -20,6 +20,8 @@ import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ktor.swagger.operationId
 import ktor.swagger.version.shared.Group
 import kweb.logger
@@ -228,9 +230,11 @@ fun Routing.docServerApi(){
             db().documents.save(doc)
 
             val distributeToUrls = doc.signatures?.map { it.data?.signingDoctagInstance }?.distinct()
-            distributeToUrls?.filterNotNull()?.forEach { url ->
+            distributeToUrls?.filterNotNull()?.filter{!doc.url!!.contains(it)}?.forEach { url ->
                 try{
-                    DocServerClient.notifyDocumentDidChange(url, doc.url!!)
+                    withContext(Dispatchers.IO){
+                        DocServerClient.notifyDocumentDidChange(url, doc.url!!)
+                    }
                 }
                 catch(ex: Exception){
                     logger.error(ex.message)
@@ -249,7 +253,9 @@ fun Routing.docServerApi(){
             ).operationId("notifyChangesOfDoctagDocument")
         ) { req, notifyRequest  ->
 
-            val doc = DocServerClient.loadDocument(notifyRequest.url)
+            val doc = withContext(Dispatchers.IO){
+                DocServerClient.loadDocument(notifyRequest.url)
+            }
 
             doc?.files?.forEach {
                 db().files.save(it)

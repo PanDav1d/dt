@@ -1,0 +1,60 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+
+// ignore_for_file: unused_element, unused_import
+// ignore_for_file: always_put_required_named_parameters_first
+// ignore_for_file: lines_longer_than_80_chars
+
+library docsrv_api;
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:http/http.dart';
+import 'package:intl/intl.dart';
+import 'package:meta/meta.dart';
+
+part 'api_client.dart';
+part 'api_helper.dart';
+part 'api_exception.dart';
+part 'auth/authentication.dart';
+part 'auth/api_key_auth.dart';
+part 'auth/oauth.dart';
+part 'auth/http_basic_auth.dart';
+part 'auth/http_bearer_auth.dart';
+
+part 'api/default_api.dart';
+
+part 'model/address.dart';
+part 'model/auth_info_response.dart';
+part 'model/discovery_response.dart';
+part 'model/doctag_signature_data.dart';
+part 'model/document.dart';
+part 'model/embedded_document.dart';
+part 'model/embedded_signature.dart';
+part 'model/file_data.dart';
+part 'model/health_check_response.dart';
+part 'model/person.dart';
+part 'model/prepared_signature.dart';
+part 'model/private_public_key_info.dart';
+part 'model/public_key_response.dart';
+part 'model/public_key_verification.dart';
+part 'model/signature.dart';
+part 'model/signature_inputs.dart';
+part 'model/workflow.dart';
+part 'model/workflow_action.dart';
+part 'model/workflow_input.dart';
+part 'model/workflow_input_result.dart';
+
+
+const _delimiters = {'csv': ',', 'ssv': ' ', 'tsv': '\t', 'pipes': '|'};
+const _dateEpochMarker = 'epoch';
+final _dateFormatter = DateFormat('yyyy-MM-dd');
+final _regList = RegExp(r'^List<(.*)>$');
+final _regSet = RegExp(r'^Set<(.*)>$');
+final _regMap = RegExp(r'^Map<String,(.*)>$');
+
+ApiClient defaultApiClient = ApiClient();
