@@ -49,3 +49,6 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle
 /doctag_app/upload-keystore.jks
+/docserver_openapi.json
+/saved.png
+/test.pdf

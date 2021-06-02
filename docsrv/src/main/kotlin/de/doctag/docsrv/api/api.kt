@@ -97,8 +97,8 @@ fun Routing.docServerApi(){
 
 
     @Group("DocServer")
-    @Location("/k/{publicKeyFingerprint}/verify/{seed}")
-    class ReceiveKeyVerificationRequestPath(val publicKeyFingerprint: String, val seed: String)
+    @Location("/k/{publicKeyFingerprint}/verification")
+    class ReceiveKeyVerificationRequestPath(val publicKeyFingerprint: String)
     put<ReceiveKeyVerificationRequestPath, PublicKeyVerification>(
         "Set the verification of the private public key".responds(
             ok<DiscoveryResponse>()
