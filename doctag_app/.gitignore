@@ -45,3 +45,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 android/key.properties
+/Review_instructions.docx
+/Review_instructions.pdf

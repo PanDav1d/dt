@@ -40,10 +40,10 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                 children: <Widget>[
                   if (result != null)
                     Text(
-                        'Barcode Type: ${describeEnum(
-                            result!.format)}   Data: ${result!.code}')
+                        'Barcode Typ: ${describeEnum(
+                            result!.format)}   Daten: ${result!.code}')
                   else
-                    Text('Scan a code'),
+                    Text('QR-Code scannen'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,9 +75,9 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
                                 if (snapshot.data != null) {
 
                                   return Text(
-                                      'Kamera ${describeEnum(snapshot.data!)}');
+                                      'Kamera wechseln');
                                 } else {
-                                  return Text('loading');
+                                  return Text('wird geladen');
                                 }
                               },
                             )),
