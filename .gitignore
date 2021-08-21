@@ -52,3 +52,5 @@ gradle-app.setting
 /docserver_openapi.json
 /saved.png
 /test.pdf
+
+docsrv-hosting-controller/docsrvHostingController.env

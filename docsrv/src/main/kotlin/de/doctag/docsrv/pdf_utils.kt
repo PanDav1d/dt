@@ -9,42 +9,74 @@ import com.google.zxing.qrcode.QRCodeReader
 import de.doctag.docsrv.model.DocumentId
 import kweb.logger
 import org.apache.pdfbox.multipdf.Overlay
+import org.apache.pdfbox.multipdf.PageExtractor
+import org.apache.pdfbox.multipdf.Splitter
 import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.common.PDRectangle
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions
+import org.apache.pdfbox.pdmodel.interactive.form.PDField
+import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField
 import org.apache.pdfbox.rendering.PDFRenderer
 import org.apache.pdfbox.text.PDFTextStripper
 import java.awt.image.BufferedImage
 import java.io.*
 import java.util.*
-import javax.imageio.ImageIO
-import org.apache.pdfbox.pdmodel.interactive.form.PDField
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog
-import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField
-import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy
-import org.apache.pdfbox.pdmodel.encryption.AccessPermission
 import kotlin.random.Random
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature
 
 
+class DocumentIdExtractionResult(val pageIdx: Int, val documentId: DocumentId)
 
-
-fun extractDocumentIdOrNull(b64: String): DocumentId? {
-    return getImagesFromBase64Content(b64).mapNotNull { img->
-        extractQRCode(img)?.let { qrCode ->
+fun extractDocumentIds(b64: String): Sequence<DocumentIdExtractionResult> = sequence{
+    getImagesFromBase64Content(b64).forEach { extractedImage ->
+        extractQRCode(extractedImage.img)?.let { qrCode ->
             logger.info("Found code ${qrCode}")
             if(DocumentId.isValid(qrCode)){
-                DocumentId.parse(qrCode)
-            }
-            else {
-                null
+                yield(DocumentIdExtractionResult(extractedImage.pageIdx, DocumentId.parse(qrCode)))
             }
         }
-    }.firstOrNull()
+    }
 }
+
+
+class ExtractAndSplitResult(val b64:String, val originalPageIdx: Int, val documentId: DocumentId)
+fun extractDocumentIdAndSplitDocument(b64:String) = sequence<ExtractAndSplitResult>{
+
+    val documentIds = extractDocumentIds(b64).toList()
+
+    val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
+    val pdf = PDDocument.load(stream)
+
+    val startPages = documentIds.map { it.pageIdx }
+    val endPages = documentIds.map { it.pageIdx }.drop(1).plus(null)
+
+    val boundries = startPages.zip(endPages)
+
+    val extractor = PageExtractor(pdf)
+
+    documentIds.forEachIndexed { idx, extractionResult->
+        val boundry = boundries[idx]
+
+        extractor.startPage = boundry.first + 1
+        extractor.endPage = boundry.second?.let{it+1} ?: pdf.pages.count
+
+        val partialDocument = extractor.extract()
+
+        val output = ByteArrayOutputStream()
+
+        partialDocument.save(output)
+        val partialData = Base64.getEncoder().encodeToString(output.toByteArray())
+
+        yield(ExtractAndSplitResult(partialData, boundry.first, extractionResult.documentId))
+    }
+}
+
 
 fun makePdfWithDoctag(url: String, xRel: Float, yRel: Float, relativeWidth: Float) : PDDocument {
     val pdf = PDDocument()
@@ -151,7 +183,7 @@ fun PDDocument.setField(name: String, value: String?) {
     }
 }
 
-fun getImagesFromBase64Content(b64: String) : List<BufferedImage> {
+fun getImagesFromBase64Content(b64: String) : Sequence<ExtractedImage> {
     val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
     return getImagesFromPdfDocument(stream)
 }
@@ -199,24 +231,27 @@ private fun extractFieldList(field: PDField) : List<PDField> {
     return result
 }
 
+class ExtractedImage(
+    val pageIdx: Int,
+    val img: BufferedImage,
+)
 
-fun getImagesFromPdfDocument(input: InputStream) : List<BufferedImage>{
+fun getImagesFromPdfDocument(input: InputStream) = sequence{
     val pdf = PDDocument.load(input)
     pdf.use { pdf ->
-        val allImages = pdf.getDocumentCatalog().pages.flatMap { page ->
-            val res = page.resources
-            res.xObjectNames.map { it to res.getXObject(it) }
-                    .filter { it.second is org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject }
-                    .map { it.first to (it.second as org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject) }
-        }
 
         val renderer = PDFRenderer(pdf)
 
-        val bi = renderer.renderImageWithDPI(0, 350.0f)
-        val outputfile = File("saved.png")
-        ImageIO.write(bi, "png", outputfile)
+        pdf.documentCatalog.pages.forEachIndexed { idx, page ->
+            val res = page.resources
+            res.xObjectNames.map { it to res.getXObject(it) }
+                    .filter { it.second is PDImageXObject }
+                    .forEach {
+                        yield(ExtractedImage(idx, (it.second as PDImageXObject).image ))
+                    }
 
-        return allImages.map { it.second.image }.plus(renderer.renderImageWithDPI(0, 350.0f))
+            yield(ExtractedImage(idx, renderer.renderImageWithDPI(idx, 350.0f)))
+        }
     }
 }
 

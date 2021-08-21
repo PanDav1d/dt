@@ -221,7 +221,7 @@ fun ElementCreator<*>.dropdown(options: Map<String?, String>, currentValue: KVar
     return result
 }
 
-fun ElementCreator<*>.buttonWithAsyncLoader(label:String, classes: FomanticUIClasses = fomantic.ui.button, onClickAction: (whenDone: ()->Unit)->Unit) = useState(false) {isLoading, setLoading->
+fun ElementCreator<*>.buttonWithAsyncLoader(label:String, classes: FomanticUIClasses = fomantic.ui.button, renderInline: Boolean=false,onClickAction: (whenDone: ()->Unit)->Unit) = useState(false, renderInline = renderInline) {isLoading, setLoading->
     logger.info("Value of isLoading: $isLoading. Classes ${classes.mapKeys { it }.toList()}")
 
     button(classes.loading(isLoading)).apply {

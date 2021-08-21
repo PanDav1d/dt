@@ -181,6 +181,18 @@ val FomanticUIClasses.eye : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.folder : FomanticUIClasses
+    get() {
+        classes("folder")
+        return this
+    }
+
+val FomanticUIClasses.open : FomanticUIClasses
+    get() {
+        classes("open")
+        return this
+    }
+
 val FomanticUIClasses.star : FomanticUIClasses
     get() {
         classes("star")

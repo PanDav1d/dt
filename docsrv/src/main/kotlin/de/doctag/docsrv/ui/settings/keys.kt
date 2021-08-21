@@ -5,6 +5,7 @@ import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addKeyModal
+import de.doctag.docsrv.ui.modals.deleteVerifyModal
 import de.doctag.docsrv.ui.modals.showSignatureInfoModal
 import de.doctag.lib.KeyServerClient
 import de.doctag.lib.loadPublicKey
@@ -13,6 +14,7 @@ import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import org.litote.kmongo.deleteOneById
 import org.litote.kmongo.save
 
 fun ElementCreator<*>.handleKeySettings(){
@@ -93,8 +95,15 @@ fun ElementCreator<*>.handleKeySettings(){
                                             }
                                         }
 
-                                        i(fomantic.ui.edit.icon).on.click {
-                                            logger.info("Editing key ${key.verboseName}")
+                                        i(fomantic.ui.remove.icon).on.click {
+                                            logger.info("Removing key ${key.verboseName}")
+                                            val removeModal = deleteVerifyModal("Schlüssel", key.verboseName?:""){
+                                                db().keys.deleteOneById(key._id!!)
+                                            }
+                                            removeModal.open()
+                                            removeModal.onClose{
+                                                keys.value = keys.value.filter { it._id != key._id }
+                                            }
                                         }
                                     }
                                 }

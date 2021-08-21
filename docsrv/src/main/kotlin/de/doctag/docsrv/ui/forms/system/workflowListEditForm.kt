@@ -3,12 +3,14 @@ package de.doctag.docsrv.ui.forms.system
 import de.doctag.docsrv.model.WorkflowConfig
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
+import de.doctag.docsrv.ui.modals.deleteVerifyModal
 import de.doctag.docsrv.ui.modals.system.addWorkflowModal
 import de.doctag.docsrv.ui.modals.system.modifyWorkflowModal
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import org.litote.kmongo.deleteOneById
 import org.litote.kmongo.save
 
 fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) = useState(1){currentState, setState->
@@ -65,6 +67,17 @@ fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) = useState(1){cur
                                     setState(currentState+1)
                                 }.withPopup(null, "Als Standart-Workflow festlegen")
                             }
+                        }
+                        a(href="#").new {
+                            i(fomantic.icon.remove).on.click {
+                                val modal = deleteVerifyModal("Workflow", wf.name ?: ""){
+                                    db().workflows.deleteOneById(wf._id!!)
+                                }
+                                modal.open()
+                                modal.onClose {
+                                    setState(currentState + 1)
+                                }
+                            }.withPopup(null, "Workflow löschen")
                         }
                     }
                 }

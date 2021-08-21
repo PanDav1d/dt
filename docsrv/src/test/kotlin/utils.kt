@@ -18,6 +18,8 @@ import de.doctag.docsrv_api.DefaultApi
 import de.doctag.docsrv_api.invoker.Configuration
 import de.doctag.lib.logger
 import org.litote.kmongo.save
+import java.io.File
+import java.nio.file.Paths
 
 
 fun makeDocument(content: String, hostname: String = "127.0.0.1:16097", docId : String = "1", workflow: Workflow? = null ) : Pair<Document, List<FileData>> {
@@ -71,6 +73,13 @@ fun setupApi() : DefaultApi {
 }
 
 const val DB_NAME = "docserver"
+
+fun readResourceFileBinary(relPath: String): ByteArray {
+    val fullPath = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/" + relPath.trimStart('/')
+
+    return File(fullPath).inputStream().use { it.readAllBytes() }
+}
+
 
 @ExtendWith(WithTestingHttpServer::class)
 open class WithTestDatabase{

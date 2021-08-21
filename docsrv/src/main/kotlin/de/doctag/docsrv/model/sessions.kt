@@ -2,9 +2,6 @@ package de.doctag.docsrv.model
 
 import de.doctag.docsrv.ui.centeredBox
 import de.doctag.docsrv.ui.navigateTo
-import io.ktor.features.callId
-import io.ktor.features.origin
-import io.ktor.request.host
 import kweb.*
 import org.litote.kmongo.div
 import org.litote.kmongo.eq

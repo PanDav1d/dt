@@ -243,6 +243,10 @@ class ModalView(val ec: ElementCreator<*>, val id: String = (modalCounter++).toS
         """.trimIndent())
 
         isOpen.value = false
+        closeHandlers.forEach {
+            logger.info("Modal.onClose called")
+            it.invoke()
+        }
     }
 
     fun open(){
@@ -251,6 +255,12 @@ class ModalView(val ec: ElementCreator<*>, val id: String = (modalCounter++).toS
             $('#${this.id}').modal(${gson.toJson(options)}).modal('show',${gson.toJson(options)});
         """.trimIndent())
     }
+
+    private val closeHandlers = mutableListOf<()->Unit>()
+    fun onClose(func: (()->Unit)){
+        closeHandlers.add(func)
+    }
+
 }
 
 fun ElementCreator<*>.modal(header: String, autoFocus: Boolean=true, content: ElementCreator<DivElement>.(modal: ModalView) -> Unit) : ModalView {

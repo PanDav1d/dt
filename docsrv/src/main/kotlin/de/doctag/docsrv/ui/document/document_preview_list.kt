@@ -60,7 +60,7 @@ fun DbContext.handleSearchQueryChange(sf: SearchFilter) : List<Document>{
 
 fun ElementCreator<*>.handleDocumentPreviewList() {
     authRequired {
-        val documents = KVar(db().documents.find().sort(descending(Document::created)).toList())
+        val documents = KVar(db().documents.find().limit(100).sort(descending(Document::created)).toList())
         val searchQuery = KVar(SearchFilter(""))
         val isImportRunning = KVar(false)
         val documentToPreview = KVar(documents.value.firstOrNull())
@@ -204,7 +204,7 @@ fun ElementCreator<*>.renderDocumentPreview(rFile: Document?){
                         }
                     }
                 }.new {
-                    i(fomantic.ui.icon.eye)
+                    i(fomantic.ui.icon.folder.open)
                 }
             }
         }
