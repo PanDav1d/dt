@@ -54,7 +54,7 @@ fun DbContext.handleSearchQueryChange(sf: SearchFilter) : List<Document>{
         findBson.add(Document::created lte sf.tillDate)
     }
 
-    return this.documents.find(and(findBson)).sort(descending(Document::created)).toList()
+    return this.documents.find(and(findBson)).sort(descending(Document::created)).limit(100).toList()
 
 }
 
@@ -179,6 +179,8 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
     }
 }
 
+
+
 fun ElementCreator<*>.renderDocumentPreview(rFile: Document?){
 
     val file = rFile?.attachmentId?.let{db().files.findOneById(it)}
@@ -217,7 +219,7 @@ fun ElementCreator<*>.renderDocumentPreview(rFile: Document?){
                 }
                 file.contentType.isPdf() -> {
                     //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
-                    element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/d/${rFile._id}/viewSignSheet"))
+                    element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/web/viewer.html?file=/d/${rFile._id}/viewSignSheet"))
                     div(fomantic.ui.divider.hidden)
                 }
                 else -> {

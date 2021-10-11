@@ -19,7 +19,7 @@ enum class SettingsTabMenuActiveItem {
 fun ElementCreator<*>.settingsTabMenu(activeItem: SettingsTabMenuActiveItem, rightAction: ElementCreator<*>.()->Unit)  {
     div(fomantic.ui.secondary.pointing.menu).new{
         a(fomantic.ui.item.active(activeItem == SettingsTabMenuActiveItem.User), "/settings/users").text("Benutzer")
-        a(fomantic.ui.item.active(activeItem == SettingsTabMenuActiveItem.Keys), "/settings/keys").text("Schlüssel")
+        a(fomantic.ui.item.active(activeItem == SettingsTabMenuActiveItem.Keys), "/settings/keys").text("Teilnehmerzertifikate")
         a(fomantic.ui.item.active(activeItem == SettingsTabMenuActiveItem.System), "/settings/system").text("System")
 
 

@@ -23,7 +23,7 @@ fun ElementCreator<*>.handleKeySettings(){
         val keys = KVar(db().keys.find().toList())
 
         
-        pageBorderAndTitle("Schlüssel") {pageArea->
+        pageBorderAndTitle("Teilnehmerzertifikat") {pageArea->
 
             val modal = addKeyModal {keyObj->
                 keys.value = listOf(keyObj).plus(keys.value)

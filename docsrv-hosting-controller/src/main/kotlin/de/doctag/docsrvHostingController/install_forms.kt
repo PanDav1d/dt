@@ -23,7 +23,10 @@ fun ElementCreator<*>.setupPinCheck(expectedPin: String, whenDone: ()->Unit){
         formInput("Server-PIN", "bitte angeben", true, actualPin)
                 .with(formCtrl)
             .validate { input ->
-                if(input != expectedPin){
+                if(input?.trim() != expectedPin){
+
+                    logger.info("Entered Pin does not match required pin. (entered: `${input?.trim()}`, actual: $expectedPin) ")
+
                     "Bitte geben Sie die korrekte PIN an"
                 }
                 else {

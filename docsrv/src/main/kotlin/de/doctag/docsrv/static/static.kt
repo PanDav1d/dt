@@ -11,6 +11,18 @@ import io.ktor.routing.get
 import java.io.File
 
 fun Routing.staticFiles(){
+
+
+    static("web") {
+        staticBasePackage = "pdf"
+        resources("web")
+    }
+
+    static("build"){
+        staticBasePackage="pdf"
+        resources("build")
+    }
+
     static("ressources") {
         staticBasePackage = "static"
         resources("js")

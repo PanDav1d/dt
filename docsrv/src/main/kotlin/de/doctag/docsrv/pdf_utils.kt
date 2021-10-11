@@ -63,8 +63,8 @@ fun extractDocumentIdAndSplitDocument(b64:String) = sequence<ExtractAndSplitResu
     documentIds.forEachIndexed { idx, extractionResult->
         val boundry = boundries[idx]
 
-        extractor.startPage = boundry.first + 1
-        extractor.endPage = boundry.second?.let{it+1} ?: pdf.pages.count
+        extractor.startPage = boundry.first
+        extractor.endPage = boundry.second?.let{it-1} ?: pdf.pages.count
 
         val partialDocument = extractor.extract()
 
@@ -247,10 +247,10 @@ fun getImagesFromPdfDocument(input: InputStream) = sequence{
             res.xObjectNames.map { it to res.getXObject(it) }
                     .filter { it.second is PDImageXObject }
                     .forEach {
-                        yield(ExtractedImage(idx, (it.second as PDImageXObject).image ))
+                        yield(ExtractedImage(idx+1, (it.second as PDImageXObject).image ))
                     }
 
-            yield(ExtractedImage(idx, renderer.renderImageWithDPI(idx, 350.0f)))
+            yield(ExtractedImage(idx+1, renderer.renderImageWithDPI(idx, 350.0f)))
         }
     }
 }

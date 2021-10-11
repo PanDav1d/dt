@@ -44,7 +44,7 @@ fun ElementCreator<*>.handleLogin(){
             div(fomantic.ui.field).new {
                 div(fomantic.ui.left.icon.input).new() {
                     i(fomantic.ui.user.icon)
-                    input(InputType.text, "email", placeholder = "Benutzername").apply { value=user }
+                    input(InputType.text, "email", placeholder = "E-Mail").apply { value=user }
                 }
             }
 
