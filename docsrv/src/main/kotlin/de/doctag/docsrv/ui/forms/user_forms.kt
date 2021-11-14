@@ -51,7 +51,7 @@ fun ElementCreator<*>.userAddForm(userObj: User, onSaveClick: (user:User, passwo
             .with(formCtrl)
             .validate {
                 when{
-                    it?.matches("^[A-Za-z0-9+_.-]+@(.+)$".toRegex()) != true -> "Bitte geben Sie eine gültige E-Mail Addresse an"
+                    it?.matches("^[A-Za-z0-9+_.-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$".toRegex(RegexOption.IGNORE_CASE)) != true -> "Bitte geben Sie eine gültige E-Mail Addresse an"
                     db().users.findOne(User::emailAdress.regex(it, "i") ) != null -> "Die E-Mail Addresse ist bereits vergeben"
                     else -> null
                 }

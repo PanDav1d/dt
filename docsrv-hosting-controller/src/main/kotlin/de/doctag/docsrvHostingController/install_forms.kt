@@ -72,12 +72,12 @@ fun ElementCreator<*>.setupDomainNameForm(whenDone: (domainName: String)->Unit){
             radioInput("Eigener Domain-Name", mapOf("ja" to "yes", "nein" to "no"), required = true, isInline = true, bindTo = useCustomDomain)
 
             if(rUseCustomDomain != "yes") {
-                formInputWithRightLabel("Domain-Name", "test.doctag.de", true, domainName, ".${Config.instance.baseDomainName}")
+                formInputWithRightLabel("Domain-Name", "test.doctag.de", true, domainName, ".${Config.instance.baseDomainName}", id = "domain_name")
                         .with(formCtrl)
                         .validate { domainNameValidator(it, true) }
             }
             else {
-                formInput("Domain-Name", "test.doctag.de", true, domainName)
+                formInput("Domain-Name", "test.doctag.de", true, domainName, id = "domain_name")
                         .with(formCtrl)
                         .validate { domainNameValidator(it, false) }
             }
@@ -98,6 +98,8 @@ fun ElementCreator<*>.setupDomainNameForm(whenDone: (domainName: String)->Unit){
 
 fun domainNameValidator( input : String?, onlySubdomain: Boolean) : String? {
 
+    logger.info("Input: $input. onlySubdomain: $onlySubdomain")
+
     val regex = if(onlySubdomain){
         "^([a-z0-9]+(-[a-z0-9]+)*)\$"
     } else {
@@ -105,7 +107,7 @@ fun domainNameValidator( input : String?, onlySubdomain: Boolean) : String? {
     }
 
     if (input.isNullOrBlank() || !Regex(regex).matches(input)) {
-        return "Bitte geben Sie einen korrekten Domain-Namen an"
+        return "Bitte geben Sie einen korrekten Domain-Namen an."
     }
 
     if(DbContext.hostedInstances.countDocuments(HostedInstance::domainName eq input?.trim()?.toLowerCase())>0){

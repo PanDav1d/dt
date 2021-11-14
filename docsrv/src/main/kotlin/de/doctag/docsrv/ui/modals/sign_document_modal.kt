@@ -48,6 +48,9 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                 }
             }
         }
+        formCtrl.withValidation {
+            if(role.value == null) "Bitte wählen Sie eine Rolle aus" else null
+        }
 
         val keyOptions = db().keys.find().map { it._id to (it.verboseName ?:"")}.toMap()
         div(fomantic.ui.field).new {
@@ -57,6 +60,9 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                 logger.info("Selected key: ${selectedKeyId}. key.value = ${currentKey?.verboseName}" )
                 key.value = currentKey
             }
+        }
+        formCtrl.withValidation {
+            if(key.value == null) "Bitte wählen Sie einen Schlüssel aus" else null
         }
 
         h4(fomantic.ui.header.divider.horizontal).text("Zusatzdaten")
@@ -115,7 +121,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                         div(fomantic.ui.field).new {
                             label().text(input.name ?: "")
                             p().text(input.description ?: "")
-                            val sigPad = inputSignatureElement()
+                            val sigPad = inputSignatureElement(backgroundImage = input.options?.signInputOptions?.backgroundImage)
 
                             /*
                             formCtrl.withValidation {
@@ -126,6 +132,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                             }*/
 
                             formCtrl.withSubmitAction {
+                                logger.info("Handling submit action")
                                 val cf = CompletableFuture<Boolean>()
                                 sigPad.fetchContent { pos ->
                                     val (contentType, data) = pos.base64Content.fromDataUrl()
@@ -155,6 +162,8 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                 result
             }
         }
+
+        displayErrorMessages(formCtrl)
 
         div(fomantic.ui.divider.hidden)
 

@@ -235,6 +235,18 @@ val FomanticUIClasses.question : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.marked : FomanticUIClasses
+    get(){
+        classes("marked")
+        return this
+    }
+
+val FomanticUIClasses.scrolling : FomanticUIClasses
+    get(){
+        classes("scrolling")
+        return this
+    }
+
 fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
     if(color != null) {
         classes(color)
@@ -261,6 +273,8 @@ fun FomanticUIClasses.positive(isPositive: Boolean)= withOptionalAttribute("posi
 fun FomanticUIClasses.disabled(isDisabled: Boolean) = withOptionalAttribute("disabled", isDisabled)
 
 fun FomanticUIClasses.loading(isLoading: Boolean) = withOptionalAttribute("loading", isLoading)
+
+fun FomanticUIClasses.marked(isMarked: Boolean) = withOptionalAttribute("marked", isMarked)
 
 fun FomanticUIClasses.withOptionalAttribute(name: String, isEnabled: Boolean) : FomanticUIClasses {
     if(isEnabled){

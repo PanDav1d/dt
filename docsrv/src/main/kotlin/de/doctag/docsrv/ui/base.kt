@@ -271,7 +271,7 @@ fun ElementCreator<*>.modal(header: String, autoFocus: Boolean=true, content: El
         if(isOpen) {
             div(classes.plus("id" to mv.id)).new {
                 div(fomantic.ui.header).text(header)
-                div(fomantic.ui.content).new {
+                div(fomantic.ui.scrolling.content).new {
                     content(mv)
                 }
             }

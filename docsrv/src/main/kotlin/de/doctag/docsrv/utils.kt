@@ -4,30 +4,24 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
-import de.doctag.docsrv.model.FileData
 import de.doctag.lib.hexStringToByteArray
 import de.doctag.lib.toHex
-import de.doctag.lib.toSha1HexString
 import kweb.WebBrowser
 import kweb.state.KVar
 import kweb.state.ReversibleFunction
 import org.bson.internal.Base64
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
-import java.net.URL
 import java.security.SecureRandom
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.jar.Manifest
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 import javax.imageio.ImageIO
-import kotlin.random.Random
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.instanceParameter
 import kotlin.reflect.full.memberFunctions
-import kotlin.streams.asSequence
 
 
 inline fun <O, reified T : Any?> KVar<T>.propertyOrDefault(property: KProperty1<T, O?>, default: O): KVar<O> {

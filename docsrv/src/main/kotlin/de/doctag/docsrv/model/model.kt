@@ -181,7 +181,16 @@ data class WorkflowAction(
 data class WorkflowInput(
         var name: String? = null,
         var description: String? = null,
-        var kind: WorkflowInputKind? = null
+        var kind: WorkflowInputKind? = null,
+        var options: WorkflowInputOptions? = null
+)
+
+data class WorkflowInputOptions(
+    var signInputOptions: SignInputOptions? = null
+)
+
+data class SignInputOptions(
+    var backgroundImage: String? = null
 )
 
 data class WorkflowInputResult(

@@ -1,9 +1,7 @@
 package de.doctag.docsrv.ui.forms.system
 
-import de.doctag.docsrv.model.Workflow
-import de.doctag.docsrv.model.WorkflowAction
-import de.doctag.docsrv.model.WorkflowInput
-import de.doctag.docsrv.model.WorkflowInputKind
+import de.doctag.docsrv.getQRCodeImageAsDataUrl
+import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
 import kweb.*
@@ -85,7 +83,7 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                 if(workflow.value.actions?.get(activeActionIdx.value) != null){
                     val editAtIndex = KVar<Int?>(null)
                     render(editAtIndex){selectedIdx->
-                        table(fomantic.ui.table.very.basic.celled.table).new {
+                        table(fomantic.ui.table.very.basic.table).new {
                             thead().new {
                                 tr().new {
                                     th(fomantic.four.wide).text("Feldname")
@@ -109,7 +107,7 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                                         }
                                     }
                                     else {
-                                        workflowInputInlineEditForm(field, fomantic.icon.check){newWorkflowInput->
+                                        workflowInputInlineEditForm(field, fomantic.icon.check, showAdvancedOptions = true){newWorkflowInput->
                                             val newVal = rWorkflow.modifyWorkflowActionWithIndex(activeActionIdx.value){ oldAction->
                                                 val newInputs = oldAction.inputs?.mapIndexed { index, currentWorkflowInput ->
                                                     if(index == editAtIndex.value) newWorkflowInput else currentWorkflowInput
@@ -140,7 +138,6 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                         }
                     }
                 }
-
             }
         }
 
@@ -154,9 +151,10 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
     }
 }
 
-fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, iconClass :FomanticUIClasses = fomantic.icon.add, saveFunc: (wfi:WorkflowInput)->Unit){
+fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, iconClass :FomanticUIClasses = fomantic.icon.add, showAdvancedOptions: Boolean=false ,saveFunc: (wfi:WorkflowInput)->Unit){
+
+    val input = KVar(workFlowInput)
     tr().new {
-        val input = KVar(workFlowInput)
 
         td().new{
             input(InputType.text,placeholder = "Name").apply { value=input.propertyOrDefault(WorkflowInput::name, "") }
@@ -167,7 +165,8 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
                     WorkflowInputKind.FileInput.name to "Datei anfügen",
                     WorkflowInputKind.TextInput.name to "Texteingabe",
                     WorkflowInputKind.Sign.name to "Signieren"
-            )).onSelect{ selectedKey->
+                ),
+            ).onSelect{ selectedKey->
                 val kind = WorkflowInputKind.valueOf(selectedKey!!)
                 input.value.kind = kind
             }
@@ -183,5 +182,65 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
                 }
             }
         }
+    }
+    if(showAdvancedOptions) {
+        render(input.propertyOrDefault(WorkflowInput::kind, WorkflowInputKind.TextInput), container = {tr()}) { inputKind ->
+                td(mapOf("colspan" to "3")).new {
+                    when (inputKind) {
+                        WorkflowInputKind.TextInput -> {
+                            div(fomantic.ui.field).new {
+                                checkBoxInput("Mehrzeilig?", KVar(false))
+                            }
+                        }
+                        WorkflowInputKind.Sign -> {
+                            val imgChanges = KVar(0)
+                            render(imgChanges, {div(fomantic.ui.field)}){
+
+                                if(workFlowInput.options?.signInputOptions?.backgroundImage != null){
+                                    label().text("Hintergrundbild")
+
+                                    img(src=workFlowInput.options?.signInputOptions?.backgroundImage, mapOf("style" to "max-width: 770px;"))
+
+                                    button(fomantic.ui.button.tertiary).text("Löschen").on.click {
+                                        workFlowInput.options?.signInputOptions?.backgroundImage = null
+                                        imgChanges.value += 1
+                                    }
+                                } else {
+
+                                    val formField = fileInput(
+                                        "Hintergrundbild",
+                                        "",
+                                        false,
+                                        KVar(""),
+                                        accept = "image/png,image/jepg"
+                                    )
+                                    formField.onFileSelect {
+                                        formField.retrieveFile { upload ->
+                                            if (workFlowInput.options == null)
+                                                workFlowInput.options = WorkflowInputOptions()
+
+                                            if (workFlowInput.options?.signInputOptions == null)
+                                                workFlowInput.options?.signInputOptions = SignInputOptions()
+
+                                            workFlowInput.options?.signInputOptions =
+                                                workFlowInput.options?.signInputOptions?.copy(
+                                                    backgroundImage = upload.base64Content
+                                                )
+
+                                            imgChanges.value += 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
+                td().new {
+
+                }
+            }
     }
 }

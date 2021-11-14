@@ -220,10 +220,10 @@ class SignatureElement(
     }
 }
 
-fun ElementCreator<*>.inputSignatureElement() : SignatureElement {
+fun ElementCreator<*>.inputSignatureElement(backgroundImage: String? = null) : SignatureElement {
     element("script", mapOf("src" to "/ressources/signature_pad.min.js"))
     val canvas = canvas(420, 300).apply {
-        this.setAttributeRaw("style", "border: 1px solid black;)")
+        this.setAttributeRaw("style", "border: 1px solid black;")
     }//.focus()
 
     val pad  = SignatureElement(canvas)
@@ -233,6 +233,21 @@ fun ElementCreator<*>.inputSignatureElement() : SignatureElement {
         browser.execute("""
         canvas = document.getElementById("${canvas.id}");
         window.signaturePad = new SignaturePad(canvas);
+
+        function drawBackground()
+        {
+          context = canvas.getContext('2d');
+          base_image = new Image();
+          base_image.src = '${backgroundImage}';
+          base_image.onload = function(){
+            context.drawImage(base_image, 0,0, 420, 300);
+          }
+          
+        }
+        
+        if(${backgroundImage != null}){
+            drawBackground()
+        }
 
         canvas.focus();
         """.trimIndent())

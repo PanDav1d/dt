@@ -48,14 +48,11 @@ import java.time.Duration
 
 fun main(args: Array<String>) {
     ArgParser(args).parseInto(::DocsrvArgs).run {
-
         Config._instance = this
 
         val server = embeddedServer(Jetty, host = "0.0.0.0", port = 16097, module = Application::kwebFeature)
 
         server.start()
-
-
     }
 }
 

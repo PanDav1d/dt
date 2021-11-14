@@ -1,7 +1,6 @@
 package de.doctag.docsrv.ui
 
 import com.github.salomonbrys.kotson.fromJson
-import kotlinx.coroutines.future.await
 import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
@@ -9,7 +8,6 @@ import kweb.state.KVar
 import kweb.state.render
 import kweb.util.random
 import kweb.util.gson
-import java.util.concurrent.CompletableFuture
 import kotlin.math.abs
 
 class FormControl{
@@ -20,6 +18,7 @@ class FormControl{
     val submitActions = mutableListOf<()->Unit>()
 
     fun add(fi:FormInput){
+        inputs.removeIf { fi.inputElement.id == it.inputElement.id }
         inputs.add(fi)
     }
 
@@ -67,6 +66,8 @@ interface FormInput {
 }
 
 inline fun <T : FormInput> T.with(fc: FormControl) : T{
+
+
     fc.add(this)
     return this
 }
@@ -286,21 +287,25 @@ fun ElementCreator<*>.radioInput(label:String?=null, options: Map<String,String>
     return formInput
 }
 
-fun ElementCreator<*>.formInputWithRightLabel(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, rightLabelText: String): BasicFormInput = absFormInput(label, required, bindTo){
+fun ElementCreator<*>.formInputWithRightLabel(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, rightLabelText: String, id: String?=null): BasicFormInput = absFormInput(label, required, bindTo){
     lateinit var input: InputElement
     div(fomantic.ui.right.labeled.input).new() {
-        input = input(InputType.text, placeholder = placeholder).apply { value=bindTo }
+        input = input(InputType.text, placeholder = placeholder, attributes = attr.plusElementIdValue(id)).apply { value=bindTo }
         div(fomantic.ui.label).text(rightLabelText)
     }
     input
 }
 
-fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, inputType: InputType=InputType.text): BasicFormInput = absFormInput(label, required, bindTo){
+fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, required:Boolean=false, bindTo: KVar<String>, inputType: InputType=InputType.text, id: String?=null): BasicFormInput = absFormInput(label, required, bindTo){
     lateinit var input: InputElement
     div(fomantic.ui.input).new() {
-        input = input(inputType, placeholder = placeholder).apply { value=bindTo }
+        input = input(inputType, placeholder = placeholder, attributes = attr.plusElementIdValue(id)).apply { value=bindTo }
     }
     input
+}
+
+private fun  <V> MutableMap<String, V>.plusElementIdValue(id: V?): Map<String, V> {
+    return id?.let{this.plus("id" to id)} ?: this
 }
 
 fun ElementCreator<*>.checkBoxInput(label:String, bindTo: KVar<Boolean>) {
