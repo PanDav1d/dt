@@ -66,6 +66,8 @@ public class AuthInfoResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_AUTHENTICATED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAuthenticated(Boolean authenticated) {
     this.authenticated = authenticated;
   }
@@ -90,6 +92,8 @@ public class AuthInfoResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_FIRST_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
@@ -114,6 +118,8 @@ public class AuthInfoResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_LAST_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }

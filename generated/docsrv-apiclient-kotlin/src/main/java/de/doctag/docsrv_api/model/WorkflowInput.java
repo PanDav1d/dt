@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
+import de.doctag.docsrv_api.model.WorkflowInputOptions;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -33,7 +34,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
   WorkflowInput.JSON_PROPERTY_DESCRIPTION,
   WorkflowInput.JSON_PROPERTY_KIND,
-  WorkflowInput.JSON_PROPERTY_NAME
+  WorkflowInput.JSON_PROPERTY_NAME,
+  WorkflowInput.JSON_PROPERTY_OPTIONS
 })
 @javax.annotation.processing.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class WorkflowInput {
@@ -87,6 +89,9 @@ public class WorkflowInput {
   public static final String JSON_PROPERTY_NAME = "name";
   private String name;
 
+  public static final String JSON_PROPERTY_OPTIONS = "options";
+  private WorkflowInputOptions options;
+
 
   public WorkflowInput description(String description) {
     this.description = description;
@@ -107,6 +112,8 @@ public class WorkflowInput {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_DESCRIPTION)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDescription(String description) {
     this.description = description;
   }
@@ -131,6 +138,8 @@ public class WorkflowInput {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_KIND)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setKind(KindEnum kind) {
     this.kind = kind;
   }
@@ -155,8 +164,36 @@ public class WorkflowInput {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setName(String name) {
     this.name = name;
+  }
+
+
+  public WorkflowInput options(WorkflowInputOptions options) {
+    this.options = options;
+    return this;
+  }
+
+   /**
+   * Get options
+   * @return options
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_OPTIONS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+
+  public WorkflowInputOptions getOptions() {
+    return options;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_OPTIONS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setOptions(WorkflowInputOptions options) {
+    this.options = options;
   }
 
 
@@ -174,12 +211,13 @@ public class WorkflowInput {
     WorkflowInput workflowInput = (WorkflowInput) o;
     return Objects.equals(this.description, workflowInput.description) &&
         Objects.equals(this.kind, workflowInput.kind) &&
-        Objects.equals(this.name, workflowInput.name);
+        Objects.equals(this.name, workflowInput.name) &&
+        Objects.equals(this.options, workflowInput.options);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(description, kind, name);
+    return Objects.hash(description, kind, name, options);
   }
 
   @Override
@@ -189,6 +227,7 @@ public class WorkflowInput {
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    kind: ").append(toIndentedString(kind)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    options: ").append(toIndentedString(options)).append("\n");
     sb.append("}");
     return sb.toString();
   }

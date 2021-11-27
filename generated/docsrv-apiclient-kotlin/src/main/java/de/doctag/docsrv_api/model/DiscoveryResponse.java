@@ -58,6 +58,8 @@ public class DiscoveryResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_IDENTITY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIdentity(String identity) {
     this.identity = identity;
   }

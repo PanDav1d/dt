@@ -66,6 +66,8 @@ public class WorkflowInputResult {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_FILE_ID)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setFileId(String fileId) {
     this.fileId = fileId;
   }
@@ -90,6 +92,8 @@ public class WorkflowInputResult {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setName(String name) {
     this.name = name;
   }
@@ -114,6 +118,8 @@ public class WorkflowInputResult {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_VALUE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setValue(String value) {
     this.value = value;
   }

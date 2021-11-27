@@ -25,6 +25,7 @@ class DbContext(dbName: String) {
     val keys = database.getCollection<PrivatePublicKeyPair>()
     val config = database.getCollection<DocsrvConfig>()
     val workflows = database.getCollection<Workflow>()
+    val tags = database.getCollection<Tag>()
     val signRequests = database.getCollection<DocumentSignRequest>()
 
     val currentConfig by lazy {

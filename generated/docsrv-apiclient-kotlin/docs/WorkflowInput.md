@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **description** | **String** |  |  [optional]
 **kind** | [**KindEnum**](#KindEnum) |  |  [optional]
 **name** | **String** |  |  [optional]
+**options** | [**WorkflowInputOptions**](WorkflowInputOptions.md) |  |  [optional]
 
 
 

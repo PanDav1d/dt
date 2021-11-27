@@ -25,9 +25,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import de.doctag.docsrv_api.model.DoctagSignatureData;
 import de.doctag.docsrv_api.model.PublicKeyResponse;
 import de.doctag.docsrv_api.model.WorkflowInputResult;
-import de.doctag.docsrv_api.model.ZonedDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -59,7 +59,7 @@ public class Signature {
   private String role;
 
   public static final String JSON_PROPERTY_SIGNED = "signed";
-  private ZonedDateTime signed;
+  private OffsetDateTime signed;
 
   public static final String JSON_PROPERTY_SIGNED_BY_KEY = "signedByKey";
   private PublicKeyResponse signedByKey;
@@ -84,6 +84,8 @@ public class Signature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_DATA)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setData(DoctagSignatureData data) {
     this.data = data;
   }
@@ -116,6 +118,8 @@ public class Signature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_INPUTS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setInputs(List<WorkflowInputResult> inputs) {
     this.inputs = inputs;
   }
@@ -140,6 +144,8 @@ public class Signature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ORIGINAL_MESSAGE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOriginalMessage(String originalMessage) {
     this.originalMessage = originalMessage;
   }
@@ -164,12 +170,14 @@ public class Signature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ROLE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setRole(String role) {
     this.role = role;
   }
 
 
-  public Signature signed(ZonedDateTime signed) {
+  public Signature signed(OffsetDateTime signed) {
     this.signed = signed;
     return this;
   }
@@ -183,12 +191,14 @@ public class Signature {
   @JsonProperty(JSON_PROPERTY_SIGNED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public ZonedDateTime getSigned() {
+  public OffsetDateTime getSigned() {
     return signed;
   }
 
 
-  public void setSigned(ZonedDateTime signed) {
+  @JsonProperty(JSON_PROPERTY_SIGNED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setSigned(OffsetDateTime signed) {
     this.signed = signed;
   }
 
@@ -212,6 +222,8 @@ public class Signature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNED_BY_KEY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignedByKey(PublicKeyResponse signedByKey) {
     this.signedByKey = signedByKey;
   }

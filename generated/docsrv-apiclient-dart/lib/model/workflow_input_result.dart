@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -17,11 +17,11 @@ class WorkflowInputResult {
     this.value,
   });
 
-  String? fileId;
+  String fileId;
 
-  String? name;
+  String name;
 
-  String? value;
+  String value;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is WorkflowInputResult &&
@@ -54,7 +54,7 @@ class WorkflowInputResult {
 
   /// Returns a new [WorkflowInputResult] instance and imports its values from
   /// [json] if it's non-null, null if [json] is null.
-  static WorkflowInputResult? fromJson(Map<String, dynamic>? json) => json == null
+  static WorkflowInputResult fromJson(Map<String, dynamic> json) => json == null
     ? null
     : WorkflowInputResult(
         fileId: json[r'fileId'],
@@ -62,13 +62,13 @@ class WorkflowInputResult {
         value: json[r'value'],
     );
 
-  static List<WorkflowInputResult?>? listFromJson(List<dynamic>? json, {bool? emptyIsNull, bool? growable,}) =>
+  static List<WorkflowInputResult> listFromJson(List<dynamic> json, {bool emptyIsNull, bool growable,}) =>
     json == null || json.isEmpty
       ? true == emptyIsNull ? null : <WorkflowInputResult>[]
       : json.map((v) => WorkflowInputResult.fromJson(v)).toList(growable: true == growable);
 
-  static Map<String, WorkflowInputResult?> mapFromJson(Map<String, dynamic> json) {
-    final map = <String, WorkflowInputResult?>{};
+  static Map<String, WorkflowInputResult> mapFromJson(Map<String, dynamic> json) {
+    final map = <String, WorkflowInputResult>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) => map[key] = WorkflowInputResult.fromJson(v));
     }
@@ -76,8 +76,8 @@ class WorkflowInputResult {
   }
 
   // maps a json object with a list of WorkflowInputResult-objects as value to a dart map
-  static Map<String, List<WorkflowInputResult?>?> mapListFromJson(Map<String, dynamic> json, {bool? emptyIsNull, bool? growable,}) {
-    final Map<String, List<WorkflowInputResult?>?> map = <String, List<WorkflowInputResult>?>{};
+  static Map<String, List<WorkflowInputResult>> mapListFromJson(Map<String, dynamic> json, {bool emptyIsNull, bool growable,}) {
+    final map = <String, List<WorkflowInputResult>>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) {
         map[key] = WorkflowInputResult.listFromJson(v, emptyIsNull: emptyIsNull, growable: growable);

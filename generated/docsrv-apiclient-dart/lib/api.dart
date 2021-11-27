@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -37,16 +37,19 @@ part 'model/embedded_document.dart';
 part 'model/embedded_signature.dart';
 part 'model/file_data.dart';
 part 'model/health_check_response.dart';
+part 'model/notify_request.dart';
 part 'model/person.dart';
 part 'model/prepared_signature.dart';
 part 'model/private_public_key_info.dart';
 part 'model/public_key_response.dart';
 part 'model/public_key_verification.dart';
+part 'model/sign_input_options.dart';
 part 'model/signature.dart';
 part 'model/signature_inputs.dart';
 part 'model/workflow.dart';
 part 'model/workflow_action.dart';
 part 'model/workflow_input.dart';
+part 'model/workflow_input_options.dart';
 part 'model/workflow_input_result.dart';
 
 

@@ -62,6 +62,8 @@ public class PrivatePublicKeyInfo {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_PPK_ID)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPpkId(String ppkId) {
     this.ppkId = ppkId;
   }
@@ -86,6 +88,8 @@ public class PrivatePublicKeyInfo {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_VERBOSE_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setVerboseName(String verboseName) {
     this.verboseName = verboseName;
   }

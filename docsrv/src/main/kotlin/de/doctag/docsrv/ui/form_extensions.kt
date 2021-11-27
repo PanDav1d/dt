@@ -1,10 +1,12 @@
 package de.doctag.docsrv.ui
 
 import com.github.salomonbrys.kotson.fromJson
+import de.doctag.docsrv.model.DesignConfig
 import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
+import kweb.state.property
 import kweb.state.render
 import kweb.util.random
 import kweb.util.gson
@@ -184,18 +186,24 @@ class DropdownElement {
     }
 }
 
-fun ElementCreator<*>.dropdown(options: Map<String?, String>, currentValue: KVar<String?> = KVar(null)):DropdownElement {
+fun ElementCreator<*>.dropdown(
+    options: Map<String?, String>,
+    currentValue: KVar<String?> = KVar(null),
+    container: DivElement = div(fomantic.ui.selection.dropdown),
+    itemRenderer:ElementCreator<DivElement>.(key:String?, displayText:String?)->Unit = { k,v-> span().text(v?:"") },
+):DropdownElement {
 
     val result = DropdownElement()
 
-    val dropdown = div(fomantic.ui.selection.dropdown)
-    dropdown.new {
+    container.new {
         input(type=InputType.hidden, name="dropdown", initialValue = currentValue.value)
         i(fomantic.icon.dropdown)
         div(fomantic.text.default).text("Auswahl")
         div(fomantic.menu).new{
             options.forEach { (key, displayText) ->
-                div(fomantic.item).apply { this.setAttributeRaw("data-value", key) }.text(displayText)
+                div(fomantic.item).apply { this.setAttributeRaw("data-value", key) }.new {
+                    itemRenderer(key, displayText)
+                }
             }
         }
     }
@@ -203,7 +211,7 @@ fun ElementCreator<*>.dropdown(options: Map<String?, String>, currentValue: KVar
 
     val callbackId = abs(random.nextInt())
     browser.executeWithCallback("""
-        $('#${dropdown.id}').dropdown({
+        $('#${container.id}').dropdown({
             action: 'activate',
             onChange: function(value, text) {
               // custom action
@@ -221,6 +229,28 @@ fun ElementCreator<*>.dropdown(options: Map<String?, String>, currentValue: KVar
 
     return result
 }
+
+fun ElementCreator<*>.namedColorPicker(currentValue: KVar<String?>) {
+    dropdown(mapOf(
+        "red" to "Rot",
+        "orange" to "Orange",
+        "yellow" to "Gelb",
+        "olive" to "Olivgrün",
+        "green" to "Grün",
+        "teal" to "Türkis",
+        "blue" to "Blau",
+        "violet" to "Violett",
+        "pink" to "Magenta",
+        "brown" to "Braun",
+        "grey" to "Grau",
+        "black" to "Schwarz",
+        "" to "Keine"
+    ), currentValue){ k, v->
+        div(fomantic.ui.circle.label.withColor(k!!))
+        span().text(v?:"")
+    }
+}
+
 
 fun ElementCreator<*>.buttonWithAsyncLoader(label:String, classes: FomanticUIClasses = fomantic.ui.button, renderInline: Boolean=false,onClickAction: (whenDone: ()->Unit)->Unit) = useState(false, renderInline = renderInline) {isLoading, setLoading->
     logger.info("Value of isLoading: $isLoading. Classes ${classes.mapKeys { it }.toList()}")

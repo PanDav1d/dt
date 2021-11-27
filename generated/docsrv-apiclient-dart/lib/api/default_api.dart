@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -11,7 +11,7 @@ part of docsrv_api;
 
 
 class DefaultApi {
-  DefaultApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
+  DefaultApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
   final ApiClient apiClient;
 
@@ -28,7 +28,7 @@ class DefaultApi {
   ///   hostname
   ///
   /// * [EmbeddedSignature] embeddedSignature:
-  Future<Response> addSignatureToDoctagDocumentWithHttpInfo(String documentId, String hostname, { EmbeddedSignature? embeddedSignature }) async {
+  Future<Response> addSignatureToDoctagDocumentWithHttpInfo(String documentId, String hostname, { EmbeddedSignature embeddedSignature }) async {
     // Verify required params are set.
     if (documentId == null) {
      throw ApiException(HttpStatus.badRequest, 'Missing required param: documentId');
@@ -41,7 +41,7 @@ class DefaultApi {
       .replaceAll('{' + 'documentId' + '}', documentId.toString())
       .replaceAll('{' + 'hostname' + '}', hostname.toString());
 
-    Object? postBody = embeddedSignature;
+    Object postBody = embeddedSignature;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -51,6 +51,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -75,7 +86,7 @@ class DefaultApi {
   ///   hostname
   ///
   /// * [EmbeddedSignature] embeddedSignature:
-  Future<Document?> addSignatureToDoctagDocument(String documentId, String hostname, { EmbeddedSignature? embeddedSignature }) async {
+  Future<Document> addSignatureToDoctagDocument(String documentId, String hostname, { EmbeddedSignature embeddedSignature }) async {
     final response = await addSignatureToDoctagDocumentWithHttpInfo(documentId, hostname,  embeddedSignature: embeddedSignature );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -84,7 +95,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Document',) as Document?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Document',) as Document;
         }
     return Future<Document>.value(null);
   }
@@ -95,7 +106,7 @@ class DefaultApi {
   Future<Response> checkHealthWithHttpInfo() async {
     final path = r'/health';
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -105,6 +116,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -119,7 +141,7 @@ class DefaultApi {
   }
 
   /// Perform Health Check
-  Future<HealthCheckResponse?> checkHealth() async {
+  Future<HealthCheckResponse> checkHealth() async {
     final response = await checkHealthWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -128,7 +150,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'HealthCheckResponse',) as HealthCheckResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'HealthCheckResponse',) as HealthCheckResponse;
         }
     return Future<HealthCheckResponse>.value(null);
   }
@@ -139,7 +161,7 @@ class DefaultApi {
   Future<Response> discoverInstanceWithHttpInfo() async {
     final path = r'/discovery';
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -149,6 +171,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -163,7 +196,7 @@ class DefaultApi {
   }
 
   /// Perform Instance discovery
-  Future<DiscoveryResponse?> discoverInstance() async {
+  Future<DiscoveryResponse> discoverInstance() async {
     final response = await discoverInstanceWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -172,7 +205,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse;
         }
     return Future<DiscoveryResponse>.value(null);
   }
@@ -194,7 +227,7 @@ class DefaultApi {
     final path = r'/d/{documentId}/download'
       .replaceAll('{' + 'documentId' + '}', documentId.toString());
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -204,6 +237,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -223,7 +267,7 @@ class DefaultApi {
   ///
   /// * [String] documentId (required):
   ///   documentId
-  Future<DiscoveryResponse?> downloadDocument(String documentId) async {
+  Future<DiscoveryResponse> downloadDocument(String documentId) async {
     final response = await downloadDocumentWithHttpInfo(documentId);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -232,7 +276,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse;
         }
     return Future<DiscoveryResponse>.value(null);
   }
@@ -254,7 +298,7 @@ class DefaultApi {
     final path = r'/f/{fileId}/download'
       .replaceAll('{' + 'fileId' + '}', fileId.toString());
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -264,6 +308,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -283,7 +338,7 @@ class DefaultApi {
   ///
   /// * [String] fileId (required):
   ///   fileId
-  Future<DiscoveryResponse?> downloadFile(String fileId) async {
+  Future<DiscoveryResponse> downloadFile(String fileId) async {
     final response = await downloadFileWithHttpInfo(fileId);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -292,7 +347,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse;
         }
     return Future<DiscoveryResponse>.value(null);
   }
@@ -314,7 +369,7 @@ class DefaultApi {
     final path = r'/d/{documentId}/viewSignSheet'
       .replaceAll('{' + 'documentId' + '}', documentId.toString());
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -324,6 +379,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -343,7 +409,7 @@ class DefaultApi {
   ///
   /// * [String] documentId (required):
   ///   documentId
-  Future<DiscoveryResponse?> downloadSignSheet(String documentId) async {
+  Future<DiscoveryResponse> downloadSignSheet(String documentId) async {
     final response = await downloadSignSheetWithHttpInfo(documentId);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -352,7 +418,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse;
         }
     return Future<DiscoveryResponse>.value(null);
   }
@@ -363,7 +429,7 @@ class DefaultApi {
   Future<Response> fetchAuthInfoWithHttpInfo() async {
     final path = r'/app/auth_info';
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -373,6 +439,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -387,7 +464,7 @@ class DefaultApi {
   }
 
   /// Check authentication
-  Future<AuthInfoResponse?> fetchAuthInfo() async {
+  Future<AuthInfoResponse> fetchAuthInfo() async {
     final response = await fetchAuthInfoWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -396,7 +473,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AuthInfoResponse',) as AuthInfoResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AuthInfoResponse',) as AuthInfoResponse;
         }
     return Future<AuthInfoResponse>.value(null);
   }
@@ -418,7 +495,7 @@ class DefaultApi {
     final path = r'/d/{documentId}'
       .replaceAll('{' + 'documentId' + '}', documentId.toString());
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -428,6 +505,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -447,7 +535,7 @@ class DefaultApi {
   ///
   /// * [String] documentId (required):
   ///   documentId
-  Future<EmbeddedDocument?> fetchDoctagDocument(String documentId) async {
+  Future<EmbeddedDocument> fetchDoctagDocument(String documentId) async {
     final response = await fetchDoctagDocumentWithHttpInfo(documentId);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -456,7 +544,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'EmbeddedDocument',) as EmbeddedDocument?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'EmbeddedDocument',) as EmbeddedDocument;
         }
     return Future<EmbeddedDocument>.value(null);
   }
@@ -485,7 +573,7 @@ class DefaultApi {
       .replaceAll('{' + 'documentId' + '}', documentId.toString())
       .replaceAll('{' + 'hostname' + '}', hostname.toString());
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -495,6 +583,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -517,7 +616,7 @@ class DefaultApi {
   ///
   /// * [String] hostname (required):
   ///   hostname
-  Future<PreparedSignature?> fetchWorkflowToSign(String documentId, String hostname) async {
+  Future<PreparedSignature> fetchWorkflowToSign(String documentId, String hostname) async {
     final response = await fetchWorkflowToSignWithHttpInfo(documentId, hostname);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -526,9 +625,74 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'PreparedSignature',) as PreparedSignature?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'PreparedSignature',) as PreparedSignature;
         }
     return Future<PreparedSignature>.value(null);
+  }
+
+  /// Add signature to document
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [NotifyRequest] notifyRequest:
+  Future<Response> notifyChangesOfDoctagDocumentWithHttpInfo({ NotifyRequest notifyRequest }) async {
+    // Verify required params are set.
+
+    final path = r'/d/notifyChanges/';
+
+    Object postBody = notifyRequest;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    final contentTypes = <String>['application/json'];
+    final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
+    final authNames = <String>[];
+
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
+
+    return await apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      nullableContentType,
+      authNames,
+    );
+  }
+
+  /// Add signature to document
+  ///
+  /// Parameters:
+  ///
+  /// * [NotifyRequest] notifyRequest:
+  Future<Object> notifyChangesOfDoctagDocument({ NotifyRequest notifyRequest }) async {
+    final response = await notifyChangesOfDoctagDocumentWithHttpInfo( notifyRequest: notifyRequest );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body != null && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Object',) as Object;
+        }
+    return Future<Object>.value(null);
   }
 
   /// Set the verification of the private public key
@@ -540,24 +704,17 @@ class DefaultApi {
   /// * [String] publicKeyFingerprint (required):
   ///   publicKeyFingerprint
   ///
-  /// * [String] seed (required):
-  ///   seed
-  ///
   /// * [PublicKeyVerification] publicKeyVerification:
-  Future<Response> setVerificationOfKeyPairWithHttpInfo(String publicKeyFingerprint, String seed, { PublicKeyVerification? publicKeyVerification }) async {
+  Future<Response> setVerificationOfKeyPairWithHttpInfo(String publicKeyFingerprint, { PublicKeyVerification publicKeyVerification }) async {
     // Verify required params are set.
     if (publicKeyFingerprint == null) {
      throw ApiException(HttpStatus.badRequest, 'Missing required param: publicKeyFingerprint');
     }
-    if (seed == null) {
-     throw ApiException(HttpStatus.badRequest, 'Missing required param: seed');
-    }
 
-    final path = r'/k/{publicKeyFingerprint}/verify/{seed}'
-      .replaceAll('{' + 'publicKeyFingerprint' + '}', publicKeyFingerprint.toString())
-      .replaceAll('{' + 'seed' + '}', seed.toString());
+    final path = r'/k/{publicKeyFingerprint}/verification'
+      .replaceAll('{' + 'publicKeyFingerprint' + '}', publicKeyFingerprint.toString());
 
-    Object? postBody = publicKeyVerification;
+    Object postBody = publicKeyVerification;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -567,6 +724,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -587,12 +755,9 @@ class DefaultApi {
   /// * [String] publicKeyFingerprint (required):
   ///   publicKeyFingerprint
   ///
-  /// * [String] seed (required):
-  ///   seed
-  ///
   /// * [PublicKeyVerification] publicKeyVerification:
-  Future<DiscoveryResponse?> setVerificationOfKeyPair(String publicKeyFingerprint, String seed, { PublicKeyVerification? publicKeyVerification }) async {
-    final response = await setVerificationOfKeyPairWithHttpInfo(publicKeyFingerprint, seed,  publicKeyVerification: publicKeyVerification );
+  Future<DiscoveryResponse> setVerificationOfKeyPair(String publicKeyFingerprint, { PublicKeyVerification publicKeyVerification }) async {
+    final response = await setVerificationOfKeyPairWithHttpInfo(publicKeyFingerprint,  publicKeyVerification: publicKeyVerification );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -600,7 +765,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse;
         }
     return Future<DiscoveryResponse>.value(null);
   }
@@ -618,7 +783,7 @@ class DefaultApi {
   ///   hostname
   ///
   /// * [SignatureInputs] signatureInputs:
-  Future<Response> uploadWorkflowResultAndTriggerSignatureWithHttpInfo(String documentId, String hostname, { SignatureInputs? signatureInputs }) async {
+  Future<Response> uploadWorkflowResultAndTriggerSignatureWithHttpInfo(String documentId, String hostname, { SignatureInputs signatureInputs }) async {
     // Verify required params are set.
     if (documentId == null) {
      throw ApiException(HttpStatus.badRequest, 'Missing required param: documentId');
@@ -631,7 +796,7 @@ class DefaultApi {
       .replaceAll('{' + 'documentId' + '}', documentId.toString())
       .replaceAll('{' + 'hostname' + '}', hostname.toString());
 
-    Object? postBody = signatureInputs;
+    Object postBody = signatureInputs;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -641,6 +806,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -665,7 +841,7 @@ class DefaultApi {
   ///   hostname
   ///
   /// * [SignatureInputs] signatureInputs:
-  Future<AuthInfoResponse?> uploadWorkflowResultAndTriggerSignature(String documentId, String hostname, { SignatureInputs? signatureInputs }) async {
+  Future<AuthInfoResponse> uploadWorkflowResultAndTriggerSignature(String documentId, String hostname, { SignatureInputs signatureInputs }) async {
     final response = await uploadWorkflowResultAndTriggerSignatureWithHttpInfo(documentId, hostname,  signatureInputs: signatureInputs );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -674,7 +850,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AuthInfoResponse',) as AuthInfoResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AuthInfoResponse',) as AuthInfoResponse;
         }
     return Future<AuthInfoResponse>.value(null);
   }
@@ -703,7 +879,7 @@ class DefaultApi {
       .replaceAll('{' + 'publicKeyFingerprint' + '}', publicKeyFingerprint.toString())
       .replaceAll('{' + 'seed' + '}', seed.toString());
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -713,6 +889,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -735,7 +922,7 @@ class DefaultApi {
   ///
   /// * [String] seed (required):
   ///   seed
-  Future<DiscoveryResponse?> verifyInstanceHasPrivateKey(String publicKeyFingerprint, String seed) async {
+  Future<DiscoveryResponse> verifyInstanceHasPrivateKey(String publicKeyFingerprint, String seed) async {
     final response = await verifyInstanceHasPrivateKeyWithHttpInfo(publicKeyFingerprint, seed);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -744,7 +931,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse;
         }
     return Future<DiscoveryResponse>.value(null);
   }
@@ -766,7 +953,7 @@ class DefaultApi {
     final path = r'/f/{fileId}/view'
       .replaceAll('{' + 'fileId' + '}', fileId.toString());
 
-    Object? postBody;
+    Object postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -776,6 +963,17 @@ class DefaultApi {
     final nullableContentType = contentTypes.isNotEmpty ? contentTypes[0] : null;
     final authNames = <String>[];
 
+    if (
+      nullableContentType != null &&
+      nullableContentType.toLowerCase().startsWith('multipart/form-data')
+    ) {
+      bool hasFields = false;
+      final mp = MultipartRequest(null, null);
+      if (hasFields) {
+        postBody = mp;
+      }
+    } else {
+    }
 
     return await apiClient.invokeAPI(
       path,
@@ -795,7 +993,7 @@ class DefaultApi {
   ///
   /// * [String] fileId (required):
   ///   fileId
-  Future<DiscoveryResponse?> viewFile(String fileId) async {
+  Future<DiscoveryResponse> viewFile(String fileId) async {
     final response = await viewFileWithHttpInfo(fileId);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -804,7 +1002,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body != null && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse?;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DiscoveryResponse',) as DiscoveryResponse;
         }
     return Future<DiscoveryResponse>.value(null);
   }

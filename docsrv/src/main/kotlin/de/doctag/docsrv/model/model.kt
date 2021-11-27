@@ -112,6 +112,12 @@ data class DocumentSignRequestUser(
         val userName: String? = null
 )
 
+data class AttachedTag(
+    val _id: String,
+    val name: String,
+    val style: TagStyle
+)
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Document(
     var _id: String? = null,
@@ -124,7 +130,8 @@ data class Document(
     var created: ZonedDateTime? = null,
     var mirrors: List<String>? = null,
     var workflow: Workflow? = null,
-    var fullText: String? = null
+    var fullText: String? = null,
+    var tags: List<AttachedTag>?=null
 ) {
     @JsonIgnore
     fun getWorkflowStatus() : List<Pair<String, Signature?>>{
@@ -155,6 +162,39 @@ data class FileData(
     var name: String? = null,
     var base64Content: String? = null,
     var contentType: String? = null
+)
+
+data class Tag(
+    var _id: String?=null,
+    var name: String?=null,
+    var description: String?=null,
+    var style: TagStyle?=null,
+    var options: TagOptions?=null
+) {
+    fun asAttachedTag(): AttachedTag {
+        return AttachedTag(_id!!, name!!, style!!)
+    }
+}
+
+fun String?.determineMatchingTags(possibleTags: List<Tag>): List<AttachedTag>{
+    return possibleTags.filter {
+        it.options?.appendRules?.whenDocumentContains?.let {
+            this?.contains(it, true)
+        } == true
+    }.map { it.asAttachedTag() }
+}
+
+data class TagOptions(
+    var appendRules: TagAppendRules?=null
+)
+
+data class TagAppendRules(
+    var whenDocumentContains: String?=null
+)
+
+data class TagStyle(
+    var textColor: String?=null,
+    var backgroundColor: String?=null
 )
 
 data class Workflow(

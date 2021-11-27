@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -17,11 +17,11 @@ class AuthInfoResponse {
     this.lastName,
   });
 
-  bool? authenticated;
+  bool authenticated;
 
-  String? firstName;
+  String firstName;
 
-  String? lastName;
+  String lastName;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AuthInfoResponse &&
@@ -54,7 +54,7 @@ class AuthInfoResponse {
 
   /// Returns a new [AuthInfoResponse] instance and imports its values from
   /// [json] if it's non-null, null if [json] is null.
-  static AuthInfoResponse? fromJson(Map<String, dynamic>? json) => json == null
+  static AuthInfoResponse fromJson(Map<String, dynamic> json) => json == null
     ? null
     : AuthInfoResponse(
         authenticated: json[r'authenticated'],
@@ -62,13 +62,13 @@ class AuthInfoResponse {
         lastName: json[r'lastName'],
     );
 
-  static List<AuthInfoResponse?>? listFromJson(List<dynamic> json, {bool? emptyIsNull, bool? growable,}) =>
+  static List<AuthInfoResponse> listFromJson(List<dynamic> json, {bool emptyIsNull, bool growable,}) =>
     json == null || json.isEmpty
       ? true == emptyIsNull ? null : <AuthInfoResponse>[]
       : json.map((v) => AuthInfoResponse.fromJson(v)).toList(growable: true == growable);
 
-  static Map<String, AuthInfoResponse?> mapFromJson(Map<String, dynamic> json) {
-    final map = <String, AuthInfoResponse?>{};
+  static Map<String, AuthInfoResponse> mapFromJson(Map<String, dynamic> json) {
+    final map = <String, AuthInfoResponse>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) => map[key] = AuthInfoResponse.fromJson(v));
     }
@@ -76,8 +76,8 @@ class AuthInfoResponse {
   }
 
   // maps a json object with a list of AuthInfoResponse-objects as value to a dart map
-  static Map<String, List<AuthInfoResponse?>?> mapListFromJson(Map<String, dynamic> json, {bool? emptyIsNull, bool? growable,}) {
-    final Map<String, List<AuthInfoResponse?>?> map = <String, List<AuthInfoResponse>?>{};
+  static Map<String, List<AuthInfoResponse>> mapListFromJson(Map<String, dynamic> json, {bool emptyIsNull, bool growable,}) {
+    final map = <String, List<AuthInfoResponse>>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) {
         map[key] = AuthInfoResponse.listFromJson(v, emptyIsNull: emptyIsNull, growable: growable);

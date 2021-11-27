@@ -23,6 +23,7 @@ import de.doctag.docsrv_api.model.Document;
 import de.doctag.docsrv_api.model.EmbeddedDocument;
 import de.doctag.docsrv_api.model.EmbeddedSignature;
 import de.doctag.docsrv_api.model.HealthCheckResponse;
+import de.doctag.docsrv_api.model.NotifyRequest;
 import de.doctag.docsrv_api.model.PreparedSignature;
 import de.doctag.docsrv_api.model.PublicKeyVerification;
 import de.doctag.docsrv_api.model.SignatureInputs;
@@ -66,6 +67,14 @@ public class DefaultApi {
     memberVarResponseInterceptor = apiClient.getResponseInterceptor();
   }
 
+  protected ApiException createApiException(HttpResponse<InputStream> response, String msgPrefix) throws IOException {
+    String body = response.body() == null ? null : new String(response.body().readAllBytes());
+    if (body != null) {
+      msgPrefix += ": " + body;
+    }
+    return new ApiException(response.statusCode(), msgPrefix, response.headers(), body);
+  }
+
   /**
    * Add signature to document
    * 
@@ -99,10 +108,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "addSignatureToDoctagDocument call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "addSignatureToDoctagDocument call received non-success response");
       }
       return new ApiResponse<Document>(
           localVarResponse.statusCode(),
@@ -180,10 +186,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "checkHealth call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "checkHealth call received non-success response");
       }
       return new ApiResponse<HealthCheckResponse>(
           localVarResponse.statusCode(),
@@ -245,10 +248,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "discoverInstance call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "discoverInstance call received non-success response");
       }
       return new ApiResponse<DiscoveryResponse>(
           localVarResponse.statusCode(),
@@ -312,10 +312,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "downloadDocument call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "downloadDocument call received non-success response");
       }
       return new ApiResponse<DiscoveryResponse>(
           localVarResponse.statusCode(),
@@ -384,10 +381,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "downloadFile call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "downloadFile call received non-success response");
       }
       return new ApiResponse<DiscoveryResponse>(
           localVarResponse.statusCode(),
@@ -456,10 +450,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "downloadSignSheet call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "downloadSignSheet call received non-success response");
       }
       return new ApiResponse<DiscoveryResponse>(
           localVarResponse.statusCode(),
@@ -526,10 +517,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "fetchAuthInfo call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "fetchAuthInfo call received non-success response");
       }
       return new ApiResponse<AuthInfoResponse>(
           localVarResponse.statusCode(),
@@ -593,10 +581,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "fetchDoctagDocument call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "fetchDoctagDocument call received non-success response");
       }
       return new ApiResponse<EmbeddedDocument>(
           localVarResponse.statusCode(),
@@ -667,10 +652,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "fetchWorkflowToSign call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "fetchWorkflowToSign call received non-success response");
       }
       return new ApiResponse<PreparedSignature>(
           localVarResponse.statusCode(),
@@ -716,30 +698,26 @@ public class DefaultApi {
     return localVarRequestBuilder;
   }
   /**
-   * Set the verification of the private public key
+   * Add signature to document
    * 
-   * @param publicKeyFingerprint publicKeyFingerprint (required)
-   * @param seed seed (required)
-   * @param publicKeyVerification  (optional)
-   * @return DiscoveryResponse
+   * @param notifyRequest  (optional)
+   * @return Object
    * @throws ApiException if fails to make API call
    */
-  public DiscoveryResponse setVerificationOfKeyPair(String publicKeyFingerprint, String seed, PublicKeyVerification publicKeyVerification) throws ApiException {
-    ApiResponse<DiscoveryResponse> localVarResponse = setVerificationOfKeyPairWithHttpInfo(publicKeyFingerprint, seed, publicKeyVerification);
+  public Object notifyChangesOfDoctagDocument(NotifyRequest notifyRequest) throws ApiException {
+    ApiResponse<Object> localVarResponse = notifyChangesOfDoctagDocumentWithHttpInfo(notifyRequest);
     return localVarResponse.getData();
   }
 
   /**
-   * Set the verification of the private public key
+   * Add signature to document
    * 
-   * @param publicKeyFingerprint publicKeyFingerprint (required)
-   * @param seed seed (required)
-   * @param publicKeyVerification  (optional)
-   * @return ApiResponse&lt;DiscoveryResponse&gt;
+   * @param notifyRequest  (optional)
+   * @return ApiResponse&lt;Object&gt;
    * @throws ApiException if fails to make API call
    */
-  public ApiResponse<DiscoveryResponse> setVerificationOfKeyPairWithHttpInfo(String publicKeyFingerprint, String seed, PublicKeyVerification publicKeyVerification) throws ApiException {
-    HttpRequest.Builder localVarRequestBuilder = setVerificationOfKeyPairRequestBuilder(publicKeyFingerprint, seed, publicKeyVerification);
+  public ApiResponse<Object> notifyChangesOfDoctagDocumentWithHttpInfo(NotifyRequest notifyRequest) throws ApiException {
+    HttpRequest.Builder localVarRequestBuilder = notifyChangesOfDoctagDocumentRequestBuilder(notifyRequest);
     try {
       HttpResponse<InputStream> localVarResponse = memberVarHttpClient.send(
           localVarRequestBuilder.build(),
@@ -748,10 +726,79 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "setVerificationOfKeyPair call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "notifyChangesOfDoctagDocument call received non-success response");
+      }
+      return new ApiResponse<Object>(
+          localVarResponse.statusCode(),
+          localVarResponse.headers().map(),
+          memberVarObjectMapper.readValue(localVarResponse.body(), new TypeReference<Object>() {})
+        );
+    } catch (IOException e) {
+      throw new ApiException(e);
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new ApiException(e);
+    }
+  }
+
+  private HttpRequest.Builder notifyChangesOfDoctagDocumentRequestBuilder(NotifyRequest notifyRequest) throws ApiException {
+
+    HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
+
+    String localVarPath = "/d/notifyChanges/";
+
+    localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
+
+    localVarRequestBuilder.header("Content-Type", "application/json");
+    localVarRequestBuilder.header("Accept", "application/json");
+
+    try {
+      byte[] localVarPostBody = memberVarObjectMapper.writeValueAsBytes(notifyRequest);
+      localVarRequestBuilder.method("POST", HttpRequest.BodyPublishers.ofByteArray(localVarPostBody));
+    } catch (IOException e) {
+      throw new ApiException(e);
+    }
+    if (memberVarReadTimeout != null) {
+      localVarRequestBuilder.timeout(memberVarReadTimeout);
+    }
+    if (memberVarInterceptor != null) {
+      memberVarInterceptor.accept(localVarRequestBuilder);
+    }
+    return localVarRequestBuilder;
+  }
+  /**
+   * Set the verification of the private public key
+   * 
+   * @param publicKeyFingerprint publicKeyFingerprint (required)
+   * @param publicKeyVerification  (optional)
+   * @return DiscoveryResponse
+   * @throws ApiException if fails to make API call
+   */
+  public DiscoveryResponse setVerificationOfKeyPair(String publicKeyFingerprint, PublicKeyVerification publicKeyVerification) throws ApiException {
+    ApiResponse<DiscoveryResponse> localVarResponse = setVerificationOfKeyPairWithHttpInfo(publicKeyFingerprint, publicKeyVerification);
+    return localVarResponse.getData();
+  }
+
+  /**
+   * Set the verification of the private public key
+   * 
+   * @param publicKeyFingerprint publicKeyFingerprint (required)
+   * @param publicKeyVerification  (optional)
+   * @return ApiResponse&lt;DiscoveryResponse&gt;
+   * @throws ApiException if fails to make API call
+   */
+  public ApiResponse<DiscoveryResponse> setVerificationOfKeyPairWithHttpInfo(String publicKeyFingerprint, PublicKeyVerification publicKeyVerification) throws ApiException {
+    HttpRequest.Builder localVarRequestBuilder = setVerificationOfKeyPairRequestBuilder(publicKeyFingerprint, publicKeyVerification);
+    try {
+      HttpResponse<InputStream> localVarResponse = memberVarHttpClient.send(
+          localVarRequestBuilder.build(),
+          HttpResponse.BodyHandlers.ofInputStream());
+      if (memberVarResponseInterceptor != null) {
+        memberVarResponseInterceptor.accept(localVarResponse);
+      }
+      if (localVarResponse.statusCode()/ 100 != 2) {
+        throw createApiException(localVarResponse, "setVerificationOfKeyPair call received non-success response");
       }
       return new ApiResponse<DiscoveryResponse>(
           localVarResponse.statusCode(),
@@ -767,21 +814,16 @@ public class DefaultApi {
     }
   }
 
-  private HttpRequest.Builder setVerificationOfKeyPairRequestBuilder(String publicKeyFingerprint, String seed, PublicKeyVerification publicKeyVerification) throws ApiException {
+  private HttpRequest.Builder setVerificationOfKeyPairRequestBuilder(String publicKeyFingerprint, PublicKeyVerification publicKeyVerification) throws ApiException {
     // verify the required parameter 'publicKeyFingerprint' is set
     if (publicKeyFingerprint == null) {
       throw new ApiException(400, "Missing the required parameter 'publicKeyFingerprint' when calling setVerificationOfKeyPair");
     }
-    // verify the required parameter 'seed' is set
-    if (seed == null) {
-      throw new ApiException(400, "Missing the required parameter 'seed' when calling setVerificationOfKeyPair");
-    }
 
     HttpRequest.Builder localVarRequestBuilder = HttpRequest.newBuilder();
 
-    String localVarPath = "/k/{publicKeyFingerprint}/verify/{seed}"
-        .replace("{publicKeyFingerprint}", ApiClient.urlEncode(publicKeyFingerprint.toString()))
-        .replace("{seed}", ApiClient.urlEncode(seed.toString()));
+    String localVarPath = "/k/{publicKeyFingerprint}/verification"
+        .replace("{publicKeyFingerprint}", ApiClient.urlEncode(publicKeyFingerprint.toString()));
 
     localVarRequestBuilder.uri(URI.create(memberVarBaseUri + localVarPath));
 
@@ -835,10 +877,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "uploadWorkflowResultAndTriggerSignature call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "uploadWorkflowResultAndTriggerSignature call received non-success response");
       }
       return new ApiResponse<AuthInfoResponse>(
           localVarResponse.statusCode(),
@@ -920,10 +959,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "verifyInstanceHasPrivateKey call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "verifyInstanceHasPrivateKey call received non-success response");
       }
       return new ApiResponse<DiscoveryResponse>(
           localVarResponse.statusCode(),
@@ -997,10 +1033,7 @@ public class DefaultApi {
         memberVarResponseInterceptor.accept(localVarResponse);
       }
       if (localVarResponse.statusCode()/ 100 != 2) {
-        throw new ApiException(localVarResponse.statusCode(),
-            "viewFile call received non-success response",
-            localVarResponse.headers(),
-            localVarResponse.body() == null ? null : new String(localVarResponse.body().readAllBytes()));
+        throw createApiException(localVarResponse, "viewFile call received non-success response");
       }
       return new ApiResponse<DiscoveryResponse>(
           localVarResponse.statusCode(),

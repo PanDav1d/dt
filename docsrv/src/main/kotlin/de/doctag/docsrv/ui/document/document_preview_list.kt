@@ -150,17 +150,27 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                             }
                                         }.new {
                                             td(mapOf("style" to "width:100vw")).new {
-                                                div().text(document.originalFileName?.take(35) ?: "")
-                                                document.getWorkflowStatus().forEach { (role, signature) ->
-                                                    if(signature != null) {
-                                                        val signedAt = signature.signed?.formatDateTime()
-                                                        i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}")
+                                                div().new{
+                                                    span().text(document.originalFileName?.take(35) ?: "")
+                                                }
+                                                div().new {
+                                                    document.getWorkflowStatus().forEach { (role, signature) ->
+                                                        if(signature != null) {
+                                                            val signedAt = signature.signed?.formatDateTime()
+                                                            i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}")
+                                                        }
+                                                        else {
+                                                            i(fomantic.ui.icon.circle.outline.grey).withPopup(role, "Noch nicht signiert")
+                                                        }
                                                     }
-                                                    else {
-                                                        i(fomantic.ui.icon.circle.outline.grey).withPopup(role, "Noch nicht signiert")
+                                                    span(mapOf("style" to "float:right")).new {
+                                                        document.tags?.forEach {
+                                                            tag(it, false, size = FomanticUiSize.Mini)
+                                                        }
+                                                        span(mapOf("style" to "width:4px;height:1px;display:inline-block;")).text("")
+                                                        span().text(document.created?.formatDateTime(true) ?: "")
                                                     }
                                                 }
-                                                span(mapOf("style" to "float:right")).text(document.created?.formatDateTime(true) ?: "")
                                             }
                                         }
                                     }

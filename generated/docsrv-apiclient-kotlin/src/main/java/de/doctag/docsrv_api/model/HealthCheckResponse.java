@@ -58,6 +58,8 @@ public class HealthCheckResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_IS_HEALTHY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsHealthy(Boolean isHealthy) {
     this.isHealthy = isHealthy;
   }

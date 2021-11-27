@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -25,27 +25,27 @@ class DoctagSignatureData {
     this.workflowHash,
   });
 
-  String? documentHash;
+  String documentHash;
 
-  String? documentUrl;
+  String documentUrl;
 
-  String? keyFingerprint;
+  String keyFingerprint;
 
-  String? previousSignaturesHash;
+  String previousSignaturesHash;
 
-  String? randomBuffer;
+  String randomBuffer;
 
-  String? signature;
+  String signature;
 
-  String? signingDoctagInstance;
+  String signingDoctagInstance;
 
-  String? signingUser;
+  String signingUser;
 
-  String? validFrom;
+  String validFrom;
 
-  DateTime? validFromDateTime;
+  DateTime validFromDateTime;
 
-  String? workflowHash;
+  String workflowHash;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is DoctagSignatureData &&
@@ -108,7 +108,7 @@ class DoctagSignatureData {
       json[r'validFrom'] = validFrom;
     }
     if (validFromDateTime != null) {
-      json[r'validFromDateTime'] = validFromDateTime!.toUtc().toIso8601String();
+      json[r'validFromDateTime'] = validFromDateTime.toUtc().toIso8601String();
     }
     if (workflowHash != null) {
       json[r'workflowHash'] = workflowHash;
@@ -118,7 +118,7 @@ class DoctagSignatureData {
 
   /// Returns a new [DoctagSignatureData] instance and imports its values from
   /// [json] if it's non-null, null if [json] is null.
-  static DoctagSignatureData? fromJson(Map<String, dynamic>? json) => json == null
+  static DoctagSignatureData fromJson(Map<String, dynamic> json) => json == null
     ? null
     : DoctagSignatureData(
         documentHash: json[r'documentHash'],
@@ -136,13 +136,13 @@ class DoctagSignatureData {
         workflowHash: json[r'workflowHash'],
     );
 
-  static List<DoctagSignatureData?>? listFromJson(List<dynamic> json, {bool? emptyIsNull, bool? growable,}) =>
+  static List<DoctagSignatureData> listFromJson(List<dynamic> json, {bool emptyIsNull, bool growable,}) =>
     json == null || json.isEmpty
       ? true == emptyIsNull ? null : <DoctagSignatureData>[]
       : json.map((v) => DoctagSignatureData.fromJson(v)).toList(growable: true == growable);
 
-  static Map<String, DoctagSignatureData?> mapFromJson(Map<String, dynamic> json) {
-    final map = <String, DoctagSignatureData?>{};
+  static Map<String, DoctagSignatureData> mapFromJson(Map<String, dynamic> json) {
+    final map = <String, DoctagSignatureData>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) => map[key] = DoctagSignatureData.fromJson(v));
     }
@@ -150,8 +150,8 @@ class DoctagSignatureData {
   }
 
   // maps a json object with a list of DoctagSignatureData-objects as value to a dart map
-  static Map<String, List<DoctagSignatureData?>?> mapListFromJson(Map<String, dynamic> json, {bool? emptyIsNull, bool? growable,}) {
-    final Map<String, List<DoctagSignatureData?>?> map = <String, List<DoctagSignatureData>?>{};
+  static Map<String, List<DoctagSignatureData>> mapListFromJson(Map<String, dynamic> json, {bool emptyIsNull, bool growable,}) {
+    final map = <String, List<DoctagSignatureData>>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) {
         map[key] = DoctagSignatureData.listFromJson(v, emptyIsNull: emptyIsNull, growable: growable);

@@ -22,8 +22,10 @@ Method | HTTP request | Description
 [**fetchDoctagDocumentWithHttpInfo**](DefaultApi.md#fetchDoctagDocumentWithHttpInfo) | **GET** /d/{documentId} | Fetch doctag document
 [**fetchWorkflowToSign**](DefaultApi.md#fetchWorkflowToSign) | **GET** /app/signature/prepare/{documentId}/{hostname} | Check authentication
 [**fetchWorkflowToSignWithHttpInfo**](DefaultApi.md#fetchWorkflowToSignWithHttpInfo) | **GET** /app/signature/prepare/{documentId}/{hostname} | Check authentication
-[**setVerificationOfKeyPair**](DefaultApi.md#setVerificationOfKeyPair) | **PUT** /k/{publicKeyFingerprint}/verify/{seed} | Set the verification of the private public key
-[**setVerificationOfKeyPairWithHttpInfo**](DefaultApi.md#setVerificationOfKeyPairWithHttpInfo) | **PUT** /k/{publicKeyFingerprint}/verify/{seed} | Set the verification of the private public key
+[**notifyChangesOfDoctagDocument**](DefaultApi.md#notifyChangesOfDoctagDocument) | **POST** /d/notifyChanges/ | Add signature to document
+[**notifyChangesOfDoctagDocumentWithHttpInfo**](DefaultApi.md#notifyChangesOfDoctagDocumentWithHttpInfo) | **POST** /d/notifyChanges/ | Add signature to document
+[**setVerificationOfKeyPair**](DefaultApi.md#setVerificationOfKeyPair) | **PUT** /k/{publicKeyFingerprint}/verification | Set the verification of the private public key
+[**setVerificationOfKeyPairWithHttpInfo**](DefaultApi.md#setVerificationOfKeyPairWithHttpInfo) | **PUT** /k/{publicKeyFingerprint}/verification | Set the verification of the private public key
 [**uploadWorkflowResultAndTriggerSignature**](DefaultApi.md#uploadWorkflowResultAndTriggerSignature) | **POST** /app/signature/push/{documentId}/{hostname} | Check authentication
 [**uploadWorkflowResultAndTriggerSignatureWithHttpInfo**](DefaultApi.md#uploadWorkflowResultAndTriggerSignatureWithHttpInfo) | **POST** /app/signature/push/{documentId}/{hostname} | Check authentication
 [**verifyInstanceHasPrivateKey**](DefaultApi.md#verifyInstanceHasPrivateKey) | **GET** /k/{publicKeyFingerprint}/verify/{seed} | Check that this instance actually owns the given private key
@@ -1191,9 +1193,139 @@ No authorization required
 | **200** | PreparedSignature |  -  |
 
 
+## notifyChangesOfDoctagDocument
+
+> Object notifyChangesOfDoctagDocument(notifyRequest)
+
+Add signature to document
+
+### Example
+
+```java
+// Import classes:
+import de.doctag.docsrv_api.invoker.ApiClient;
+import de.doctag.docsrv_api.invoker.ApiException;
+import de.doctag.docsrv_api.invoker.Configuration;
+import de.doctag.docsrv_api.invoker.models.*;
+import de.doctag.docsrv_api.DefaultApi;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost");
+
+        DefaultApi apiInstance = new DefaultApi(defaultClient);
+        NotifyRequest notifyRequest = new NotifyRequest(); // NotifyRequest | 
+        try {
+            Object result = apiInstance.notifyChangesOfDoctagDocument(notifyRequest);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#notifyChangesOfDoctagDocument");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **notifyRequest** | [**NotifyRequest**](NotifyRequest.md)|  | [optional]
+
+### Return type
+
+**Object**
+
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | NotifyResult |  -  |
+
+## notifyChangesOfDoctagDocumentWithHttpInfo
+
+> ApiResponse<Object> notifyChangesOfDoctagDocument notifyChangesOfDoctagDocumentWithHttpInfo(notifyRequest)
+
+Add signature to document
+
+### Example
+
+```java
+// Import classes:
+import de.doctag.docsrv_api.invoker.ApiClient;
+import de.doctag.docsrv_api.invoker.ApiException;
+import de.doctag.docsrv_api.invoker.ApiResponse;
+import de.doctag.docsrv_api.invoker.Configuration;
+import de.doctag.docsrv_api.invoker.models.*;
+import de.doctag.docsrv_api.DefaultApi;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost");
+
+        DefaultApi apiInstance = new DefaultApi(defaultClient);
+        NotifyRequest notifyRequest = new NotifyRequest(); // NotifyRequest | 
+        try {
+            ApiResponse<Object> response = apiInstance.notifyChangesOfDoctagDocumentWithHttpInfo(notifyRequest);
+            System.out.println("Status code: " + response.getStatusCode());
+            System.out.println("Response headers: " + response.getHeaders());
+            System.out.println("Response body: " + response.getData());
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#notifyChangesOfDoctagDocument");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            System.err.println("Reason: " + e.getResponseBody());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **notifyRequest** | [**NotifyRequest**](NotifyRequest.md)|  | [optional]
+
+### Return type
+
+ApiResponse<**Object**>
+
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | NotifyResult |  -  |
+
+
 ## setVerificationOfKeyPair
 
-> DiscoveryResponse setVerificationOfKeyPair(publicKeyFingerprint, seed, publicKeyVerification)
+> DiscoveryResponse setVerificationOfKeyPair(publicKeyFingerprint, publicKeyVerification)
 
 Set the verification of the private public key
 
@@ -1214,10 +1346,9 @@ public class Example {
 
         DefaultApi apiInstance = new DefaultApi(defaultClient);
         String publicKeyFingerprint = "publicKeyFingerprint_example"; // String | publicKeyFingerprint
-        String seed = "seed_example"; // String | seed
         PublicKeyVerification publicKeyVerification = new PublicKeyVerification(); // PublicKeyVerification | 
         try {
-            DiscoveryResponse result = apiInstance.setVerificationOfKeyPair(publicKeyFingerprint, seed, publicKeyVerification);
+            DiscoveryResponse result = apiInstance.setVerificationOfKeyPair(publicKeyFingerprint, publicKeyVerification);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#setVerificationOfKeyPair");
@@ -1236,7 +1367,6 @@ public class Example {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **publicKeyFingerprint** | **String**| publicKeyFingerprint |
- **seed** | **String**| seed |
  **publicKeyVerification** | [**PublicKeyVerification**](PublicKeyVerification.md)|  | [optional]
 
 ### Return type
@@ -1260,7 +1390,7 @@ No authorization required
 
 ## setVerificationOfKeyPairWithHttpInfo
 
-> ApiResponse<DiscoveryResponse> setVerificationOfKeyPair setVerificationOfKeyPairWithHttpInfo(publicKeyFingerprint, seed, publicKeyVerification)
+> ApiResponse<DiscoveryResponse> setVerificationOfKeyPair setVerificationOfKeyPairWithHttpInfo(publicKeyFingerprint, publicKeyVerification)
 
 Set the verification of the private public key
 
@@ -1282,10 +1412,9 @@ public class Example {
 
         DefaultApi apiInstance = new DefaultApi(defaultClient);
         String publicKeyFingerprint = "publicKeyFingerprint_example"; // String | publicKeyFingerprint
-        String seed = "seed_example"; // String | seed
         PublicKeyVerification publicKeyVerification = new PublicKeyVerification(); // PublicKeyVerification | 
         try {
-            ApiResponse<DiscoveryResponse> response = apiInstance.setVerificationOfKeyPairWithHttpInfo(publicKeyFingerprint, seed, publicKeyVerification);
+            ApiResponse<DiscoveryResponse> response = apiInstance.setVerificationOfKeyPairWithHttpInfo(publicKeyFingerprint, publicKeyVerification);
             System.out.println("Status code: " + response.getStatusCode());
             System.out.println("Response headers: " + response.getHeaders());
             System.out.println("Response body: " + response.getData());
@@ -1306,7 +1435,6 @@ public class Example {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **publicKeyFingerprint** | **String**| publicKeyFingerprint |
- **seed** | **String**| seed |
  **publicKeyVerification** | [**PublicKeyVerification**](PublicKeyVerification.md)|  | [optional]
 
 ### Return type

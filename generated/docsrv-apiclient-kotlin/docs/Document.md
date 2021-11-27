@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **id** | **String** |  |  [optional]
 **attachmentHash** | **String** |  |  [optional]
 **attachmentId** | **String** |  |  [optional]
-**created** | [**ZonedDateTime**](ZonedDateTime.md) |  |  [optional]
+**created** | **OffsetDateTime** |  |  [optional]
 **fullText** | **String** |  |  [optional]
 **isMirrored** | **Boolean** |  |  [optional]
 **mirrors** | **List&lt;String&gt;** |  |  [optional]

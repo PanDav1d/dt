@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -16,9 +16,9 @@ class PreparedSignature {
     this.workflow,
   });
 
-  List<PrivatePublicKeyInfo?>? availableKeys;
+  List<PrivatePublicKeyInfo> availableKeys;
 
-  Workflow? workflow;
+  Workflow workflow;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is PreparedSignature &&
@@ -46,20 +46,20 @@ class PreparedSignature {
 
   /// Returns a new [PreparedSignature] instance and imports its values from
   /// [json] if it's non-null, null if [json] is null.
-  static PreparedSignature? fromJson(Map<String, dynamic>? json) => json == null
+  static PreparedSignature fromJson(Map<String, dynamic> json) => json == null
     ? null
     : PreparedSignature(
         availableKeys: PrivatePublicKeyInfo.listFromJson(json[r'availableKeys']),
         workflow: Workflow.fromJson(json[r'workflow']),
     );
 
-  static List<PreparedSignature?>? listFromJson(List<dynamic> json, {bool? emptyIsNull, bool? growable,}) =>
+  static List<PreparedSignature> listFromJson(List<dynamic> json, {bool emptyIsNull, bool growable,}) =>
     json == null || json.isEmpty
       ? true == emptyIsNull ? null : <PreparedSignature>[]
       : json.map((v) => PreparedSignature.fromJson(v)).toList(growable: true == growable);
 
-  static Map<String, PreparedSignature?> mapFromJson(Map<String, dynamic> json) {
-    final map = <String, PreparedSignature?>{};
+  static Map<String, PreparedSignature> mapFromJson(Map<String, dynamic> json) {
+    final map = <String, PreparedSignature>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) => map[key] = PreparedSignature.fromJson(v));
     }
@@ -67,8 +67,8 @@ class PreparedSignature {
   }
 
   // maps a json object with a list of PreparedSignature-objects as value to a dart map
-  static Map<String, List<PreparedSignature?>?> mapListFromJson(Map<String, dynamic> json, {bool? emptyIsNull, bool? growable,}) {
-    final Map<String, List<PreparedSignature?>?> map = <String, List<PreparedSignature>?>{};
+  static Map<String, List<PreparedSignature>> mapListFromJson(Map<String, dynamic> json, {bool emptyIsNull, bool growable,}) {
+    final map = <String, List<PreparedSignature>>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) {
         map[key] = PreparedSignature.listFromJson(v, emptyIsNull: emptyIsNull, growable: growable);

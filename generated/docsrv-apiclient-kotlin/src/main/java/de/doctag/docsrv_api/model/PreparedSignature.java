@@ -74,6 +74,8 @@ public class PreparedSignature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_AVAILABLE_KEYS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAvailableKeys(List<PrivatePublicKeyInfo> availableKeys) {
     this.availableKeys = availableKeys;
   }
@@ -98,6 +100,8 @@ public class PreparedSignature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_WORKFLOW)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setWorkflow(Workflow workflow) {
     this.workflow = workflow;
   }

@@ -19,21 +19,7 @@ fun ElementCreator<*>.designForm(designConfig: DesignConfig, onSaveClick: (desig
 
         div(fomantic.ui.field).new {
             label().text("Farbe des Seitenkopfs")
-            dropdown(mapOf(
-                    "red" to "Rot",
-                    "orange" to "Orange",
-                    "yellow" to "Gelb",
-                    "olive" to "Olivgrün",
-                    "green" to "Grün",
-                    "teal" to "Türkis",
-                    "blue" to "Blau",
-                    "violet" to "Violett",
-                    "pink" to "Magenta",
-                    "brown" to "Braun",
-                    "grey" to "Grau",
-                    "black" to "Schwarz",
-                    "" to "Keine"
-            ), conf.property(DesignConfig::headerColor))
+            namedColorPicker(conf.property(DesignConfig::headerColor))
         }
 
         div(fomantic.ui.field).new {

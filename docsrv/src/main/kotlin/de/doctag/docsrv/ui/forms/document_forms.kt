@@ -4,6 +4,7 @@ import com.github.salomonbrys.kotson.fromJson
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.*
+import de.doctag.docsrv.ui.forms.system.addTagDropdown
 import de.doctag.lib.generateRandomString
 import de.doctag.lib.toSha1HexString
 import io.ktor.util.*
@@ -147,6 +148,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
 
                             document.value.let {
                                 it.url = docId?.fullUrl
+                                it.fullText = extractTextFromPdf(data)
                             }
 
                             state.value = if(docId!=null)DocumentAddState.SAVE else DocumentAddState.INSERT_DOCTAG
@@ -190,9 +192,25 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                         }
                     }
 
+                    var tags = KVar(document.value.fullText.determineMatchingTags(db().tags.find().toList()))
+                    div(fomantic.ui.field).new {
+                        label().text("Tags wählen")
+                        render(tags){ value->
+                            value.forEach {
+                                tag(it, true){ tag->
+                                    tags.value = tags.value.filter { it._id != tag._id}
+                                }
+                            }
+                        }
+                        addTagDropdown(tags.value){
+                            tags.value = tags.value.plus(it.asAttachedTag())
+                        }
+                    }
+
                     buttonWithLoader("Speichern"){
                         val doc = document.value
                         doc.isMirrored = DocumentId.parse(doc.url!!).hostname != db().currentConfig.hostname
+                        doc.tags = if(!tags.value.isEmpty()) tags.value else null
                         fileObj._id = fileObj.base64Content!!.toSha1HexString()
                         onSaveClick(fileObj, doc)
                     }

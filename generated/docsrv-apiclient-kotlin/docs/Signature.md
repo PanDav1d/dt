@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **inputs** | [**List&lt;WorkflowInputResult&gt;**](WorkflowInputResult.md) |  |  [optional]
 **originalMessage** | **String** |  |  [optional]
 **role** | **String** |  |  [optional]
-**signed** | [**ZonedDateTime**](ZonedDateTime.md) |  |  [optional]
+**signed** | **OffsetDateTime** |  |  [optional]
 **signedByKey** | [**PublicKeyResponse**](PublicKeyResponse.md) |  |  [optional]
 
 

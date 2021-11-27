@@ -70,6 +70,8 @@ public class FileData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ID)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setId(String id) {
     this.id = id;
   }
@@ -94,6 +96,8 @@ public class FileData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_BASE64_CONTENT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setBase64Content(String base64Content) {
     this.base64Content = base64Content;
   }
@@ -118,6 +122,8 @@ public class FileData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_CONTENT_TYPE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setContentType(String contentType) {
     this.contentType = contentType;
   }
@@ -142,6 +148,8 @@ public class FileData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setName(String name) {
     this.name = name;
   }

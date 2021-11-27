@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -65,7 +65,7 @@ String parameterToString(dynamic value) {
 /// content type. Otherwise, returns the decoded body as decoded by dart:http package.
 Future<String> _decodeBodyBytes(Response response) async {
   final contentType = response.headers['content-type'];
-  return (contentType != null && contentType.toLowerCase().startsWith('application/json')
+  return contentType != null && contentType.toLowerCase().startsWith('application/json')
     ? response.bodyBytes == null ? null : utf8.decode(response.bodyBytes)
-    : response.body )?? "";
+    : response.body;
 }

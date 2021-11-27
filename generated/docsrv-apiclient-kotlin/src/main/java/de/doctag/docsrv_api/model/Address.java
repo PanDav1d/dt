@@ -78,6 +78,8 @@ public class Address {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_CITY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCity(String city) {
     this.city = city;
   }
@@ -102,6 +104,8 @@ public class Address {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_COUNTRY_CODE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCountryCode(String countryCode) {
     this.countryCode = countryCode;
   }
@@ -126,6 +130,8 @@ public class Address {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_NAME1)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setName1(String name1) {
     this.name1 = name1;
   }
@@ -150,6 +156,8 @@ public class Address {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_NAME2)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setName2(String name2) {
     this.name2 = name2;
   }
@@ -174,6 +182,8 @@ public class Address {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_STREET)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setStreet(String street) {
     this.street = street;
   }
@@ -198,6 +208,8 @@ public class Address {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ZIP_CODE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setZipCode(String zipCode) {
     this.zipCode = zipCode;
   }

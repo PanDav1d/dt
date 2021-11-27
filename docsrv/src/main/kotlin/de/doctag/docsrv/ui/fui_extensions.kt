@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui
 
+import de.doctag.docsrv.model.AttachedTag
+import de.doctag.docsrv.model.Tag
 import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
@@ -254,6 +256,42 @@ fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
     return this
 }
 
+enum class FomanticUiSize(val size:String){
+    Tiny("tiny"),
+    Mini("mini"),
+    Small("small"),
+    Medium("medium"),
+    Large("large"),
+    Big("big"),
+    Huge("huge"),
+    Massive("massive")
+}
+
+fun FomanticUIClasses.withSize(size: FomanticUiSize?):FomanticUIClasses{
+    if(size !=null)
+        classes(size.size)
+
+    return this
+}
+
+val FomanticUIClasses.delete:FomanticUIClasses
+   get(){
+       classes("delete")
+        return this
+   }
+
+val FomanticUIClasses.simple: FomanticUIClasses
+    get() {
+        classes("simple")
+        return this
+    }
+
+fun FomanticUIClasses.withStyle(styleStr:String): FomanticUIClasses {
+    set("style", styleStr)
+    return this
+}
+
+
 fun FomanticUIClasses.active(isActive: Boolean) = withOptionalAttribute("active", isActive)
 
 fun FomanticUIClasses.checked(isChecked: Boolean) = withOptionalAttribute("checked", isChecked)
@@ -339,3 +377,21 @@ fun ElementCreator<*>.displayMessage(msg: UserMessage){
     div(fomantic.ui.divider.hidden)
 }
 
+fun ElementCreator<*>.tag(tag: Tag, size: FomanticUiSize?=null){
+    div(fomantic.ui.label.withColor(tag.style?.backgroundColor?:"gray").withSize(size)).text(tag.name?:"")
+}
+
+fun ElementCreator<*>.tag(tag: AttachedTag, showRemoveButton:Boolean,size:FomanticUiSize?=null, onRemoveClick:((AttachedTag)->Unit)?=null){
+    val cls = if(showRemoveButton)
+        fomantic.ui.right.icon.label.withColor(tag.style?.backgroundColor?:"gray").withSize(size)
+    else
+        fomantic.ui.label.withColor(tag.style?.backgroundColor?:"gray").withSize(size)
+
+    div(cls).text(tag.name).new {
+        if(showRemoveButton) {
+            i(fomantic.delete.icon).on.click {
+                onRemoveClick?.invoke(tag)
+            }
+        }
+    }
+}

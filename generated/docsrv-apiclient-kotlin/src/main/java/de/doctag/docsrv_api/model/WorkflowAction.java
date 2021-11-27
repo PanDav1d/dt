@@ -73,6 +73,8 @@ public class WorkflowAction {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_INPUTS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setInputs(List<WorkflowInput> inputs) {
     this.inputs = inputs;
   }
@@ -97,6 +99,8 @@ public class WorkflowAction {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ROLE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setRole(String role) {
     this.role = role;
   }

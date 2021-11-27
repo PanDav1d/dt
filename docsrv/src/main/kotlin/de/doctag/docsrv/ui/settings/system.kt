@@ -82,6 +82,9 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                         }
                                     }
                                 }
+                                SystemSettingsActiveItem.TAGS->{
+                                    tag_settings_form(pageArea)
+                                }
                             }
                         }
                     }
@@ -97,7 +100,8 @@ enum class SystemSettingsActiveItem {
     WORKFLOW,
     DESIGN,
     SEARCH,
-    SECURITY
+    SECURITY,
+    TAGS
 }
 
 fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
@@ -108,5 +112,6 @@ fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.DESIGN), "/settings/system/design").text("Design")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SEARCH), "/settings/system/search").text("Suche")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SECURITY), "/settings/system/security").text("Sicherheit")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.TAGS), "/settings/system/tags").text("Tags")
     }
 }

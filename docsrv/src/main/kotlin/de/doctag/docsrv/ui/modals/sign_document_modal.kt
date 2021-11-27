@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.modals
 
+import de.doctag.docsrv.DataUrlResult
 import de.doctag.docsrv.fromDataUrl
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
@@ -7,9 +8,7 @@ import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kweb.*
 import kweb.logger
 import kweb.plugins.fomanticUI.fomantic
@@ -22,6 +21,7 @@ import org.litote.kmongo.save
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.concurrent.CompletableFuture
+import kotlin.concurrent.thread
 
 fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document, addedSig: Signature)->Unit) = modal("Dokument signieren", autoFocus = false) { modal ->
 
@@ -131,29 +131,40 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                                 }
                             }*/
 
+                            var signatureData :DataUrlResult? = null
+
                             formCtrl.withSubmitAction {
-                                logger.info("Handling submit action")
-                                val cf = CompletableFuture<Boolean>()
-                                sigPad.fetchContent { pos ->
-                                    val (contentType, data) = pos.base64Content.fromDataUrl()
-                                    val fd = FileData(_id=data.toSha1HexString(), base64Content = data, contentType = contentType, name = "signature.png")
-                                    logger.info("Received signature")
+                                logger.info("Handling submit action. signature data is present? ${signatureData != null}")
 
-                                    fd.apply {
-                                        db().files.save(fd)
-                                    }
-                                    filesToAdd.add(fd)
-                                    result.value.fileId = fd._id
+                               signatureData?.let {
+                                   val (contentType, data) = it
+                                   val fd = FileData(
+                                       _id = data.toSha1HexString(),
+                                       base64Content = data,
+                                       contentType = contentType,
+                                       name = "signature.png"
+                                   )
+                                   logger.info("Received signature")
 
-                                    logger.info("Stored signature: ok")
-                                    cf.complete(true)
-                                }
-                                //cf.get()
+                                   fd.apply {
+                                       db().files.save(fd)
+                                   }
+                                   filesToAdd.add(fd)
+                                   result.value.fileId = fd._id
+
+                                   logger.info("Stored signature: ok")
+                               }
                             }
 
                             GlobalScope.launch {
                                 delay(100)
-                                sigPad.onEndDraw { logger.info("Finished drawing") }
+                                sigPad.onEndDraw {
+                                    logger.info("Finished drawing")
+                                    sigPad.fetchContent { pos ->
+                                        signatureData = pos.base64Content.fromDataUrl()
+                                        logger.info("Fetched signature")
+                                    }
+                                }
                             }
                         }
                     }
@@ -168,9 +179,11 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
         div(fomantic.ui.divider.hidden)
 
         formSubmitButton(formCtrl, "Dokument signieren"){
-            logger.info("Make signature for document ${doc.url}")
+            logger.info("Sign Document button clicked ${doc.url}")
 
             formCtrl.submit()
+
+            logger.info("Making Signature")
 
             val currentKey = key.value!!
 

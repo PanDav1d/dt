@@ -66,6 +66,8 @@ public class EmbeddedDocument {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_DOCUMENT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDocument(Document document) {
     this.document = document;
   }
@@ -98,6 +100,8 @@ public class EmbeddedDocument {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_FILES)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setFiles(List<FileData> files) {
     this.files = files;
   }

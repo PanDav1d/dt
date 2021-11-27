@@ -5,6 +5,7 @@ import de.doctag.docsrv.getQRCodeImageAsDataUrl
 import de.doctag.docsrv.model.*
 import org.litote.kmongo.findOneById
 import de.doctag.docsrv.ui.*
+import de.doctag.docsrv.ui.forms.system.addTagDropdown
 import de.doctag.docsrv.ui.modals.filePreviewModal
 import de.doctag.docsrv.ui.modals.signDocumentModal
 import kotlinx.coroutines.GlobalScope
@@ -36,7 +37,7 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
     }
 }
 
-fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature: KVar<Int?>) {
+fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature: KVar<Int?>) = useState(1) {state, setState ->
     val isSignatureValid = KVar<Boolean?>(null)
     GlobalScope.launch { delay(500); isSignatureValid.value = rDocument.toEmbeddedDocument(db()).validateSignatures() }
 
@@ -78,11 +79,25 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                     i(fomantic.ui.eye.outline.icon)
                     div(fomantic.ui.content).new {
                         span(fomantic.header).new {
-                            span().text("Beobachter ")
-                            div(fomantic.ui.mini.label).text((rDocument.mirrors?.size ?: 0).toString())
+                            rDocument.tags?.forEach {
+                                tag(it, true, size = FomanticUiSize.Mini){
+                                    rDocument.tags = rDocument.tags?.filter { t->t._id != it._id }
+                                    db().documents.save(rDocument)
+                                    setState(state+1)
+                                }
+                            }
+                            if(rDocument.tags.isNullOrEmpty()){
+                                span().text("keine")
+                            }
+                            addTagDropdown(rDocument.tags) {
+                                rDocument.tags = (rDocument.tags?: listOf()).plus(it.asAttachedTag())
+                                db().documents.save(rDocument)
+                                setState(state+1)
+                                logger.info("Added tag ${it.name}")
+                            }
                         }
                         div(fomantic.description).new{
-                            a().text("hinzufügen")
+                            span().text("Tags")
                         }
                     }
                 }
@@ -93,7 +108,6 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                         true  -> i(fomantic.icon.smile.outline)
                         false -> i(fomantic.icon.exclamationCircle)
                         null -> div(fomantic.ui.active.mini.inline.loader).apply { setAttributeRaw("style", "display: inline;") }
-
                     }
 
                     div(fomantic.ui.content).also {
@@ -137,7 +151,6 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                 div(fomantic.ui.item).new {
                     val modal = signDocumentModal(rDocument){signedDocument,_->
                         db().documents.save(signedDocument)
-                        //document.value = signedDocument
                     }
                     button(fomantic.ui.button.tertiary.blue).text("Signieren").on.click {
                         modal.open()
@@ -156,7 +169,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
     }
 
 
-    if(rDocument.signatures?.count() ?: 0 > 0 || rDocument.workflow != null) {
+    if((rDocument.signatures?.count() ?: 0) > 0 || rDocument.workflow != null) {
         render(selectedSignature){selectedSignatureIdx ->
             table(fomantic.ui.very.basic.selectable.table.compact).new {
                 thead().new {

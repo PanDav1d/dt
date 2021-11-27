@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -25,27 +25,27 @@ class Document {
     this.workflow,
   });
 
-  String? id;
+  String id;
 
-  String? attachmentHash;
+  String attachmentHash;
 
-  String? attachmentId;
+  String attachmentId;
 
-  DateTime? created;
+  DateTime created;
 
-  String? fullText;
+  String fullText;
 
-  bool? isMirrored;
+  bool isMirrored;
 
-  List<String>? mirrors;
+  List<String> mirrors;
 
-  String? originalFileName;
+  String originalFileName;
 
-  List<Signature?>? signatures;
+  List<Signature> signatures;
 
-  String? url;
+  String url;
 
-  Workflow? workflow;
+  Workflow workflow;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is Document &&
@@ -90,7 +90,7 @@ class Document {
       json[r'attachmentId'] = attachmentId;
     }
     if (created != null) {
-      json[r'created'] = created!.toUtc().toIso8601String();
+      json[r'created'] = created.toUtc().toIso8601String();
     }
     if (fullText != null) {
       json[r'fullText'] = fullText;
@@ -118,7 +118,7 @@ class Document {
 
   /// Returns a new [Document] instance and imports its values from
   /// [json] if it's non-null, null if [json] is null.
-  static Document? fromJson(Map<String, dynamic>? json) => json == null
+  static Document fromJson(Map<String, dynamic> json) => json == null
     ? null
     : Document(
         id: json[r'_id'],
@@ -138,13 +138,13 @@ class Document {
         workflow: Workflow.fromJson(json[r'workflow']),
     );
 
-  static List<Document?>? listFromJson(List<dynamic> json, {bool? emptyIsNull, bool? growable,}) =>
+  static List<Document> listFromJson(List<dynamic> json, {bool emptyIsNull, bool growable,}) =>
     json == null || json.isEmpty
       ? true == emptyIsNull ? null : <Document>[]
       : json.map((v) => Document.fromJson(v)).toList(growable: true == growable);
 
-  static Map<String, Document?> mapFromJson(Map<String, dynamic> json) {
-    final map = <String, Document?>{};
+  static Map<String, Document> mapFromJson(Map<String, dynamic> json) {
+    final map = <String, Document>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) => map[key] = Document.fromJson(v));
     }
@@ -152,8 +152,8 @@ class Document {
   }
 
   // maps a json object with a list of Document-objects as value to a dart map
-  static Map<String, List<Document?>?> mapListFromJson(Map<String, dynamic> json, {bool? emptyIsNull, bool? growable,}) {
-    final Map<String, List<Document?>?> map = <String, List<Document>?>{};
+  static Map<String, List<Document>> mapListFromJson(Map<String, dynamic> json, {bool emptyIsNull, bool growable,}) {
+    final map = <String, List<Document>>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) {
         map[key] = Document.listFromJson(v, emptyIsNull: emptyIsNull, growable: growable);

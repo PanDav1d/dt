@@ -22,9 +22,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import de.doctag.docsrv_api.model.ZonedDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.OffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
@@ -74,7 +74,7 @@ public class DoctagSignatureData {
   private String validFrom;
 
   public static final String JSON_PROPERTY_VALID_FROM_DATE_TIME = "validFromDateTime";
-  private ZonedDateTime validFromDateTime;
+  private OffsetDateTime validFromDateTime;
 
   public static final String JSON_PROPERTY_WORKFLOW_HASH = "workflowHash";
   private String workflowHash;
@@ -99,6 +99,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_DOCUMENT_HASH)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDocumentHash(String documentHash) {
     this.documentHash = documentHash;
   }
@@ -123,6 +125,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_DOCUMENT_URL)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDocumentUrl(String documentUrl) {
     this.documentUrl = documentUrl;
   }
@@ -147,6 +151,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_KEY_FINGERPRINT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setKeyFingerprint(String keyFingerprint) {
     this.keyFingerprint = keyFingerprint;
   }
@@ -171,6 +177,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_PREVIOUS_SIGNATURES_HASH)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPreviousSignaturesHash(String previousSignaturesHash) {
     this.previousSignaturesHash = previousSignaturesHash;
   }
@@ -195,6 +203,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_RANDOM_BUFFER)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setRandomBuffer(String randomBuffer) {
     this.randomBuffer = randomBuffer;
   }
@@ -219,6 +229,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNATURE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignature(String signature) {
     this.signature = signature;
   }
@@ -243,6 +255,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNING_DOCTAG_INSTANCE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSigningDoctagInstance(String signingDoctagInstance) {
     this.signingDoctagInstance = signingDoctagInstance;
   }
@@ -267,6 +281,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNING_USER)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSigningUser(String signingUser) {
     this.signingUser = signingUser;
   }
@@ -291,12 +307,14 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_VALID_FROM)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setValidFrom(String validFrom) {
     this.validFrom = validFrom;
   }
 
 
-  public DoctagSignatureData validFromDateTime(ZonedDateTime validFromDateTime) {
+  public DoctagSignatureData validFromDateTime(OffsetDateTime validFromDateTime) {
     this.validFromDateTime = validFromDateTime;
     return this;
   }
@@ -310,12 +328,14 @@ public class DoctagSignatureData {
   @JsonProperty(JSON_PROPERTY_VALID_FROM_DATE_TIME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public ZonedDateTime getValidFromDateTime() {
+  public OffsetDateTime getValidFromDateTime() {
     return validFromDateTime;
   }
 
 
-  public void setValidFromDateTime(ZonedDateTime validFromDateTime) {
+  @JsonProperty(JSON_PROPERTY_VALID_FROM_DATE_TIME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setValidFromDateTime(OffsetDateTime validFromDateTime) {
     this.validFromDateTime = validFromDateTime;
   }
 
@@ -339,6 +359,8 @@ public class DoctagSignatureData {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_WORKFLOW_HASH)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setWorkflowHash(String workflowHash) {
     this.workflowHash = workflowHash;
   }

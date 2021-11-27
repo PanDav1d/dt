@@ -16,7 +16,7 @@ Name | Type | Description | Notes
 **signingDoctagInstance** | **String** |  |  [optional]
 **signingUser** | **String** |  |  [optional]
 **validFrom** | **String** |  |  [optional]
-**validFromDateTime** | [**ZonedDateTime**](ZonedDateTime.md) |  |  [optional]
+**validFromDateTime** | **OffsetDateTime** |  |  [optional]
 **workflowHash** | **String** |  |  [optional]
 
 

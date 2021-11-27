@@ -24,9 +24,9 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import de.doctag.docsrv_api.model.Signature;
 import de.doctag.docsrv_api.model.Workflow;
-import de.doctag.docsrv_api.model.ZonedDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -60,7 +60,7 @@ public class Document {
   private String attachmentId;
 
   public static final String JSON_PROPERTY_CREATED = "created";
-  private ZonedDateTime created;
+  private OffsetDateTime created;
 
   public static final String JSON_PROPERTY_FULL_TEXT = "fullText";
   private String fullText;
@@ -103,6 +103,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ID)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setId(String id) {
     this.id = id;
   }
@@ -127,6 +129,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ATTACHMENT_HASH)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAttachmentHash(String attachmentHash) {
     this.attachmentHash = attachmentHash;
   }
@@ -151,12 +155,14 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ATTACHMENT_ID)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAttachmentId(String attachmentId) {
     this.attachmentId = attachmentId;
   }
 
 
-  public Document created(ZonedDateTime created) {
+  public Document created(OffsetDateTime created) {
     this.created = created;
     return this;
   }
@@ -170,12 +176,14 @@ public class Document {
   @JsonProperty(JSON_PROPERTY_CREATED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public ZonedDateTime getCreated() {
+  public OffsetDateTime getCreated() {
     return created;
   }
 
 
-  public void setCreated(ZonedDateTime created) {
+  @JsonProperty(JSON_PROPERTY_CREATED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setCreated(OffsetDateTime created) {
     this.created = created;
   }
 
@@ -199,6 +207,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_FULL_TEXT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setFullText(String fullText) {
     this.fullText = fullText;
   }
@@ -223,6 +233,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_IS_MIRRORED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsMirrored(Boolean isMirrored) {
     this.isMirrored = isMirrored;
   }
@@ -255,6 +267,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_MIRRORS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setMirrors(List<String> mirrors) {
     this.mirrors = mirrors;
   }
@@ -279,6 +293,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ORIGINAL_FILE_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOriginalFileName(String originalFileName) {
     this.originalFileName = originalFileName;
   }
@@ -311,6 +327,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNATURES)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignatures(List<Signature> signatures) {
     this.signatures = signatures;
   }
@@ -335,6 +353,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_URL)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUrl(String url) {
     this.url = url;
   }
@@ -359,6 +379,8 @@ public class Document {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_WORKFLOW)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setWorkflow(Workflow workflow) {
     this.workflow = workflow;
   }

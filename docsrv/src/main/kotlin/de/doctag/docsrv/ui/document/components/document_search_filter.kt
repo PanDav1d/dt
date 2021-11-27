@@ -1,6 +1,8 @@
+import de.doctag.docsrv.model.AttachedTag
 import de.doctag.docsrv.ui.active
 import de.doctag.docsrv.ui.calendar
 import de.doctag.docsrv.ui.filter
+import de.doctag.docsrv.ui.withStyle
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -14,7 +16,13 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-data class SearchFilter(val searchString: String, val fromDate: ZonedDateTime? = null, val tillDate : ZonedDateTime? = null, val isExpanded: Boolean = false)
+data class SearchFilter(
+    val searchString: String,
+    val fromDate: ZonedDateTime? = null,
+    val tillDate : ZonedDateTime? = null,
+    val isExpanded: Boolean = false,
+    val tags: List<AttachedTag>? = null
+)
 
 fun ElementCreator<*>.documentSearchFilterComponent(currentValue : SearchFilter? = null, onFilterChange: (sf:SearchFilter)->Unit) {
 
@@ -68,23 +76,23 @@ fun ElementCreator<*>.documentSearchFilterComponent(currentValue : SearchFilter?
 
         if(shouldShowExpanded) {
 
-            div(fomantic.ui.divider.hidden.mini)
 
-            div(fomantic.ui.grid.compact).new {
-                div(fomantic.eight.wide.column).new {
-                    div(fomantic.ui.input.mini).new {
+            div(fomantic.ui.grid.withStyle("padding-top:8px;")).new {
+                div(fomantic.eight.wide.column.withStyle("padding-right:4px;")).new {
+                    div(fomantic.ui.input.mini.withStyle("width: 100%;")).new {
                         input(type = InputType.date, placeholder = "Von",attributes = mapOf("style" to "width: 40rw;")).apply {
                             value=dateFrom
                         }
                     }
                 }
-                div(fomantic.eight.wide.column).new {
-                    div(fomantic.ui.input.mini).new {
+                div(fomantic.eight.wide.column.withStyle("padding-left:4px;")).new {
+                    div(fomantic.ui.input.mini.withStyle("width: 100%;")).new {
                         input(type = InputType.date, placeholder = "Bis",attributes = mapOf("style" to "width: 40rw;")).apply {
                             value=dateTo
                         }
                     }
                 }
+
             }
         }
     }

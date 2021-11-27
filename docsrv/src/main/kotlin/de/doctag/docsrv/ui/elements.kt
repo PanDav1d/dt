@@ -174,12 +174,15 @@ class SignatureElement(
 
     fun onEndDraw(callback:()->Unit) {
         val callbackId = Random.nextInt()
-        canvasElement.browser.executeWithCallback("""
+        GlobalScope.launch {
+            delay(100)
+            canvasElement.browser.executeWithCallback("""
             window.signaturePad.onEnd = function(){
                 callbackWs($callbackId,{});
             }
         """.trimIndent(), callbackId){inputData ->
-            callback()
+                callback()
+            }
         }
     }
 

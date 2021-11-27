@@ -70,7 +70,8 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**fetchAuthInfo**](doc//DefaultApi.md#fetchauthinfo) | **GET** /app/auth_info | Check authentication
 *DefaultApi* | [**fetchDoctagDocument**](doc//DefaultApi.md#fetchdoctagdocument) | **GET** /d/{documentId} | Fetch doctag document
 *DefaultApi* | [**fetchWorkflowToSign**](doc//DefaultApi.md#fetchworkflowtosign) | **GET** /app/signature/prepare/{documentId}/{hostname} | Check authentication
-*DefaultApi* | [**setVerificationOfKeyPair**](doc//DefaultApi.md#setverificationofkeypair) | **PUT** /k/{publicKeyFingerprint}/verify/{seed} | Set the verification of the private public key
+*DefaultApi* | [**notifyChangesOfDoctagDocument**](doc//DefaultApi.md#notifychangesofdoctagdocument) | **POST** /d/notifyChanges/ | Add signature to document
+*DefaultApi* | [**setVerificationOfKeyPair**](doc//DefaultApi.md#setverificationofkeypair) | **PUT** /k/{publicKeyFingerprint}/verification | Set the verification of the private public key
 *DefaultApi* | [**uploadWorkflowResultAndTriggerSignature**](doc//DefaultApi.md#uploadworkflowresultandtriggersignature) | **POST** /app/signature/push/{documentId}/{hostname} | Check authentication
 *DefaultApi* | [**verifyInstanceHasPrivateKey**](doc//DefaultApi.md#verifyinstancehasprivatekey) | **GET** /k/{publicKeyFingerprint}/verify/{seed} | Check that this instance actually owns the given private key
 *DefaultApi* | [**viewFile**](doc//DefaultApi.md#viewfile) | **GET** /f/{fileId}/view | Perform Instance discovery
@@ -87,16 +88,19 @@ Class | Method | HTTP request | Description
  - [EmbeddedSignature](doc//EmbeddedSignature.md)
  - [FileData](doc//FileData.md)
  - [HealthCheckResponse](doc//HealthCheckResponse.md)
+ - [NotifyRequest](doc//NotifyRequest.md)
  - [Person](doc//Person.md)
  - [PreparedSignature](doc//PreparedSignature.md)
  - [PrivatePublicKeyInfo](doc//PrivatePublicKeyInfo.md)
  - [PublicKeyResponse](doc//PublicKeyResponse.md)
  - [PublicKeyVerification](doc//PublicKeyVerification.md)
+ - [SignInputOptions](doc//SignInputOptions.md)
  - [Signature](doc//Signature.md)
  - [SignatureInputs](doc//SignatureInputs.md)
  - [Workflow](doc//Workflow.md)
  - [WorkflowAction](doc//WorkflowAction.md)
  - [WorkflowInput](doc//WorkflowInput.md)
+ - [WorkflowInputOptions](doc//WorkflowInputOptions.md)
  - [WorkflowInputResult](doc//WorkflowInputResult.md)
 
 

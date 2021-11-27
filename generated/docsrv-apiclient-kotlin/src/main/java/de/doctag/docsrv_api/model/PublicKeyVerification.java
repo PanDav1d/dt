@@ -82,6 +82,8 @@ public class PublicKeyVerification {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_IS_ADDRESS_VERIFIED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsAddressVerified(Boolean isAddressVerified) {
     this.isAddressVerified = isAddressVerified;
   }
@@ -106,6 +108,8 @@ public class PublicKeyVerification {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_IS_SIGNING_DOCTAG_INSTANCE_VERIFIED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSigningDoctagInstanceVerified(Boolean isSigningDoctagInstanceVerified) {
     this.isSigningDoctagInstanceVerified = isSigningDoctagInstanceVerified;
   }
@@ -130,6 +134,8 @@ public class PublicKeyVerification {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNATURE_OF_PUBLIC_KEY_ENTRY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignatureOfPublicKeyEntry(String signatureOfPublicKeyEntry) {
     this.signatureOfPublicKeyEntry = signatureOfPublicKeyEntry;
   }
@@ -154,6 +160,8 @@ public class PublicKeyVerification {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNATURE_VALID_UNTIL)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignatureValidUntil(String signatureValidUntil) {
     this.signatureValidUntil = signatureValidUntil;
   }
@@ -178,6 +186,8 @@ public class PublicKeyVerification {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNED_AT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignedAt(String signedAt) {
     this.signedAt = signedAt;
   }
@@ -202,6 +212,8 @@ public class PublicKeyVerification {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNED_BY_PARTY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignedByParty(String signedByParty) {
     this.signedByParty = signedByParty;
   }
@@ -226,6 +238,8 @@ public class PublicKeyVerification {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNED_BY_PUBLIC_KEY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignedByPublicKey(String signedByPublicKey) {
     this.signedByPublicKey = signedByPublicKey;
   }

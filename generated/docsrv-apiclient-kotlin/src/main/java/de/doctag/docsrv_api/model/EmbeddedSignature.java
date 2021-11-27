@@ -74,6 +74,8 @@ public class EmbeddedSignature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_FILES)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setFiles(List<FileData> files) {
     this.files = files;
   }
@@ -98,6 +100,8 @@ public class EmbeddedSignature {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNATURE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSignature(Signature signature) {
     this.signature = signature;
   }

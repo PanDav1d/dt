@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -45,7 +45,7 @@ class ApiClient {
   /// or deleted.
   Map<String, Authentication> get authentications => Map.unmodifiable(_authentications);
 
-  T? getAuthentication<T extends Authentication>(String name) {
+  T getAuthentication<T extends Authentication>(String name) {
     final authentication = _authentications[name];
     return authentication is T ? authentication : null;
   }
@@ -56,13 +56,13 @@ class ApiClient {
     String path,
     String method,
     Iterable<QueryParam> queryParams,
-    Object? body,
+    Object body,
     Map<String, String> headerParams,
     Map<String, String> formParams,
-    String? nullableContentType,
+    String nullableContentType,
     List<String> authNames,
   ) async {
-    _updateParamsForAuth(authNames, queryParams as List<QueryParam>, headerParams);
+    _updateParamsForAuth(authNames, queryParams, headerParams);
 
     headerParams.addAll(_defaultHeaderMap);
 
@@ -115,12 +115,12 @@ class ApiClient {
       final nullableHeaderParams = headerParams.isEmpty ? null : headerParams;
 
       switch(method) {
-        case 'POST': return await _client.post(Uri.parse(url), headers: nullableHeaderParams, body: msgBody,);
-        case 'PUT': return await _client.put(Uri.parse(url), headers: nullableHeaderParams, body: msgBody,);
-        case 'DELETE': return await _client.delete(Uri.parse(url), headers: nullableHeaderParams,);
-        case 'PATCH': return await _client.patch(Uri.parse(url), headers: nullableHeaderParams, body: msgBody,);
-        case 'HEAD': return await _client.head(Uri.parse(url), headers: nullableHeaderParams,);
-        case 'GET': return await _client.get(Uri.parse(url), headers: nullableHeaderParams,);
+        case 'POST': return await _client.post(url, headers: nullableHeaderParams, body: msgBody,);
+        case 'PUT': return await _client.put(url, headers: nullableHeaderParams, body: msgBody,);
+        case 'DELETE': return await _client.delete(url, headers: nullableHeaderParams,);
+        case 'PATCH': return await _client.patch(url, headers: nullableHeaderParams, body: msgBody,);
+        case 'HEAD': return await _client.head(url, headers: nullableHeaderParams,);
+        case 'GET': return await _client.get(url, headers: nullableHeaderParams,);
       }
     } on SocketException catch (e, trace) {
       throw ApiException.withInner(HttpStatus.badRequest, 'Socket operation failed: $method $path', e, trace,);
@@ -137,12 +137,12 @@ class ApiClient {
     throw ApiException(HttpStatus.badRequest, 'Invalid HTTP operation: $method $path',);
   }
 
-  Future<dynamic> deserializeAsync(String json, String targetType, {bool? growable}) async =>
+  Future<dynamic> deserializeAsync(String json, String targetType, {bool growable}) async =>
     // ignore: deprecated_member_use_from_same_package
     deserialize(json, targetType, growable: growable);
 
   @Deprecated('Scheduled for removal in OpenAPI Generator 6.x. Use deserializeAsync() instead.')
-  dynamic deserialize(String json, String targetType, {bool? growable}) {
+  dynamic deserialize(String json, String targetType, {bool growable}) {
     // Remove all spaces. Necessary for regular expressions as well.
     targetType = targetType.replaceAll(' ', ''); // ignore: parameter_assignments
 
@@ -153,10 +153,10 @@ class ApiClient {
   }
 
   // ignore: deprecated_member_use_from_same_package
-  Future<String> serializeAsync(Object? value) async => serialize(value);
+  Future<String> serializeAsync(Object value) async => serialize(value);
 
   @Deprecated('Scheduled for removal in OpenAPI Generator 6.x. Use serializeAsync() instead.')
-  String serialize(Object? value) => value == null ? '' : json.encode(value);
+  String serialize(Object value) => value == null ? '' : json.encode(value);
 
   /// Update query and header parameters based on authentication settings.
   /// @param authNames The authentications to apply
@@ -174,7 +174,7 @@ class ApiClient {
     });
   }
 
-  static dynamic _deserialize(dynamic value, String? targetType, {bool? growable}) {
+  static dynamic _deserialize(dynamic value, String targetType, {bool growable}) {
     try {
       switch (targetType) {
         case 'String':
@@ -208,6 +208,8 @@ class ApiClient {
           return FileData.fromJson(value);
         case 'HealthCheckResponse':
           return HealthCheckResponse.fromJson(value);
+        case 'NotifyRequest':
+          return NotifyRequest.fromJson(value);
         case 'Person':
           return Person.fromJson(value);
         case 'PreparedSignature':
@@ -218,6 +220,8 @@ class ApiClient {
           return PublicKeyResponse.fromJson(value);
         case 'PublicKeyVerification':
           return PublicKeyVerification.fromJson(value);
+        case 'SignInputOptions':
+          return SignInputOptions.fromJson(value);
         case 'Signature':
           return Signature.fromJson(value);
         case 'SignatureInputs':
@@ -228,24 +232,26 @@ class ApiClient {
           return WorkflowAction.fromJson(value);
         case 'WorkflowInput':
           return WorkflowInput.fromJson(value);
+        case 'WorkflowInputOptions':
+          return WorkflowInputOptions.fromJson(value);
         case 'WorkflowInputResult':
           return WorkflowInputResult.fromJson(value);
         default:
-          Match? match;
-          if (value is List && (match = _regList.firstMatch(targetType!)) != null) {
-            targetType = match![1]; // ignore: parameter_assignments
+          Match match;
+          if (value is List && (match = _regList.firstMatch(targetType)) != null) {
+            targetType = match[1]; // ignore: parameter_assignments
             return value
               .map((v) => _deserialize(v, targetType, growable: growable))
-              .toList(growable: growable!);
+              .toList(growable: growable);
           }
-          if (value is Set && (match = _regSet.firstMatch(targetType!)) != null) {
-            targetType = match![1]; // ignore: parameter_assignments
+          if (value is Set && (match = _regSet.firstMatch(targetType)) != null) {
+            targetType = match[1]; // ignore: parameter_assignments
             return value
               .map((v) => _deserialize(v, targetType, growable: growable))
               .toSet();
           }
-          if (value is Map && (match = _regMap.firstMatch(targetType!)) != null) {
-            targetType = match![1]; // ignore: parameter_assignments
+          if (value is Map && (match = _regMap.firstMatch(targetType)) != null) {
+            targetType = match[1]; // ignore: parameter_assignments
             return Map.fromIterables(
               value.keys,
               value.values.map((v) => _deserialize(v, targetType, growable: growable)),
@@ -254,7 +260,7 @@ class ApiClient {
           break;
       }
     } catch (error, trace) {
-      throw ApiException.withInner(HttpStatus.internalServerError, 'Exception during deserialization.', null, trace,);
+      throw ApiException.withInner(HttpStatus.internalServerError, 'Exception during deserialization.', error, trace,);
     }
     throw ApiException(HttpStatus.internalServerError, 'Could not find a suitable class for deserialization',);
   }
@@ -263,8 +269,8 @@ class ApiClient {
 /// Primarily intended for use in an isolate.
 class DeserializationMessage {
   const DeserializationMessage({
-    required this.json,
-    required this.targetType,
+    @required this.json,
+    @required this.targetType,
     this.growable,
   });
 
@@ -275,7 +281,7 @@ class DeserializationMessage {
   final String targetType;
 
   /// Whether to make deserialized lists or maps growable.
-  final bool? growable;
+  final bool growable;
 }
 
 /// Primarily intended for use in an isolate.

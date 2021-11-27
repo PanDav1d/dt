@@ -82,6 +82,8 @@ public class SignatureInputs {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_FILES)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setFiles(List<FileData> files) {
     this.files = files;
   }
@@ -114,6 +116,8 @@ public class SignatureInputs {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_INPUTS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setInputs(List<WorkflowInputResult> inputs) {
     this.inputs = inputs;
   }
@@ -138,6 +142,8 @@ public class SignatureInputs {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_PPK_ID)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPpkId(String ppkId) {
     this.ppkId = ppkId;
   }
@@ -162,6 +168,8 @@ public class SignatureInputs {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_ROLE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setRole(String role) {
     this.role = role;
   }

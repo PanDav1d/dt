@@ -85,6 +85,8 @@ public class PublicKeyResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_CREATED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCreated(String created) {
     this.created = created;
   }
@@ -109,6 +111,8 @@ public class PublicKeyResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_OWNER)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOwner(Person owner) {
     this.owner = owner;
   }
@@ -133,6 +137,8 @@ public class PublicKeyResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_OWNER_ADDRESS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOwnerAddress(Address ownerAddress) {
     this.ownerAddress = ownerAddress;
   }
@@ -157,6 +163,8 @@ public class PublicKeyResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_PUBLIC_KEY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPublicKey(String publicKey) {
     this.publicKey = publicKey;
   }
@@ -181,6 +189,8 @@ public class PublicKeyResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_SIGNING_DOCTAG_INSTANCE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSigningDoctagInstance(String signingDoctagInstance) {
     this.signingDoctagInstance = signingDoctagInstance;
   }
@@ -205,6 +215,8 @@ public class PublicKeyResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_VERBOSE_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setVerboseName(String verboseName) {
     this.verboseName = verboseName;
   }
@@ -229,6 +241,8 @@ public class PublicKeyResponse {
   }
 
 
+  @JsonProperty(JSON_PROPERTY_VERIFICATION)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setVerification(PublicKeyVerification verification) {
     this.verification = verification;
   }

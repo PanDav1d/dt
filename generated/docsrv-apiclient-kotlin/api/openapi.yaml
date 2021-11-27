@@ -74,6 +74,7 @@ paths:
       summary: Check that this instance actually owns the given private key
       tags: []
       x-accepts: application/json
+  /k/{publicKeyFingerprint}/verification:
     put:
       operationId: setVerificationOfKeyPair
       parameters:
@@ -83,16 +84,6 @@ paths:
         explode: false
         in: path
         name: publicKeyFingerprint
-        required: true
-        schema:
-          type: string
-        style: simple
-      - deprecated: false
-        description: seed
-        examples: {}
-        explode: false
-        in: path
-        name: seed
         required: true
         schema:
           type: string
@@ -228,6 +219,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/Document'
           description: Document
+      summary: Add signature to document
+      tags: []
+      x-contentType: application/json
+      x-accepts: application/json
+  /d/notifyChanges/:
+    post:
+      operationId: notifyChangesOfDoctagDocument
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            examples: {}
+            schema:
+              $ref: '#/components/schemas/NotifyRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              examples: {}
+              schema:
+                $ref: '#/components/schemas/NotifyResult'
+          description: NotifyResult
       summary: Add signature to document
       tags: []
       x-contentType: application/json
@@ -436,24 +449,31 @@ components:
               inputs:
               - kind: TextInput
                 name: name
+                options:
+                  signInputOptions:
+                    backgroundImage: backgroundImage
                 description: description
               - kind: TextInput
                 name: name
+                options:
+                  signInputOptions:
+                    backgroundImage: backgroundImage
                 description: description
             - role: role
               inputs:
               - kind: TextInput
                 name: name
+                options:
+                  signInputOptions:
+                    backgroundImage: backgroundImage
                 description: description
               - kind: TextInput
                 name: name
+                options:
+                  signInputOptions:
+                    backgroundImage: backgroundImage
                 description: description
-          created:
-            dateTime: 2000-01-23T04:56:07.000+00:00
-            offset:
-              totalSeconds: 0
-              id: id
-            zone: ""
+          created: 2000-01-23T04:56:07.000+00:00
           fullText: fullText
           _id: _id
           attachmentId: attachmentId
@@ -466,12 +486,7 @@ components:
               previousSignaturesHash: previousSignaturesHash
               randomBuffer: randomBuffer
               signature: signature
-              validFromDateTime:
-                dateTime: 2000-01-23T04:56:07.000+00:00
-                offset:
-                  totalSeconds: 0
-                  id: id
-                zone: ""
+              validFromDateTime: 2000-01-23T04:56:07.000+00:00
               documentUrl: documentUrl
               keyFingerprint: keyFingerprint
               validFrom: validFrom
@@ -509,12 +524,7 @@ components:
             - name: name
               value: value
               fileId: fileId
-            signed:
-              dateTime: 2000-01-23T04:56:07.000+00:00
-              offset:
-                totalSeconds: 0
-                id: id
-              zone: ""
+            signed: 2000-01-23T04:56:07.000+00:00
             originalMessage: originalMessage
           - role: role
             data:
@@ -524,12 +534,7 @@ components:
               previousSignaturesHash: previousSignaturesHash
               randomBuffer: randomBuffer
               signature: signature
-              validFromDateTime:
-                dateTime: 2000-01-23T04:56:07.000+00:00
-                offset:
-                  totalSeconds: 0
-                  id: id
-                zone: ""
+              validFromDateTime: 2000-01-23T04:56:07.000+00:00
               documentUrl: documentUrl
               keyFingerprint: keyFingerprint
               validFrom: validFrom
@@ -567,12 +572,7 @@ components:
             - name: name
               value: value
               fileId: fileId
-            signed:
-              dateTime: 2000-01-23T04:56:07.000+00:00
-              offset:
-                totalSeconds: 0
-                id: id
-              zone: ""
+            signed: 2000-01-23T04:56:07.000+00:00
             originalMessage: originalMessage
           url: url
         files:
@@ -607,24 +607,31 @@ components:
             inputs:
             - kind: TextInput
               name: name
+              options:
+                signInputOptions:
+                  backgroundImage: backgroundImage
               description: description
             - kind: TextInput
               name: name
+              options:
+                signInputOptions:
+                  backgroundImage: backgroundImage
               description: description
           - role: role
             inputs:
             - kind: TextInput
               name: name
+              options:
+                signInputOptions:
+                  backgroundImage: backgroundImage
               description: description
             - kind: TextInput
               name: name
+              options:
+                signInputOptions:
+                  backgroundImage: backgroundImage
               description: description
-        created:
-          dateTime: 2000-01-23T04:56:07.000+00:00
-          offset:
-            totalSeconds: 0
-            id: id
-          zone: ""
+        created: 2000-01-23T04:56:07.000+00:00
         fullText: fullText
         _id: _id
         attachmentId: attachmentId
@@ -637,12 +644,7 @@ components:
             previousSignaturesHash: previousSignaturesHash
             randomBuffer: randomBuffer
             signature: signature
-            validFromDateTime:
-              dateTime: 2000-01-23T04:56:07.000+00:00
-              offset:
-                totalSeconds: 0
-                id: id
-              zone: ""
+            validFromDateTime: 2000-01-23T04:56:07.000+00:00
             documentUrl: documentUrl
             keyFingerprint: keyFingerprint
             validFrom: validFrom
@@ -680,12 +682,7 @@ components:
           - name: name
             value: value
             fileId: fileId
-          signed:
-            dateTime: 2000-01-23T04:56:07.000+00:00
-            offset:
-              totalSeconds: 0
-              id: id
-            zone: ""
+          signed: 2000-01-23T04:56:07.000+00:00
           originalMessage: originalMessage
         - role: role
           data:
@@ -695,12 +692,7 @@ components:
             previousSignaturesHash: previousSignaturesHash
             randomBuffer: randomBuffer
             signature: signature
-            validFromDateTime:
-              dateTime: 2000-01-23T04:56:07.000+00:00
-              offset:
-                totalSeconds: 0
-                id: id
-              zone: ""
+            validFromDateTime: 2000-01-23T04:56:07.000+00:00
             documentUrl: documentUrl
             keyFingerprint: keyFingerprint
             validFrom: validFrom
@@ -738,12 +730,7 @@ components:
           - name: name
             value: value
             fileId: fileId
-          signed:
-            dateTime: 2000-01-23T04:56:07.000+00:00
-            offset:
-              totalSeconds: 0
-              id: id
-            zone: ""
+          signed: 2000-01-23T04:56:07.000+00:00
           originalMessage: originalMessage
         url: url
       properties:
@@ -754,7 +741,8 @@ components:
         attachmentId:
           type: string
         created:
-          $ref: '#/components/schemas/ZonedDateTime'
+          format: date-time
+          type: string
         fullText:
           type: string
         isMirrored:
@@ -773,33 +761,6 @@ components:
           type: string
         workflow:
           $ref: '#/components/schemas/Workflow'
-    ZonedDateTime:
-      example:
-        dateTime: 2000-01-23T04:56:07.000+00:00
-        offset:
-          totalSeconds: 0
-          id: id
-        zone: ""
-      properties:
-        dateTime:
-          format: date-time
-          type: string
-        offset:
-          $ref: '#/components/schemas/ZoneOffset'
-        zone:
-          properties: {}
-    ZoneOffset:
-      example:
-        totalSeconds: 0
-        id: id
-      properties:
-        totalSeconds:
-          format: int32
-          type: integer
-        id:
-          type: string
-    ZoneId:
-      properties: {}
     Signature:
       example:
         role: role
@@ -810,12 +771,7 @@ components:
           previousSignaturesHash: previousSignaturesHash
           randomBuffer: randomBuffer
           signature: signature
-          validFromDateTime:
-            dateTime: 2000-01-23T04:56:07.000+00:00
-            offset:
-              totalSeconds: 0
-              id: id
-            zone: ""
+          validFromDateTime: 2000-01-23T04:56:07.000+00:00
           documentUrl: documentUrl
           keyFingerprint: keyFingerprint
           validFrom: validFrom
@@ -853,12 +809,7 @@ components:
         - name: name
           value: value
           fileId: fileId
-        signed:
-          dateTime: 2000-01-23T04:56:07.000+00:00
-          offset:
-            totalSeconds: 0
-            id: id
-          zone: ""
+        signed: 2000-01-23T04:56:07.000+00:00
         originalMessage: originalMessage
       properties:
         data:
@@ -872,7 +823,8 @@ components:
         role:
           type: string
         signed:
-          $ref: '#/components/schemas/ZonedDateTime'
+          format: date-time
+          type: string
         signedByKey:
           $ref: '#/components/schemas/PublicKeyResponse'
     DoctagSignatureData:
@@ -883,12 +835,7 @@ components:
         previousSignaturesHash: previousSignaturesHash
         randomBuffer: randomBuffer
         signature: signature
-        validFromDateTime:
-          dateTime: 2000-01-23T04:56:07.000+00:00
-          offset:
-            totalSeconds: 0
-            id: id
-          zone: ""
+        validFromDateTime: 2000-01-23T04:56:07.000+00:00
         documentUrl: documentUrl
         keyFingerprint: keyFingerprint
         validFrom: validFrom
@@ -913,7 +860,8 @@ components:
         validFrom:
           type: string
         validFromDateTime:
-          $ref: '#/components/schemas/ZonedDateTime'
+          format: date-time
+          type: string
         workflowHash:
           type: string
     WorkflowInputResult:
@@ -1018,17 +966,29 @@ components:
           inputs:
           - kind: TextInput
             name: name
+            options:
+              signInputOptions:
+                backgroundImage: backgroundImage
             description: description
           - kind: TextInput
             name: name
+            options:
+              signInputOptions:
+                backgroundImage: backgroundImage
             description: description
         - role: role
           inputs:
           - kind: TextInput
             name: name
+            options:
+              signInputOptions:
+                backgroundImage: backgroundImage
             description: description
           - kind: TextInput
             name: name
+            options:
+              signInputOptions:
+                backgroundImage: backgroundImage
             description: description
       properties:
         _id:
@@ -1045,9 +1005,15 @@ components:
         inputs:
         - kind: TextInput
           name: name
+          options:
+            signInputOptions:
+              backgroundImage: backgroundImage
           description: description
         - kind: TextInput
           name: name
+          options:
+            signInputOptions:
+              backgroundImage: backgroundImage
           description: description
       properties:
         inputs:
@@ -1060,6 +1026,9 @@ components:
       example:
         kind: TextInput
         name: name
+        options:
+          signInputOptions:
+            backgroundImage: backgroundImage
         description: description
       properties:
         description:
@@ -1073,6 +1042,21 @@ components:
           - Sign
           type: string
         name:
+          type: string
+        options:
+          $ref: '#/components/schemas/WorkflowInputOptions'
+    WorkflowInputOptions:
+      example:
+        signInputOptions:
+          backgroundImage: backgroundImage
+      properties:
+        signInputOptions:
+          $ref: '#/components/schemas/SignInputOptions'
+    SignInputOptions:
+      example:
+        backgroundImage: backgroundImage
+      properties:
+        backgroundImage:
           type: string
     FileData:
       example:
@@ -1100,12 +1084,7 @@ components:
             previousSignaturesHash: previousSignaturesHash
             randomBuffer: randomBuffer
             signature: signature
-            validFromDateTime:
-              dateTime: 2000-01-23T04:56:07.000+00:00
-              offset:
-                totalSeconds: 0
-                id: id
-              zone: ""
+            validFromDateTime: 2000-01-23T04:56:07.000+00:00
             documentUrl: documentUrl
             keyFingerprint: keyFingerprint
             validFrom: validFrom
@@ -1143,12 +1122,7 @@ components:
           - name: name
             value: value
             fileId: fileId
-          signed:
-            dateTime: 2000-01-23T04:56:07.000+00:00
-            offset:
-              totalSeconds: 0
-              id: id
-            zone: ""
+          signed: 2000-01-23T04:56:07.000+00:00
           originalMessage: originalMessage
         files:
         - base64Content: base64Content
@@ -1166,6 +1140,14 @@ components:
           type: array
         signature:
           $ref: '#/components/schemas/Signature'
+    NotifyRequest:
+      example:
+        url: url
+      properties:
+        url:
+          type: string
+    NotifyResult:
+      properties: {}
     AuthInfoResponse:
       example:
         authenticated: true
@@ -1188,17 +1170,29 @@ components:
             inputs:
             - kind: TextInput
               name: name
+              options:
+                signInputOptions:
+                  backgroundImage: backgroundImage
               description: description
             - kind: TextInput
               name: name
+              options:
+                signInputOptions:
+                  backgroundImage: backgroundImage
               description: description
           - role: role
             inputs:
             - kind: TextInput
               name: name
+              options:
+                signInputOptions:
+                  backgroundImage: backgroundImage
               description: description
             - kind: TextInput
               name: name
+              options:
+                signInputOptions:
+                  backgroundImage: backgroundImage
               description: description
         availableKeys:
         - ppkId: ppkId

@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -21,19 +21,19 @@ class PublicKeyResponse {
     this.verification,
   });
 
-  String? created;
+  String created;
 
-  Person? owner;
+  Person owner;
 
-  Address? ownerAddress;
+  Address ownerAddress;
 
-  String? publicKey;
+  String publicKey;
 
-  String? signingDoctagInstance;
+  String signingDoctagInstance;
 
-  String? verboseName;
+  String verboseName;
 
-  PublicKeyVerification? verification;
+  PublicKeyVerification verification;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is PublicKeyResponse &&
@@ -86,7 +86,7 @@ class PublicKeyResponse {
 
   /// Returns a new [PublicKeyResponse] instance and imports its values from
   /// [json] if it's non-null, null if [json] is null.
-  static PublicKeyResponse? fromJson(Map<String, dynamic>? json) => json == null
+  static PublicKeyResponse fromJson(Map<String, dynamic> json) => json == null
     ? null
     : PublicKeyResponse(
         created: json[r'created'],
@@ -98,13 +98,13 @@ class PublicKeyResponse {
         verification: PublicKeyVerification.fromJson(json[r'verification']),
     );
 
-  static List<PublicKeyResponse?>? listFromJson(List<dynamic> json, {bool? emptyIsNull, bool? growable,}) =>
+  static List<PublicKeyResponse> listFromJson(List<dynamic> json, {bool emptyIsNull, bool growable,}) =>
     json == null || json.isEmpty
       ? true == emptyIsNull ? null : <PublicKeyResponse>[]
       : json.map((v) => PublicKeyResponse.fromJson(v)).toList(growable: true == growable);
 
-  static Map<String, PublicKeyResponse?> mapFromJson(Map<String, dynamic> json) {
-    final map = <String, PublicKeyResponse?>{};
+  static Map<String, PublicKeyResponse> mapFromJson(Map<String, dynamic> json) {
+    final map = <String, PublicKeyResponse>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) => map[key] = PublicKeyResponse.fromJson(v));
     }
@@ -112,8 +112,8 @@ class PublicKeyResponse {
   }
 
   // maps a json object with a list of PublicKeyResponse-objects as value to a dart map
-  static Map<String, List<PublicKeyResponse?>?> mapListFromJson(Map<String, dynamic> json, {bool? emptyIsNull, bool? growable,}) {
-    final Map<String, List<PublicKeyResponse?>?> map = <String, List<PublicKeyResponse>?>{};
+  static Map<String, List<PublicKeyResponse>> mapListFromJson(Map<String, dynamic> json, {bool emptyIsNull, bool growable,}) {
+    final map = <String, List<PublicKeyResponse>>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) {
         map[key] = PublicKeyResponse.listFromJson(v, emptyIsNull: emptyIsNull, growable: growable);

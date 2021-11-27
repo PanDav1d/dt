@@ -126,8 +126,10 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**fetchDoctagDocumentWithHttpInfo**](docs/DefaultApi.md#fetchDoctagDocumentWithHttpInfo) | **GET** /d/{documentId} | Fetch doctag document
 *DefaultApi* | [**fetchWorkflowToSign**](docs/DefaultApi.md#fetchWorkflowToSign) | **GET** /app/signature/prepare/{documentId}/{hostname} | Check authentication
 *DefaultApi* | [**fetchWorkflowToSignWithHttpInfo**](docs/DefaultApi.md#fetchWorkflowToSignWithHttpInfo) | **GET** /app/signature/prepare/{documentId}/{hostname} | Check authentication
-*DefaultApi* | [**setVerificationOfKeyPair**](docs/DefaultApi.md#setVerificationOfKeyPair) | **PUT** /k/{publicKeyFingerprint}/verify/{seed} | Set the verification of the private public key
-*DefaultApi* | [**setVerificationOfKeyPairWithHttpInfo**](docs/DefaultApi.md#setVerificationOfKeyPairWithHttpInfo) | **PUT** /k/{publicKeyFingerprint}/verify/{seed} | Set the verification of the private public key
+*DefaultApi* | [**notifyChangesOfDoctagDocument**](docs/DefaultApi.md#notifyChangesOfDoctagDocument) | **POST** /d/notifyChanges/ | Add signature to document
+*DefaultApi* | [**notifyChangesOfDoctagDocumentWithHttpInfo**](docs/DefaultApi.md#notifyChangesOfDoctagDocumentWithHttpInfo) | **POST** /d/notifyChanges/ | Add signature to document
+*DefaultApi* | [**setVerificationOfKeyPair**](docs/DefaultApi.md#setVerificationOfKeyPair) | **PUT** /k/{publicKeyFingerprint}/verification | Set the verification of the private public key
+*DefaultApi* | [**setVerificationOfKeyPairWithHttpInfo**](docs/DefaultApi.md#setVerificationOfKeyPairWithHttpInfo) | **PUT** /k/{publicKeyFingerprint}/verification | Set the verification of the private public key
 *DefaultApi* | [**uploadWorkflowResultAndTriggerSignature**](docs/DefaultApi.md#uploadWorkflowResultAndTriggerSignature) | **POST** /app/signature/push/{documentId}/{hostname} | Check authentication
 *DefaultApi* | [**uploadWorkflowResultAndTriggerSignatureWithHttpInfo**](docs/DefaultApi.md#uploadWorkflowResultAndTriggerSignatureWithHttpInfo) | **POST** /app/signature/push/{documentId}/{hostname} | Check authentication
 *DefaultApi* | [**verifyInstanceHasPrivateKey**](docs/DefaultApi.md#verifyInstanceHasPrivateKey) | **GET** /k/{publicKeyFingerprint}/verify/{seed} | Check that this instance actually owns the given private key
@@ -147,19 +149,20 @@ Class | Method | HTTP request | Description
  - [EmbeddedSignature](docs/EmbeddedSignature.md)
  - [FileData](docs/FileData.md)
  - [HealthCheckResponse](docs/HealthCheckResponse.md)
+ - [NotifyRequest](docs/NotifyRequest.md)
  - [Person](docs/Person.md)
  - [PreparedSignature](docs/PreparedSignature.md)
  - [PrivatePublicKeyInfo](docs/PrivatePublicKeyInfo.md)
  - [PublicKeyResponse](docs/PublicKeyResponse.md)
  - [PublicKeyVerification](docs/PublicKeyVerification.md)
+ - [SignInputOptions](docs/SignInputOptions.md)
  - [Signature](docs/Signature.md)
  - [SignatureInputs](docs/SignatureInputs.md)
  - [Workflow](docs/Workflow.md)
  - [WorkflowAction](docs/WorkflowAction.md)
  - [WorkflowInput](docs/WorkflowInput.md)
+ - [WorkflowInputOptions](docs/WorkflowInputOptions.md)
  - [WorkflowInputResult](docs/WorkflowInputResult.md)
- - [ZoneOffset](docs/ZoneOffset.md)
- - [ZonedDateTime](docs/ZonedDateTime.md)
 
 
 ## Documentation for Authorization

@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-
+// @dart=2.0
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -16,9 +16,9 @@ class EmbeddedDocument {
     this.files = const [],
   });
 
-  Document? document;
+  Document document;
 
-  List<FileData?>? files;
+  List<FileData> files;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is EmbeddedDocument &&
@@ -46,20 +46,20 @@ class EmbeddedDocument {
 
   /// Returns a new [EmbeddedDocument] instance and imports its values from
   /// [json] if it's non-null, null if [json] is null.
-  static EmbeddedDocument? fromJson(Map<String, dynamic>? json) => json == null
+  static EmbeddedDocument fromJson(Map<String, dynamic> json) => json == null
     ? null
     : EmbeddedDocument(
         document: Document.fromJson(json[r'document']),
         files: FileData.listFromJson(json[r'files']),
     );
 
-  static List<EmbeddedDocument?>? listFromJson(List<dynamic> json, {bool? emptyIsNull, bool? growable,}) =>
+  static List<EmbeddedDocument> listFromJson(List<dynamic> json, {bool emptyIsNull, bool growable,}) =>
     json == null || json.isEmpty
       ? true == emptyIsNull ? null : <EmbeddedDocument>[]
       : json.map((v) => EmbeddedDocument.fromJson(v)).toList(growable: true == growable);
 
-  static Map<String, EmbeddedDocument?> mapFromJson(Map<String, dynamic> json) {
-    final map = <String, EmbeddedDocument?>{};
+  static Map<String, EmbeddedDocument> mapFromJson(Map<String, dynamic> json) {
+    final map = <String, EmbeddedDocument>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) => map[key] = EmbeddedDocument.fromJson(v));
     }
@@ -67,8 +67,8 @@ class EmbeddedDocument {
   }
 
   // maps a json object with a list of EmbeddedDocument-objects as value to a dart map
-  static Map<String, List<EmbeddedDocument?>?> mapListFromJson(Map<String, dynamic> json, {bool? emptyIsNull, bool? growable,}) {
-    final Map<String, List<EmbeddedDocument?>?> map = <String, List<EmbeddedDocument>?>{};
+  static Map<String, List<EmbeddedDocument>> mapListFromJson(Map<String, dynamic> json, {bool emptyIsNull, bool growable,}) {
+    final map = <String, List<EmbeddedDocument>>{};
     if (json != null && json.isNotEmpty) {
       json.forEach((String key, dynamic v) {
         map[key] = EmbeddedDocument.listFromJson(v, emptyIsNull: emptyIsNull, growable: growable);

@@ -18,7 +18,8 @@ Method | HTTP request | Description
 [**fetchAuthInfo**](DefaultApi.md#fetchauthinfo) | **GET** /app/auth_info | Check authentication
 [**fetchDoctagDocument**](DefaultApi.md#fetchdoctagdocument) | **GET** /d/{documentId} | Fetch doctag document
 [**fetchWorkflowToSign**](DefaultApi.md#fetchworkflowtosign) | **GET** /app/signature/prepare/{documentId}/{hostname} | Check authentication
-[**setVerificationOfKeyPair**](DefaultApi.md#setverificationofkeypair) | **PUT** /k/{publicKeyFingerprint}/verify/{seed} | Set the verification of the private public key
+[**notifyChangesOfDoctagDocument**](DefaultApi.md#notifychangesofdoctagdocument) | **POST** /d/notifyChanges/ | Add signature to document
+[**setVerificationOfKeyPair**](DefaultApi.md#setverificationofkeypair) | **PUT** /k/{publicKeyFingerprint}/verification | Set the verification of the private public key
 [**uploadWorkflowResultAndTriggerSignature**](DefaultApi.md#uploadworkflowresultandtriggersignature) | **POST** /app/signature/push/{documentId}/{hostname} | Check authentication
 [**verifyInstanceHasPrivateKey**](DefaultApi.md#verifyinstancehasprivatekey) | **GET** /k/{publicKeyFingerprint}/verify/{seed} | Check that this instance actually owns the given private key
 [**viewFile**](DefaultApi.md#viewfile) | **GET** /f/{fileId}/view | Perform Instance discovery
@@ -387,8 +388,49 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **notifyChangesOfDoctagDocument**
+> Object notifyChangesOfDoctagDocument(notifyRequest)
+
+Add signature to document
+
+### Example 
+```dart
+import 'package:docsrv_api/api.dart';
+
+final api_instance = DefaultApi();
+final notifyRequest = NotifyRequest(); // NotifyRequest | 
+
+try { 
+    final result = api_instance.notifyChangesOfDoctagDocument(notifyRequest);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->notifyChangesOfDoctagDocument: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **notifyRequest** | [**NotifyRequest**](NotifyRequest.md)|  | [optional] 
+
+### Return type
+
+[**Object**](Object.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **setVerificationOfKeyPair**
-> DiscoveryResponse setVerificationOfKeyPair(publicKeyFingerprint, seed, publicKeyVerification)
+> DiscoveryResponse setVerificationOfKeyPair(publicKeyFingerprint, publicKeyVerification)
 
 Set the verification of the private public key
 
@@ -398,11 +440,10 @@ import 'package:docsrv_api/api.dart';
 
 final api_instance = DefaultApi();
 final publicKeyFingerprint = publicKeyFingerprint_example; // String | publicKeyFingerprint
-final seed = seed_example; // String | seed
 final publicKeyVerification = PublicKeyVerification(); // PublicKeyVerification | 
 
 try { 
-    final result = api_instance.setVerificationOfKeyPair(publicKeyFingerprint, seed, publicKeyVerification);
+    final result = api_instance.setVerificationOfKeyPair(publicKeyFingerprint, publicKeyVerification);
     print(result);
 } catch (e) {
     print('Exception when calling DefaultApi->setVerificationOfKeyPair: $e\n');
@@ -414,7 +455,6 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **publicKeyFingerprint** | **String**| publicKeyFingerprint | 
- **seed** | **String**| seed | 
  **publicKeyVerification** | [**PublicKeyVerification**](PublicKeyVerification.md)|  | [optional] 
 
 ### Return type

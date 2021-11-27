@@ -176,6 +176,7 @@ class AttachmentImporter(val dbContext: DbContext){
                                 it
                             )
                         }
+                        doc.tags = doc.fullText.determineMatchingTags(dbContext.tags.find().toList())
 
                         doc.apply { dbContext.documents.save(doc) }
                     }
