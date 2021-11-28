@@ -153,7 +153,7 @@ data class Document(
         val fileIdList = listOf(this.attachmentId) + (this.signatures?.flatMap { it.inputs ?:listOf() }?.map { it.fileId } ?: listOf())
         val files = db.files.find(FileData::_id `in` fileIdList).toList()
 
-        return EmbeddedDocument(files, this)
+        return EmbeddedDocument(files, this.copy(tags = null))
     }
 }
 

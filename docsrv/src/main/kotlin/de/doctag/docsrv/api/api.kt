@@ -261,6 +261,15 @@ fun Routing.docServerApi(){
                 db().files.save(it)
             }
             doc?.document?.let {
+                val currentDoc = db().documents.findOne(Document::_id eq it._id)
+
+                // Preserve Tags from current document
+                if(currentDoc != null)
+                    it.tags = currentDoc?.tags
+                else
+                    it.tags = it.fullText.determineMatchingTags(db().tags.find().toList())
+
+
                 db().documents.save(it)
             }
 

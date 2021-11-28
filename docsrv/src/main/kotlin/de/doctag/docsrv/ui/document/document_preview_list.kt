@@ -4,10 +4,7 @@ import SearchFilter
 import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.isImage
 import de.doctag.docsrv.isPdf
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.Document
-import de.doctag.docsrv.model.authRequired
-import de.doctag.docsrv.model.db
+import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.AttachmentImporter
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addDocumentModal
@@ -52,6 +49,10 @@ fun DbContext.handleSearchQueryChange(sf: SearchFilter) : List<Document>{
 
     if(sf.tillDate != null){
         findBson.add(Document::created lte sf.tillDate)
+    }
+
+    if(!sf.tags.isNullOrEmpty()){
+        findBson.add(Document::tags/ AttachedTag::_id `in` sf.tags.map { it._id })
     }
 
     return this.documents.find(and(findBson)).sort(descending(Document::created)).limit(100).toList()
