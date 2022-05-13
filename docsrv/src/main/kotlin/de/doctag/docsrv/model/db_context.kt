@@ -27,6 +27,7 @@ class DbContext(dbName: String) {
     val workflows = database.getCollection<Workflow>()
     val tags = database.getCollection<Tag>()
     val signRequests = database.getCollection<DocumentSignRequest>()
+    val notificationRules = database.getCollection<NotificationRule>()
 
     val currentConfig by lazy {
         val configObj = config.findOne(DocsrvConfig::_id eq "1")

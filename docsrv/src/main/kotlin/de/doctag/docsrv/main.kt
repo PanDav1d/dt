@@ -15,6 +15,7 @@ import de.doctag.docsrv.ui.auth.handleLogin
 import de.doctag.docsrv.ui.auth.handleLogout
 import de.doctag.docsrv.ui.auth.handleRegister
 import de.doctag.docsrv.ui.document.*
+import de.doctag.docsrv.ui.document.components.DocumentViewActiveItem
 import de.doctag.docsrv.ui.settings.handleKeySettings
 import de.doctag.docsrv.ui.settings.handleSystemSettings
 import de.doctag.docsrv.ui.settings.handleUsersSettings
@@ -150,12 +151,23 @@ fun Application.kwebFeature(){
                     }
                     path("/d/{id}"){params ->
                         val docId = params.getValue("id")
-                        handleDocument(docId.value,null)
+                        handleDocument(docId.value,null, DocumentViewActiveItem.PREVIEW.name)
+                    }
+                    path("/d/{id}/view/{page}"){params ->
+                        val docId = params.getValue("id")
+                        val page = params.getValue("page")
+                        handleDocument(docId.value, null, page.value)
                     }
                     path("/d/{id}/{hostname}"){params ->
                         val docId = params.getValue("id")
                         val hostname = params.getValue("hostname")
-                        handleDocument(docId.value, hostname.value)
+                        handleDocument(docId.value, hostname.value, DocumentViewActiveItem.PREVIEW.name)
+                    }
+                    path("/d/{id}/{hostname}/view/{page}"){params ->
+                        val docId = params.getValue("id")
+                        val hostname = params.getValue("hostname")
+                        val page = params.getValue("page")
+                        handleDocument(docId.value, hostname.value, page.value)
                     }
                     path("/doc_sign_requests/{id}"){params ->
                         val docId = params.getValue("id")

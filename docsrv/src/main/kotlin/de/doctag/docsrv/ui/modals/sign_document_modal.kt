@@ -36,7 +36,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
 
         input(type = InputType.hidden)
 
-        val roleOptions : Map<String?, String>? = doc.workflow?.actions?.mapIndexed { index, workflowAction ->
+        val roleOptions : Map<String?, String>? = doc.workflow?.actions?.filter { it.permissions?.allowAnonymousSubmissions == true || this.browser.authenticatedUser != null  }?.mapIndexed { index, workflowAction ->
             index.toString() to (workflowAction.role ?: "")
         }?.toMap()
 
@@ -52,17 +52,21 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
             if(role.value == null) "Bitte wählen Sie eine Rolle aus" else null
         }
 
-        val keyOptions = db().keys.find().map { it._id to (it.verboseName ?:"")}.toMap()
-        div(fomantic.ui.field).new {
-            label().text("Schlüssel wählen")
-            dropdown(keyOptions).onSelect { selectedKeyId ->
-                val currentKey = db().keys.findOne(PrivatePublicKeyPair::_id eq selectedKeyId)
-                logger.info("Selected key: ${selectedKeyId}. key.value = ${currentKey?.verboseName}" )
-                key.value = currentKey
+        if(db().currentConfig?.security?.defaultKeyForAnonymousSubmissions != null && browser.authenticatedUser == null){
+            key.value = db().keys.findOne(PrivatePublicKeyPair::_id eq db().currentConfig?.security?.defaultKeyForAnonymousSubmissions)
+        } else {
+            val keyOptions = db().keys.find().map { it._id to (it.verboseName ?: "") }.toMap()
+            div(fomantic.ui.field).new {
+                label().text("Schlüssel wählen")
+                dropdown(keyOptions).onSelect { selectedKeyId ->
+                    val currentKey = db().keys.findOne(PrivatePublicKeyPair::_id eq selectedKeyId)
+                    logger.info("Selected key: ${selectedKeyId}. key.value = ${currentKey?.verboseName}")
+                    key.value = currentKey
+                }
             }
-        }
-        formCtrl.withValidation {
-            if(key.value == null) "Bitte wählen Sie einen Schlüssel aus" else null
+            formCtrl.withValidation {
+                if (key.value == null) "Bitte wählen Sie einen Schlüssel aus" else null
+            }
         }
 
         h4(fomantic.ui.header.divider.horizontal).text("Zusatzdaten")

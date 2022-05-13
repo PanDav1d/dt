@@ -85,6 +85,9 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                 SystemSettingsActiveItem.TAGS->{
                                     tag_settings_form(pageArea)
                                 }
+                                SystemSettingsActiveItem.NOTIFICATIONS -> {
+                                    notifications_form(pageArea)
+                                }
                             }
                         }
                     }
@@ -101,7 +104,8 @@ enum class SystemSettingsActiveItem {
     DESIGN,
     SEARCH,
     SECURITY,
-    TAGS
+    TAGS,
+    NOTIFICATIONS
 }
 
 fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
@@ -113,5 +117,6 @@ fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SEARCH), "/settings/system/search").text("Suche")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SECURITY), "/settings/system/security").text("Sicherheit")
         a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.TAGS), "/settings/system/tags").text("Tags")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.NOTIFICATIONS), "/settings/system/notifications").text("Benachrichtigungen")
     }
 }

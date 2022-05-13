@@ -8,6 +8,7 @@ import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.AttachmentImporter
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.modals.addDocumentModal
+import de.doctag.docsrv.ui.modals.signDocumentModal
 import documentSearchFilterComponent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -192,7 +193,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
 
 
 
-fun ElementCreator<*>.renderDocumentPreview(rFile: Document?){
+fun ElementCreator<*>.renderDocumentPreview(rFile: Document?, showLinkToDocumentButton: Boolean=true, showSignButton: Boolean=false){
 
     val file = rFile?.attachmentId?.let{db().files.findOneById(it)}
 
@@ -205,19 +206,29 @@ fun ElementCreator<*>.renderDocumentPreview(rFile: Document?){
                 h1().text(file?.name ?: "Keine Vorschau verfügbar")
             }
             div(fomantic.ui.column.four.wide).new {
-                button(fomantic.ui.button.tertiary.blue).apply {
-                    this.on.click {
-                        val docIdPart = rFile?.url!!.split("/d/")[1]
-                        val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")
-                        if(hostname != db().currentConfig.hostname){
-                            browser.navigateTo("/d/${docIdPart}/${hostname}")
+                if(showLinkToDocumentButton) {
+                    button(fomantic.ui.button.tertiary.blue).apply {
+                        this.on.click {
+                            val docIdPart = rFile?.url!!.split("/d/")[1]
+                            val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")
+                            if (hostname != db().currentConfig.hostname) {
+                                browser.navigateTo("/d/${docIdPart}/${hostname}")
+                            } else {
+                                browser.navigateTo("/d/${docIdPart}")
+                            }
                         }
-                        else {
-                            browser.navigateTo("/d/${docIdPart}")
-                        }
+                    }.new {
+                        i(fomantic.ui.icon.folder.open)
                     }
-                }.new {
-                    i(fomantic.ui.icon.folder.open)
+                }
+
+                if(rFile != null && showSignButton) {
+                    val modal = signDocumentModal(rFile) { signedDocument, _ ->
+                        db().documents.save(signedDocument)
+                    }
+                    button(fomantic.ui.button.primary).text("Jetzt Signieren").on.click {
+                        modal.open()
+                    }
                 }
             }
         }
@@ -243,4 +254,3 @@ fun ElementCreator<*>.renderDocumentPreview(rFile: Document?){
         }
     }
 }
-

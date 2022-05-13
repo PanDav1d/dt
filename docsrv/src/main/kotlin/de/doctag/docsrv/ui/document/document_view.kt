@@ -5,9 +5,12 @@ import de.doctag.docsrv.getQRCodeImageAsDataUrl
 import de.doctag.docsrv.model.*
 import org.litote.kmongo.findOneById
 import de.doctag.docsrv.ui.*
+import de.doctag.docsrv.ui.document.components.DocumentViewActiveItem
+import de.doctag.docsrv.ui.document.components.documentViewTabMenu
 import de.doctag.docsrv.ui.forms.system.addTagDropdown
 import de.doctag.docsrv.ui.modals.filePreviewModal
 import de.doctag.docsrv.ui.modals.signDocumentModal
+import de.doctag.docsrv.ui.settings.SystemSettingsActiveItem
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -20,18 +23,38 @@ import org.litote.kmongo.findOne
 import org.litote.kmongo.save
 
 
-fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?) {
+fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?, subPage: String) {
 
     val document = KVar(db().documents.findOne(Document::url eq "https://${hostname ?: db().currentConfig.hostname}/d/${docId}")!!)
     val selectedSignature = KVar<Int?>(null)
 
+    val activeItem = DocumentViewActiveItem.valueOf(subPage.toUpperCase())
+
 
     pageBorderAndTitle("Dokument") { pageArea ->
         div(fomantic.content).new() {
-
             render(document) { rDocument: Document ->
+
                 logger.info("List of documents did change")
-                renderDocumentInfo(rDocument, selectedSignature)
+
+
+                div(fomantic.content).new() {
+                    div(fomantic.ui.grid).new {
+                        div(fomantic.ui.three.wide.column).new {
+                            documentViewTabMenu(docId, hostname, activeItem)
+                        }
+                        div(fomantic.ui.thirteen.wide.column).new {
+                            when (activeItem) {
+                                DocumentViewActiveItem.PREVIEW ->{
+                                    renderDocumentPreview(rDocument, showLinkToDocumentButton = false, showSignButton = true)
+                                }
+                                DocumentViewActiveItem.DETAILS -> {
+                                    renderDocumentInfo(rDocument, selectedSignature)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -79,8 +102,11 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                     i(fomantic.ui.eye.outline.icon)
                     div(fomantic.ui.content).new {
                         span(fomantic.header).new {
+
+                            val userCanEditTags = this.browser.authenticatedUser != null
+
                             rDocument.tags?.forEach {
-                                tag(it, true, size = FomanticUiSize.Mini){
+                                tag(it, showRemoveButton = userCanEditTags, size = FomanticUiSize.Mini){
                                     rDocument.tags = rDocument.tags?.filter { t->t._id != it._id }
                                     db().documents.save(rDocument)
                                     setState(state+1)
@@ -89,11 +115,13 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                             if(rDocument.tags.isNullOrEmpty()){
                                 span().text("keine")
                             }
-                            addTagDropdown(rDocument.tags) {
-                                rDocument.tags = (rDocument.tags?: listOf()).plus(it.asAttachedTag())
-                                db().documents.save(rDocument)
-                                setState(state+1)
-                                logger.info("Added tag ${it.name}")
+                            if(userCanEditTags) {
+                                addTagDropdown(rDocument.tags) {
+                                    rDocument.tags = (rDocument.tags ?: listOf()).plus(it.asAttachedTag())
+                                    db().documents.save(rDocument)
+                                    setState(state + 1)
+                                    logger.info("Added tag ${it.name}")
+                                }
                             }
                         }
                         div(fomantic.description).new{
@@ -147,7 +175,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                 }
             }
 
-            if(this.browser.authenticatedUser != null) {
+            if(this.browser.authenticatedUser != null || rDocument.workflow?.actions?.any { it.permissions?.allowAnonymousSubmissions == true } == true) {
                 div(fomantic.ui.item).new {
                     val modal = signDocumentModal(rDocument){signedDocument,_->
                         db().documents.save(signedDocument)
@@ -164,10 +192,11 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
         }
     }
 
+
+
     h2(fomantic.ui.header).new {
         span().text("Signaturen")
     }
-
 
     if((rDocument.signatures?.count() ?: 0) > 0 || rDocument.workflow != null) {
         render(selectedSignature){selectedSignatureIdx ->
@@ -175,11 +204,11 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                 thead().new {
                     tr().new {
                         th().text("Rolle")
-                        th().text("Name")
+                        th().text("Systembetreiber")
                         th().text("Addresse")
-                        th().text("Signiert von")
+                        th().text("Schlüsselinhaber")
                         th().text("Datum")
-                        th().text("Aktion")
+                        th().text("Info")
                     }
                 }
                 tbody().new {
@@ -200,6 +229,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                             td().text("${sig.signedByKey?.owner?.firstName} ${sig.signedByKey?.owner?.lastName}")
                             td().text(sig.signed?.formatDateTime() ?: "")
                             td().new {
+                                i(fomantic.icon.qrcode).withPopup("Signierende Doctag-Instanz", "${sig.signedByKey?.signingDoctagInstance}")
                             }
                         }
 

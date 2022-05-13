@@ -83,6 +83,7 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                 if(workflow.value.actions?.get(activeActionIdx.value) != null){
                     val editAtIndex = KVar<Int?>(null)
                     render(editAtIndex){selectedIdx->
+
                         table(fomantic.ui.table.very.basic.table).new {
                             thead().new {
                                 tr().new {
@@ -136,6 +137,21 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                                 logger.info("workflowInputInlineEditForm::save finished")
                             }
                         }
+
+                        h4(fomantic.ui.dividing.header).text("Erweiterte Optionen")
+                        if(workflow.value.actions?.get(activeActionIdx.value)?.permissions == null){
+                            workflow.value.actions?.get(activeActionIdx.value)?.permissions = WorkflowActionPermissions()
+                        }
+
+                        val derivedKvar =  KVar(workflow.value.actions?.get(activeActionIdx.value)?.permissions?.allowAnonymousSubmissions ?: false)
+                        derivedKvar.addListener{a,b->
+                            logger.info("Checkbox Changed from $a to $b")
+                            workflow.value.actions?.get(activeActionIdx.value)?.permissions?.allowAnonymousSubmissions = b
+                        }
+
+                        div(fomantic.ui.field).new {
+                            checkBoxInput("Ausfüllen ohne Anmeldung erlauben",derivedKvar)
+                        }
                     }
                 }
             }
@@ -186,6 +202,7 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
     if(showAdvancedOptions) {
         render(input.propertyOrDefault(WorkflowInput::kind, WorkflowInputKind.TextInput), container = {tr()}) { inputKind ->
                 td(mapOf("colspan" to "3")).new {
+
                     when (inputKind) {
                         WorkflowInputKind.TextInput -> {
                             div(fomantic.ui.field).new {
@@ -194,8 +211,8 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
                         }
                         WorkflowInputKind.Sign -> {
                             val imgChanges = KVar(0)
-                            render(imgChanges, {div(fomantic.ui.field)}){
 
+                            render(imgChanges, {div(fomantic.ui.field)}){
                                 if(workFlowInput.options?.signInputOptions?.backgroundImage != null){
                                     label().text("Hintergrundbild")
 
@@ -231,6 +248,8 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
                                         }
                                     }
                                 }
+
+
                             }
                         }
                         else -> {

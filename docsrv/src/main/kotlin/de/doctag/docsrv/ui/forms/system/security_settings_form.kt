@@ -5,12 +5,16 @@ import de.doctag.docsrv.model.SecurityConfig
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.checkBoxInput
+import de.doctag.docsrv.ui.dropdown
 import de.doctag.docsrv.ui.formControl
 import de.doctag.docsrv.ui.formSubmitButton
+import de.doctag.lib.model.PrivatePublicKeyPair
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import org.litote.kmongo.eq
+import org.litote.kmongo.findOne
 
 fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit){
 
@@ -45,6 +49,16 @@ fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit)
             "Signaturen von unverifizierten Schlüsseln akzeptieren.",
             secConf.propertyOrDefault(SecurityConfig::acceptSignaturesByUnverifiedKeys, false)
         )
+
+        div(fomantic.ui.divider.hidden)
+
+        val keyOptions = db().keys.find().map { it._id to (it.verboseName ?:"")}.toMap()
+        div(fomantic.ui.field).new {
+            label().text("Standart Schlüssel für anonyme Signaturaktionen")
+            dropdown(keyOptions, secConf.propertyOrDefault(SecurityConfig::defaultKeyForAnonymousSubmissions, null)).onSelect { selectedKeyId ->
+                logger.info("Selected key: ${selectedKeyId}. key.value = $selectedKeyId" )
+            }
+        }
 
         formSubmitButton(formCtrl){
             saveAction(secConf.value)

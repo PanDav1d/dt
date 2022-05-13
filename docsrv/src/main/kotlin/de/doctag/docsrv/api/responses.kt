@@ -39,7 +39,7 @@ data class EmbeddedDocument(
 
             val expectedSigHash = seenSignatures.calculateSignatureHash()
 
-            if(expectedSigHash != sig.data?.previousSignaturesHash){
+            if(expectedSigHash != (sig.data?.previousSignaturesHash ?: EMPTY_HASH)){
                 kweb.logger.error("Expected signature hash does not match. Expected: ${expectedSigHash} != ${sig.data?.previousSignaturesHash}")
                 return false
             }

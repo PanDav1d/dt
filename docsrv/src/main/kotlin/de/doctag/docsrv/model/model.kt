@@ -12,6 +12,8 @@ import java.time.Duration
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
+const val EMPTY_HASH = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
 data class Session(
     val sessionId: String,
     val expires: ZonedDateTime,
@@ -29,7 +31,8 @@ data class DocsrvConfig(
 )
 
 data class SecurityConfig(
-    var acceptSignaturesByUnverifiedKeys: Boolean? = null
+    var acceptSignaturesByUnverifiedKeys: Boolean? = null,
+    var defaultKeyForAnonymousSubmissions: String? = null
 )
 
 data class WorkflowConfig(
@@ -200,7 +203,7 @@ data class TagStyle(
 data class Workflow(
         var _id: String? = null,
         var name: String? = null,
-        var actions: List<WorkflowAction>? = null
+        var actions: List<WorkflowAction>? = null,
 ) {
     fun modifyWorkflowActionWithIndex(idx: Int, modifyFunc: (WorkflowAction)->WorkflowAction) : Workflow {
         return this.copy(actions = this.actions?.mapIndexed { index, workflowAction ->
@@ -215,7 +218,12 @@ data class Workflow(
 
 data class WorkflowAction(
         var role: String? = null,
-        var inputs: List<WorkflowInput>? = null
+        var inputs: List<WorkflowInput>? = null,
+        var permissions: WorkflowActionPermissions?=null
+)
+
+data class WorkflowActionPermissions(
+    var allowAnonymousSubmissions: Boolean? = null
 )
 
 data class WorkflowInput(
@@ -241,7 +249,7 @@ data class WorkflowInputResult(
 
 fun List<Signature>.calculateSignatureHash():String{
     if(this.isEmpty()){
-        return "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        return EMPTY_HASH
     }
     return this.map { it.data?.signature }.joinToString(",").toSha1HexString()
 }
@@ -350,3 +358,42 @@ data class Signature(
         }
     }
 }
+
+enum class NotificationTriggerEvent{
+    DOCUMENT_ADD,
+    SIGNATURE_REQUEST,
+    DOCUMENT_SIGNED
+}
+
+data class NotificationReceiver(
+    val name: String? = null,
+    val email: String? = null
+)
+
+data class NotificationRule(
+    val _id: String? = null,
+    val description:String? = null,
+    val notifyWhen: NotificationTrigger? = null,
+    val receiver: List<NotificationReceiver>? = null
+)
+
+data class DocumentGetsSignedNotificationTrigger(
+    val isActive: Boolean? = null,
+    val onlyWhenWorkflowNameIs: String? = null,
+    val onlyWhenSigningRoleIs: String? = null
+)
+
+data class SignatureRequestIsAddedTrigger(
+    val isActive: Boolean? = null
+)
+
+data class DocumentIsAddedTrigger(
+    val isActive: Boolean? = null
+)
+
+data class NotificationTrigger(
+    val documentIsAdded: DocumentIsAddedTrigger? = null,
+    val signatureRequestIsAdded: SignatureRequestIsAddedTrigger? = null,
+    val documentGetsSigned: DocumentGetsSignedNotificationTrigger? = null,
+    val onlyWhenDocumentIsTaggedWith: List<AttachedTag>? = null,
+)
