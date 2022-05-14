@@ -10,7 +10,6 @@ import de.doctag.docsrv.model.DocumentId
 import kweb.logger
 import org.apache.pdfbox.multipdf.Overlay
 import org.apache.pdfbox.multipdf.PageExtractor
-import org.apache.pdfbox.multipdf.Splitter
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog
 import org.apache.pdfbox.pdmodel.PDPage
@@ -86,7 +85,7 @@ fun makePdfWithDoctag(url: String, xRel: Float, yRel: Float, relativeWidth: Floa
 
 
     //val firstPage = pdf.getDocumentCatalog().pages.get(0)
-    val imgToAdd = PDImageXObject.createFromByteArray(pdf, getQRCodeImageAsPng(url, 100, 100, margin = 5).toByteArray(), "doctag_img.png")
+    val imgToAdd = PDImageXObject.createFromByteArray(pdf, getQRCodeImageAsPng(url, 100, 100, margin = 1).toByteArray(), "doctag_img.png")
 
     val contentStream = PDPageContentStream(pdf, firstPage, PDPageContentStream.AppendMode.APPEND, true)
 
@@ -145,7 +144,27 @@ fun signDetached(document: PDDocument) {
 
 }
 
-fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, relativeWidth: Float, formData: Map<String, String>? = null):String{
+fun trimImage(image: BufferedImage): BufferedImage {
+    val width = image.width
+    val height = image.height
+    var top = height / 3
+    var bottom = top
+    var left = width / 3
+    var right = left
+    for (x in 0 until width) {
+        for (y in 0 until height) {
+            if (image.getRGB(x, y) != 0) {
+                top = Math.min(top, y)
+                bottom = Math.max(bottom, y)
+                left = Math.min(left, x)
+                right = Math.max(right, x)
+            }
+        }
+    }
+    return image.getSubimage(left, top, right - left + 1, bottom - top + 1)
+}
+
+fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, widthInDpi: Float, formData: Map<String, String>? = null):String{
     val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
     val pdf = PDDocument.load(stream)
 
@@ -154,7 +173,7 @@ fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, rela
             pdf.setField(fieldName, value)
         }
 
-        val watermark = makePdfWithDoctag(url, xRel, yRel, relativeWidth)
+        val watermark = makePdfWithDoctag(url, xRel, yRel, widthInDpi)
         val overlay = Overlay()
         overlay.setInputPDF(pdf)
         overlay.setFirstPageOverlayPDF(watermark)

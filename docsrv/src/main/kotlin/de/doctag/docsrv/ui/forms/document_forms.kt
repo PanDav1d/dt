@@ -25,12 +25,12 @@ enum class DocumentAddState{
 
 
 data class ImagePositionOnCanvas(val x: Float, val y: Float)
-fun ElementCreator<*>.drawDoctagElement(file: FileData, onSubmit:(file:FileData, doctag:String)->Unit) {
+fun ElementCreator<*>.drawDoctagElement(file: FileData, size:Float=4.29f, onSubmit:(file:FileData, doctag:String)->Unit) {
     val doctag = "https://${db().currentConfig.hostname}/d/${generateRandomString(16)}"
-    val doctagImg = getQRCodeImageAsDataUrl(doctag, 60, 60, 1)
-    val documentImg = renderPdfAsImage(file.base64Content!!).asDataUrlImage()
+    val doctagImg = getQRCodeImageAsDataUrl(doctag, (60*2.5f/4.29f).toInt(), (60*2.5f/4.29f).toInt(), 1)
+    val documentImgBi = renderPdfAsImage(file.base64Content!!)
+    val documentImg = documentImgBi.asDataUrlImage()
     val fieldResult = KVar<Map<String, KVar<String>>>(mapOf())
-
 
     div(fomantic.ui.two.column.grid).new {
         div(fomantic.ui.column).new {
@@ -83,7 +83,7 @@ fun ElementCreator<*>.drawDoctagElement(file: FileData, onSubmit:(file:FileData,
 
             logger.info("Received form data: ${fieldResult.value}")
 
-            file.base64Content = insertDoctagIntoPDF(file.base64Content!!, doctag, pos.x, pos.y, 4.29f, fieldResult.value.map { it.key to it.value.value }.toMap())
+            file.base64Content = insertDoctagIntoPDF(file.base64Content!!, doctag, pos.x, pos.y, size, fieldResult.value.map { it.key to it.value.value }.toMap())
             onSubmit(file, doctag)
         }
     }
@@ -159,12 +159,22 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                 DocumentAddState.INSERT_DOCTAG -> {
 
                     h4(fomantic.ui.header).text("Doctag einfügen")
-                    p().text("Positionieren Sie das DocTag mit der Maus an der gewünschten Position")
 
-                    drawDoctagElement(fileObj) { fileWithDoctag, doctag->
-                        document.value.url = doctag
-                        state.value = DocumentAddState.SAVE
+                    val sizeOptions = mapOf<String, String>("Groß" to "4.29", "Mittel" to "2.5", "Klein" to "1.8")
+                    val sizeSelection = KVar(sizeOptions.values.first())
+                    p().new {
+                        span().text("Positionieren Sie das DocTag mit der Maus an der gewünschten Position")
+                        //radioInput("Größe",options = sizeOptions, false, true, sizeSelection)
                     }
+
+
+                    render(sizeSelection){
+                        drawDoctagElement(fileObj, size = sizeSelection.value.toFloatOrNull() ?: 4.29f) { fileWithDoctag, doctag->
+                            document.value.url = doctag
+                            state.value = DocumentAddState.SAVE
+                        }
+                    }
+
                 }
                 DocumentAddState.SAVE -> {
                     div(fomantic.ui.icon.message).new {

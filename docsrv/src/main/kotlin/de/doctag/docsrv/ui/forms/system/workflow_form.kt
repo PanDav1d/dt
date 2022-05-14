@@ -180,7 +180,8 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
                     WorkflowInputKind.Checkbox.name to "Checkbox",
                     WorkflowInputKind.FileInput.name to "Datei anfügen",
                     WorkflowInputKind.TextInput.name to "Texteingabe",
-                    WorkflowInputKind.Sign.name to "Signieren"
+                    WorkflowInputKind.Sign.name to "Signieren",
+                    WorkflowInputKind.ReceiptMail.name to "E-Mailaddresse",
                 ),
             ).onSelect{ selectedKey->
                 val kind = WorkflowInputKind.valueOf(selectedKey!!)

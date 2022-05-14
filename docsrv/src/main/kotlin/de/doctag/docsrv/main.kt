@@ -113,7 +113,7 @@ fun Application.kwebFeature(){
     }
 
     install(Kweb){
-        plugins = listOf(fomanticUIPlugin)
+        plugins = listOf(fomanticUIPlugin,NoZoomPlugin())
         debug = true
 
 

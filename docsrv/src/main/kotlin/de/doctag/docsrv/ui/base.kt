@@ -104,7 +104,7 @@ class PageArea(val ec: ElementCreator<*>){
     }
 }
 
-fun ElementCreator<*>.pageHeader(title: String) : PageArea {
+fun ElementCreator<*>.pageHeader() : PageArea {
     val area = PageArea(this)
 
     this.browser.doc.head.new(){
@@ -177,13 +177,15 @@ fun ElementCreator<*>.pageHeader(title: String) : PageArea {
                 }
             }
 
-            a(fomantic.item, href="#").apply { on.click { scanModal.open()} }.new {
-                i(fomantic.ui.key.icon)
+            if(browser.authenticatedUser != null) {
+                a(fomantic.item, href = "#").apply { on.click { scanModal.open() } }.new {
+                    i(fomantic.ui.key.icon)
+                }
+                a(fomantic.item, href = "/settings/users").new {
+                    i(fomantic.ui.cog.icon)
+                }
+                a(fomantic.item, href = "/logout").text("Abmelden")
             }
-            a(fomantic.item, href="/settings/users").new {
-                i(fomantic.ui.cog.icon)
-            }
-            a(fomantic.item,href = "/logout").text("Abmelden")
         }
 
     }
@@ -191,14 +193,24 @@ fun ElementCreator<*>.pageHeader(title: String) : PageArea {
     return area
 }
 
-fun ElementCreator<*>.pageBorderAndTitle(title: String, content: ElementCreator<DivElement>.(page:PageArea) -> Unit) {
-    val area = pageHeader(title)
+fun ElementCreator<*>.pageBorderAndTitle(title: String, titleButtons: (ElementCreator<*>.()->Unit)?=null,content: ElementCreator<DivElement>.(page:PageArea) -> Unit) {
+    val area = pageHeader()
 
     div(fomantic.ui.main.container).new {
         div(fomantic.column).new {
             div(fomantic.ui.vertical.segment).new {
 
-                h1(fomantic.ui.header).text(title)
+                div(fomantic.ui.grid).new {
+                    div(fomantic.ten.wide.column).new {
+                        h1(fomantic.ui.header).text(title)
+                    }
+                    div(fomantic.six.wide.right.aligned.column).new {
+                        titleButtons?.let {
+                            titleButtons()
+                        }
+                    }
+                }
+
                 div(fomantic.ui.content).new {
                     content(this,area)
                 }

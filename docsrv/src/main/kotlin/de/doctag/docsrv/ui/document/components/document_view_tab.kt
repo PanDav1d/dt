@@ -14,7 +14,7 @@ enum class DocumentViewActiveItem {
 
 
 fun ElementCreator<*>.documentViewTabMenu(documentId: String?, host: String?, activeItem: DocumentViewActiveItem) {
-    div(fomantic.ui.secondary.vertical.menu).new {
+    div(fomantic.ui.secondary.menu).new {
         a(
             fomantic.ui.item.active(activeItem == DocumentViewActiveItem.PREVIEW),
             host?.let{"/d/${documentId}/$host/view/preview"} ?: "/d/${documentId}/view/preview"

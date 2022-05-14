@@ -1,27 +1,13 @@
 package de.doctag.docsrv
 
-import com.papsign.ktor.openapigen.OpenAPIGen
-import com.papsign.ktor.openapigen.model.operation.OperationModel
-import com.papsign.ktor.openapigen.modules.ModuleProvider
-import com.papsign.ktor.openapigen.modules.RouteOpenAPIModule
-import com.papsign.ktor.openapigen.modules.openapi.OperationModule
-import com.papsign.ktor.openapigen.modules.registerModule
-import com.papsign.ktor.openapigen.route.OpenAPIRoute
-import com.papsign.ktor.openapigen.route.modules.PathProviderModule
-import io.ktor.application.ApplicationCall
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.ApplicationFeature
-import io.ktor.features.Compression
+
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.content.OutgoingContent
 import io.ktor.http.parseAndSortContentTypeHeader
-import io.ktor.response.ApplicationSendPipeline
 import io.ktor.routing.*
-import io.ktor.util.AttributeKey
 import io.ktor.util.pipeline.ContextDsl
-import io.ktor.util.pipeline.PipelineContext
-import io.ktor.utils.io.ByteReadChannel
+import kweb.plugins.KwebPlugin
+import org.jsoup.nodes.Document
 
 /**
  * Evaluates a route against a content-type in the [HttpHeaders.Accept] header in the request
@@ -51,24 +37,32 @@ fun Route.acceptExcludingWildcards(contentType: ContentType, build: Route.() -> 
     return createChild(selector).apply(build)
 }
 
-@ContextDsl
-inline fun <T : OpenAPIRoute<T>> T.acceptExcludingWildcards(contentType: ContentType, crossinline fn: T.() -> Unit): T {
-    val selector = ExactMatchHttpAcceptRouteSelector(contentType)
-    return child(ktorRoute.createChild(selector)).apply(fn)
-}
+class NoZoomPlugin: KwebPlugin() {
+    override fun decorate(doc: Document) {
+        super.decorate(doc)
 
-@ContextDsl
-fun Route.acceptExcludingWildcards1(contentType: ContentType, build: Route.() -> Unit): Route {
-    val selector = ExactMatchHttpAcceptRouteSelector(contentType)
-    return createChild(selector).apply(build)
-}
 
-// Convenience method, can be omitted
-fun id(id: String? = null) = EndpointId(id)
+        val meta = doc.head().allElements.find { it.normalName() == "meta" && it.attr("name") == "viewport"}
+        meta?.attr("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
 
-// Must implement both interfaces, RouteOpenAPIModule to indicate that it can only be used on a single endpoint, OperationModule to hook into the Operation (the endpoint descriptor) generation
-data class EndpointId(val id: String? = null) : OperationModule, RouteOpenAPIModule {
-    override fun configure(apiGen: OpenAPIGen, provider: ModuleProvider<*>, operation: OperationModel) {
-        operation.operationId = id
+        doc.head().appendElement("meta")
+            .attr("id", "K_head_ios")
+            .attr("name", "apple-mobile-web-app-capable")
+            .attr("content", "yes")
+
+        doc.head().appendElement("meta")
+            .attr("name", "Description")
+            .attr("content", "Logenios Auftrag")
+
+        doc.head().appendElement("link")
+            .attr("rel", "stylesheet")
+            .attr("type", "text/css")
+            .attr("href", "/ressources/override.css")
+
+        doc.head().appendElement("style")
+            .attr("type", "text/css")
+            .text("""
+                
+            """.trimIndent())
     }
 }

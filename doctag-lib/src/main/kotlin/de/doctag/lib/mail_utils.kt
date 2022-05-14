@@ -49,6 +49,7 @@ class MailSender(
         val props: Properties = System.getProperties()
         props.put("mail.smtps.host", smtpHost)
         props.put("mail.smtps.auth", "true")
+        props.put("mail.smtps.ssl.protocols", "TLSv1.2");
 
         val session: Session = Session.getInstance(props, null)
         val msg = MimeMessage(session)
@@ -88,8 +89,8 @@ class MailSender(
         val lastServerResponse = t.lastServerResponse
         t.close()
 
-
-        return lastServerResponse.contains("250 Great success")
+        logger.info("Server response is ${lastServerResponse}")
+        return lastServerResponse.contains("250")
     }
 }
 

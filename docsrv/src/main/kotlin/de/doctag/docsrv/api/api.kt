@@ -10,6 +10,7 @@ import de.doctag.lib.makeSignature
 import de.doctag.lib.model.PrivatePublicKeyPair
 import de.doctag.lib.model.PublicKeyVerification
 import de.doctag.lib.model.PublicKeyVerificationResult
+import documentWasSignedMail
 import io.ktor.application.*
 import ktor.swagger.ok
 import ktor.swagger.responds
@@ -238,6 +239,21 @@ fun Routing.docServerApi(){
                 }
                 catch(ex: Exception){
                     logger.error(ex.message)
+                }
+            }
+
+            val distributeToMailReceiverFields = doc.workflow?.actions?.flatMap { it.inputs?.filter { it.kind == WorkflowInputKind.ReceiptMail }?.map { it.name } ?: listOf() } ?: listOf()
+            val distributeToMails = doc.signatures?.flatMap { it.inputs?.filter { it.name in distributeToMailReceiverFields }?.map { it.value } ?: listOf() }
+
+            logger.info("Sending info mail to ${distributeToMails}")
+
+            distributeToMails?.filterNotNull()?.distinct()?.forEach { mail->
+                db().currentConfig.outboundMail?.let{
+                    documentWasSignedMail(
+                        it,
+                        mail,
+                        doc.url!!
+                    )
                 }
             }
 

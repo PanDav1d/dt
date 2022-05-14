@@ -31,7 +31,8 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?, subPage:
     val activeItem = DocumentViewActiveItem.valueOf(subPage.toUpperCase())
 
 
-    pageBorderAndTitle("Dokument") { pageArea ->
+
+    pageBorderAndTitle("Dokument",{signButton(document.value)}) { pageArea ->
         div(fomantic.content).new() {
             render(document) { rDocument: Document ->
 
@@ -39,24 +40,31 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?, subPage:
 
 
                 div(fomantic.content).new() {
-                    div(fomantic.ui.grid).new {
-                        div(fomantic.ui.three.wide.column).new {
-                            documentViewTabMenu(docId, hostname, activeItem)
+
+                    documentViewTabMenu(docId, hostname, activeItem)
+
+
+                    when (activeItem) {
+                        DocumentViewActiveItem.PREVIEW ->{
+                            renderDocumentPreview(rDocument, showLinkToDocumentButton = false, showSignButton = false, showFileName = false)
                         }
-                        div(fomantic.ui.thirteen.wide.column).new {
-                            when (activeItem) {
-                                DocumentViewActiveItem.PREVIEW ->{
-                                    renderDocumentPreview(rDocument, showLinkToDocumentButton = false, showSignButton = true)
-                                }
-                                DocumentViewActiveItem.DETAILS -> {
-                                    renderDocumentInfo(rDocument, selectedSignature)
-                                }
-                            }
+                        DocumentViewActiveItem.DETAILS -> {
+                            renderDocumentInfo(rDocument, selectedSignature)
                         }
                     }
+
                 }
             }
         }
+    }
+}
+
+fun ElementCreator<*>.signButton(rFile: Document){
+    val modal = signDocumentModal(rFile) { signedDocument, _ ->
+        db().documents.save(signedDocument)
+    }
+    button(fomantic.ui.button.primary).text("Jetzt Signieren").on.click {
+        modal.open()
     }
 }
 

@@ -5,6 +5,7 @@ import de.doctag.docsrv.fromDataUrl
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.remotes.DocServerClient
+import de.doctag.docsrv.trimImage
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
@@ -18,11 +19,17 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.save
+import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.time.Duration
 import java.time.ZonedDateTime
+import java.util.*
 import java.util.concurrent.CompletableFuture
+import javax.imageio.ImageIO
 import kotlin.concurrent.thread
 
+private val mailRegex = "^(.+)@(.+)$".toRegex()
 fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document, addedSig: Signature)->Unit) = modal("Dokument signieren", autoFocus = false) { modal ->
 
     val role = KVar<WorkflowAction?>(null)
@@ -52,7 +59,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
             if(role.value == null) "Bitte wählen Sie eine Rolle aus" else null
         }
 
-        if(db().currentConfig?.security?.defaultKeyForAnonymousSubmissions != null && browser.authenticatedUser == null){
+        if(db().currentConfig.security?.defaultKeyForAnonymousSubmissions != null && browser.authenticatedUser == null){
             key.value = db().keys.findOne(PrivatePublicKeyPair::_id eq db().currentConfig?.security?.defaultKeyForAnonymousSubmissions)
         } else {
             val keyOptions = db().keys.find().map { it._id to (it.verboseName ?: "") }.toMap()
@@ -83,6 +90,16 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                             label().text(input.name ?:"")
                             span().text(input.description?:"")
                             formInput(null, "", true, result.propertyOrDefault(WorkflowInputResult::value,""))
+                        }
+                    }
+                    WorkflowInputKind.ReceiptMail->{
+                        div(fomantic.ui.field).new {
+                            label().text(input.name ?:"")
+                            span().text(input.description?:"")
+                            formInput(null, "", true, result.propertyOrDefault(WorkflowInputResult::value,""))
+                        }
+                        formCtrl.withValidation {
+                            if(!result.value.value.isNullOrBlank() && !mailRegex.matches(result.value.value!!)) "Bitte geben Sie eine gültige Mail-Adresse an" else null
                         }
                     }
                     WorkflowInputKind.Checkbox -> {
@@ -142,9 +159,17 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
 
                                signatureData?.let {
                                    val (contentType, data) = it
+
+                                   val stream = ByteArrayInputStream(Base64.getDecoder().decode(data))
+                                   val signature = ImageIO.read(stream)
+                                   val trimmedImage = trimImage(signature)
+                                   val outStream = ByteArrayOutputStream()
+                                   ImageIO.write(trimmedImage, "png", outStream)
+                                   val trimmedDataB64 = Base64.getEncoder().encodeToString(outStream.toByteArray())
+
                                    val fd = FileData(
-                                       _id = data.toSha1HexString(),
-                                       base64Content = data,
+                                       _id = trimmedDataB64.toSha1HexString(),
+                                       base64Content = trimmedDataB64,
                                        contentType = contentType,
                                        name = "signature.png"
                                    )

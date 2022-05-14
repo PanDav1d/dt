@@ -67,7 +67,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
         val isImportRunning = KVar(false)
         val documentToPreview = KVar(documents.value.firstOrNull())
 
-        val pageArea = pageHeader("Dokumentenliste")
+        val pageArea = pageHeader()
 
         searchQuery.addListener{old, new ->
             documents.value = db().handleSearchQueryChange(new)
@@ -193,46 +193,49 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
 
 
 
-fun ElementCreator<*>.renderDocumentPreview(rFile: Document?, showLinkToDocumentButton: Boolean=true, showSignButton: Boolean=false){
+fun ElementCreator<*>.renderDocumentPreview(rFile: Document?, showLinkToDocumentButton: Boolean=true, showSignButton: Boolean=false , showFileName: Boolean=true){
 
     val file = rFile?.attachmentId?.let{db().files.findOneById(it)}
 
-    div(fomantic.ui.placeholder.segment).also{
+    div(/*fomantic.ui.placeholder.segment*/).also{
         it.setAttributeRaw("style", "height:calc(65px + 70vh);")
     }.new{
 
-        div(fomantic.ui.grid).new {
-            div(fomantic.ui.column.twelve.wide).new {
-                h1().text(file?.name ?: "Keine Vorschau verfügbar")
-            }
-            div(fomantic.ui.column.four.wide).new {
-                if(showLinkToDocumentButton) {
-                    button(fomantic.ui.button.tertiary.blue).apply {
-                        this.on.click {
-                            val docIdPart = rFile?.url!!.split("/d/")[1]
-                            val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")
-                            if (hostname != db().currentConfig.hostname) {
-                                browser.navigateTo("/d/${docIdPart}/${hostname}")
-                            } else {
-                                browser.navigateTo("/d/${docIdPart}")
-                            }
-                        }
-                    }.new {
-                        i(fomantic.ui.icon.folder.open)
+        if(showFileName||showSignButton) {
+            div(fomantic.ui.grid).new {
+                div(fomantic.ui.column.twelve.wide).new {
+                    if (showFileName) {
+                        h1().text(file?.name ?: "Keine Vorschau verfügbar")
                     }
                 }
-
-                if(rFile != null && showSignButton) {
-                    val modal = signDocumentModal(rFile) { signedDocument, _ ->
-                        db().documents.save(signedDocument)
+                div(fomantic.ui.column.four.wide).new {
+                    if (showLinkToDocumentButton) {
+                        button(fomantic.ui.button.tertiary.blue).apply {
+                            this.on.click {
+                                val docIdPart = rFile?.url!!.split("/d/")[1]
+                                val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")
+                                if (hostname != db().currentConfig.hostname) {
+                                    browser.navigateTo("/d/${docIdPart}/${hostname}")
+                                } else {
+                                    browser.navigateTo("/d/${docIdPart}")
+                                }
+                            }
+                        }.new {
+                            i(fomantic.ui.icon.folder.open)
+                        }
                     }
-                    button(fomantic.ui.button.primary).text("Jetzt Signieren").on.click {
-                        modal.open()
+
+                    if (rFile != null && showSignButton) {
+                        val modal = signDocumentModal(rFile) { signedDocument, _ ->
+                            db().documents.save(signedDocument)
+                        }
+                        button(fomantic.ui.button.primary).text("Jetzt Signieren").on.click {
+                            modal.open()
+                        }
                     }
                 }
             }
         }
-
         if(file!=null) {
             when {
                 file.contentType.isImage() -> {
@@ -241,7 +244,7 @@ fun ElementCreator<*>.renderDocumentPreview(rFile: Document?, showLinkToDocument
                 }
                 file.contentType.isPdf() -> {
                     //element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/f/${file._id}/view"))
-                    element("iframe", mapOf("style" to "height: 100%; width:90%; border: none", "src" to "/web/viewer.html?file=/d/${rFile._id}/viewSignSheet"))
+                    element("iframe", mapOf("style" to "height: 100%; width:100%; border: none", "src" to "/web/viewer.html?file=/d/${rFile._id}/viewSignSheet"))
                     div(fomantic.ui.divider.hidden)
                 }
                 else -> {
