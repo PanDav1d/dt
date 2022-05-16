@@ -274,7 +274,8 @@ private fun sendAppLoginMail(conf: OutboundMailConfig, toAddress: String, qrCode
         smtpUser = conf.user,
         smtpPassword = conf.password,
         subject = "Zugangsdaten für die Doctag App",
-        content = email
+        content = email,
+        smtpProtocol = conf.protocol
     )
     return ms.send()
 }

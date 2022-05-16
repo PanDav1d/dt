@@ -44,11 +44,13 @@ data class DesignConfig(
         val headerTitle: String?=null
 )
 
+
 data class OutboundMailConfig(
-        val server: String? = null,
-        val user: String? = null,
-        val password: String? = null,
-        val fromAddress: String? =null
+    val server: String? = null,
+    val user: String? = null,
+    val password: String? = null,
+    val fromAddress: String? =null,
+    var protocol: SendMailProtocol?=null
 )
 
 enum class InboundMailProtocol {
@@ -147,9 +149,9 @@ data class Document(
         } ?: listOf()
     }
 
-    fun makeSignature(ppk:PrivatePublicKeyPair, role:String?, inputs: List<WorkflowInputResult>?) : Signature {
+    fun makeSignature(ppk:PrivatePublicKeyPair, role:String?, inputs: List<WorkflowInputResult>?, signingUser: String) : Signature {
         val prevSignatureHash = this.signatures?.calculateSignatureHash()
-        return Signature.make(ppk, this.url, this.attachmentHash, role, inputs, prevSignatureHash)
+        return Signature.make(ppk, this.url, this.attachmentHash, role, inputs, prevSignatureHash, signingUser)
     }
 
     fun toEmbeddedDocument(db: DbContext): EmbeddedDocument {
@@ -318,7 +320,7 @@ data class Signature(
     }
 
     companion object {
-        fun make(currentKey: PrivatePublicKeyPair, documentUrl: String?, documentHash:String?, role:String?, result: List<WorkflowInputResult>?, previousSignatureHash: String?) : Signature{
+        fun make(currentKey: PrivatePublicKeyPair, documentUrl: String?, documentHash:String?, role:String?, result: List<WorkflowInputResult>?, previousSignatureHash: String?, signingUser: String) : Signature{
 
             val workflowHash = result?.calculateSha1Hash(role )
             val sig = DoctagSignatureData.makeWithPPK(
@@ -327,7 +329,8 @@ data class Signature(
                     documentUrl,
                     documentHash,
                     workflowHash,
-                    previousSignatureHash
+                    previousSignatureHash,
+                    signingUser
             )
 
             return Signature(

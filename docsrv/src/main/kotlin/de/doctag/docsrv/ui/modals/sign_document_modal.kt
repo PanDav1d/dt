@@ -217,7 +217,14 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
             val currentKey = key.value!!
 
             val realResults = workflowResults?.map { it.value }
-            val addSignature = doc.makeSignature(currentKey, role.value?.role, realResults)
+
+            val user = if(browser.authenticatedUser == null)
+                "Ohne Authentifizierung"
+            else {
+                "${browser.authenticatedUser?.firstName} ${browser.authenticatedUser?.lastName}"
+            }
+
+            val addSignature = doc.makeSignature(currentKey, role.value?.role, realResults, user)
 
             doc.signatures = (doc.signatures ?:listOf()) + addSignature
 

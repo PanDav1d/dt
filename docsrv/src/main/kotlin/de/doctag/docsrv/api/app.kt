@@ -104,7 +104,7 @@ fun Routing.appRoutes(){
             ok<AuthInfoResponse>()
         ).operationId("uploadWorkflowResultAndTriggerSignature")
     ) { req, data ->
-        ensureUserIsAuthenticated()
+        val user = ensureUserIsAuthenticated()
 
         val doc = withContext(Dispatchers.IO){
             DocServerClient.loadDocument("https://${req.hostname}/d/${req.documentId}").ensureObjectWasFound()
@@ -126,7 +126,7 @@ fun Routing.appRoutes(){
 
         val ppk = db().keys.findOne(PrivatePublicKeyPair::_id eq data.ppkId).ensureObjectWasFound()
 
-        val addSignature = doc.document.makeSignature(ppk, data.role, data.inputs)
+        val addSignature = doc.document.makeSignature(ppk, data.role, data.inputs, "${user.firstName} ${user.lastName}")
         doc.document.signatures = (doc.document.signatures ?:listOf()) + addSignature
 
         val files = addSignature.inputs?.mapNotNull { it.fileId }?.distinct()?.mapNotNull { db().files.findOneById(it) }

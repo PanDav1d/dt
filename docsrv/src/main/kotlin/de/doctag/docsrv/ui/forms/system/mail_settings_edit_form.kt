@@ -6,6 +6,7 @@ import de.doctag.docsrv.remotes.MailReceiver
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.EmailContent
 import de.doctag.lib.MailSender
+import de.doctag.lib.SendMailProtocol
 import de.doctag.lib.model.Address
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -28,10 +29,15 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
 
         h4(fomantic.ui.dividing.header).text("Mailversand")
 
+        val smtp_protocol = KVar(inboundConfig.value.protocol.toString())
+        smtp_protocol.addListener { oldVal, newVal ->
+            outboundConfig.value.protocol = SendMailProtocol.valueOf(newVal.toUpperCase())
+        }
+
         formInput("SMTP Server", "smtp.test.de", false, outboundConfig.propertyOrDefault(OutboundMailConfig::server, ""))
             .with(formCtrl)
 
-
+        radioInput("Protokoll", mapOf("SMTP" to SendMailProtocol.SMTP.name, "SMTPS" to SendMailProtocol.SMTPS.name), false, true,  smtp_protocol)
 
         formInput("Benutzername", "max_mueller", false, outboundConfig.propertyOrDefault(OutboundMailConfig::user, ""))
                 .with(formCtrl)
@@ -136,7 +142,8 @@ private fun sendTestMail(conf: OutboundMailConfig, toAddress: String) : Boolean{
             smtpUser = conf.user,
             smtpPassword = conf.password,
             subject = "Test-Mail",
-            content = email
+            content = email,
+            smtpProtocol = conf.protocol
     )
     return ms.send()
 }

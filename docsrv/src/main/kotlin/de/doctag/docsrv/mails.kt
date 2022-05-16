@@ -21,7 +21,8 @@ fun documentWasSignedMail(conf: OutboundMailConfig, toAddress: String, documentU
         smtpUser = conf.user,
         smtpPassword = conf.password,
         subject = "Test-Mail",
-        content = email
+        content = email,
+        smtpProtocol = conf.protocol
     )
     return ms.send()
 }

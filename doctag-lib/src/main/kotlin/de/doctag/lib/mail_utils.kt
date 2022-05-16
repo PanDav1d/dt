@@ -11,6 +11,11 @@ import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 
+enum class SendMailProtocol{
+    SMTP,
+    SMTPS
+}
+
 class MailSender(
         val receiverAddresses: List<String>,
         val subject: String,
@@ -20,6 +25,7 @@ class MailSender(
         val smtpPassword: String?,
         val fromAddress: String?,
         val date: ZonedDateTime = ZonedDateTime.now(),
+        val smtpProtocol: SendMailProtocol?,
         val attachmentFile: File? = null
 ) {
 
@@ -31,7 +37,8 @@ class MailSender(
                 smtpPassword: String?,
                 fromAddress: String?,
                 date: ZonedDateTime = ZonedDateTime.now(),
-                attachmentFile: File? = null) : this(receiverAddresses, subject, content.asHtml(), smtpHost, smtpUser, smtpPassword, fromAddress, date, attachmentFile)
+                smtpProtocol: SendMailProtocol?,
+                attachmentFile: File? = null) : this(receiverAddresses, subject, content.asHtml(), smtpHost, smtpUser, smtpPassword, fromAddress, date, smtpProtocol, attachmentFile)
 
     companion object {
         var isTestModeEnabled = false
@@ -50,6 +57,9 @@ class MailSender(
         props.put("mail.smtps.host", smtpHost)
         props.put("mail.smtps.auth", "true")
         props.put("mail.smtps.ssl.protocols", "TLSv1.2");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
         val session: Session = Session.getInstance(props, null)
         val msg = MimeMessage(session)
@@ -83,7 +93,10 @@ class MailSender(
 
         System.err.println("##########################Starting to send mail########################## Now: ${System.currentTimeMillis()}")
 
-        val t: SMTPTransport = session.getTransport("smtps") as SMTPTransport
+        val t: SMTPTransport = when(smtpProtocol) {
+            SendMailProtocol.SMTPS->session.getTransport("smtps") as SMTPTransport
+            else -> session.getTransport("smtp") as SMTPTransport
+        }
         t.connect(smtpHost, smtpUser, smtpPassword)
         t.sendMessage(msg, msg.allRecipients)
         val lastServerResponse = t.lastServerResponse

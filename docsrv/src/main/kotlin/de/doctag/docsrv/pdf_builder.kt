@@ -26,8 +26,13 @@ class PdfBuilder(val doc: Document, val db: DbContext)  {
                 font-weight: bold;
             }
             .systemInfoTable {
-                font-size: 10pt;
+                font-size: 7pt;
             }
+            
+            table td, table td * {
+                vertical-align: top;
+            }
+            
             .signatureInfoTable {
                 font-size: 10pt;
             }
@@ -76,20 +81,18 @@ class PdfBuilder(val doc: Document, val db: DbContext)  {
         <table class="systemInfoTable">
          <tr>
             <td class="tbl-key">Systembetreiber</td>
-            <td class="tbl-key">Addresse</td>
-            <td class="tbl-key">Doctag-System</td>
-            <td class="tbl-key">Schlüssel</td>
+            <td class="tbl-key">verantwortlicher Doctag-Server</td>
+            <td class="tbl-key">Angaben zur Signatur</td>
         </tr>
         <tr>
-            <td>${sig.data?.signingUser}</td>
             <td>
                 ${sig.signedByKey?.ownerAddress?.name1}<br />
                 ${sig.signedByKey?.ownerAddress?.name2?.plus("<br/>") ?:""}
                 ${sig.signedByKey?.ownerAddress?.street?.plus("<br/>")}
                 ${sig.signedByKey?.ownerAddress?.countryCode} - ${sig.signedByKey?.ownerAddress?.zipCode} ${sig.signedByKey?.ownerAddress?.city}<br />
             </td>
-            <td>${sig.data?.signingDoctagInstance}</td>
-            <td>${sig.signedByKey?.publicKey?.take(10)}</td>
+            <td>${sig.data?.signingDoctagInstance}<br/>Öffentlicher Schlüssel: ${sig.signedByKey?.publicKey?.take(16)+"..."}<br/></td>
+            <td>Prüfsumme: ${sig.data?.documentHash?.take(16)}<br/>Signatur ${idx+1} von ${doc.signatures?.size}<br/></td>
         </tr>
         </table>
         
@@ -100,6 +103,10 @@ class PdfBuilder(val doc: Document, val db: DbContext)  {
         <tr>
             <td class="tbl-key">Datum</td>
             <td>${sig.signed?.formatDateTime(false)}</td>
+        </tr>
+        <tr>
+            <td class="tbl-key">Benutzer</td>
+            <td>${sig.data?.signingUser}</td>
         </tr>
         ${sig?.inputs?.map { renderWorkflowInput(it)}?.joinToString("\n") ?: ""}
         </table>

@@ -68,8 +68,8 @@ data class DoctagSignatureData(
             return rawSig.copy(signature = sig)
         }
 
-        fun makeWithPPK(ppk: PrivatePublicKeyPair, validity: Duration, url: String?, documentHash: String?, workflowHash: String?, previousSignatureHash: String?) : DoctagSignatureData{
-            val user = "${ppk.owner.firstName} ${ppk.owner.lastName}"
+        fun makeWithPPK(ppk: PrivatePublicKeyPair, validity: Duration, url: String?, documentHash: String?, workflowHash: String?, previousSignatureHash: String?, signingUser: String) : DoctagSignatureData{
+            val user = signingUser
 
             val privKey = loadPrivateKey(ppk.privateKey) ?: throw IllegalStateException("Unable to load private key")
             val pubKey = loadPublicKey(ppk.publicKey) ?: throw IllegalStateException("Unable to load public key")
