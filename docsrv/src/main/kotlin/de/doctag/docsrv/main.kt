@@ -1,11 +1,13 @@
 package de.doctag.docsrv
 
+import UnauthorizedException
 import appRoutes
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.xenomachina.argparser.ArgParser
+import de.doctag.docsrv.api.BadRequestException
 import de.doctag.docsrv.api.docServerApi
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.static.staticFiles
@@ -83,6 +85,14 @@ fun Application.kwebFeature(){
             logger.error("Not found ${call.request.httpMethod.value} ${call.request.path()}")
 
             call.respond(TextContent("${notFound.value} ${notFound.description}. Request path was ${call.request.path()}", ContentType.Text.Plain.withCharset(Charsets.UTF_8), notFound))
+        }
+
+        exception<UnauthorizedException> { err->
+            call.respond(HttpStatusCode.Unauthorized,err.message?:"" )
+        }
+
+        exception<BadRequestException> {err->
+            call.respond(HttpStatusCode.BadRequest, err.msg ?: "")
         }
 
         exception<Exception>{err->

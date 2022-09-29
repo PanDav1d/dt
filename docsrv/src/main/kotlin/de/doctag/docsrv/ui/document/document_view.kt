@@ -10,7 +10,6 @@ import de.doctag.docsrv.ui.document.components.documentViewTabMenu
 import de.doctag.docsrv.ui.forms.system.addTagDropdown
 import de.doctag.docsrv.ui.modals.filePreviewModal
 import de.doctag.docsrv.ui.modals.signDocumentModal
-import de.doctag.docsrv.ui.settings.SystemSettingsActiveItem
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,7 +31,7 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?, subPage:
 
 
 
-    pageBorderAndTitle("Dokument",{signButton(document.value)}) { pageArea ->
+    pageBorderAndTitle("Dokument",{conditionalRegisterButton();signButton(document.value)}) { pageArea ->
         div(fomantic.content).new() {
             render(document) { rDocument: Document ->
 
@@ -55,6 +54,14 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?, subPage:
 
                 }
             }
+        }
+    }
+}
+
+fun ElementCreator<*>.conditionalRegisterButton(){
+    if(browser.authenticatedUser==null) {
+        button(fomantic.ui.button.tertiary).text("Eigenen Login erhalten").on.click {
+            browser.navigateTo("https://www.doctag.de/kostenlos-starten")
         }
     }
 }

@@ -201,10 +201,10 @@ fun ElementCreator<*>.pageBorderAndTitle(title: String, titleButtons: (ElementCr
             div(fomantic.ui.vertical.segment).new {
 
                 div(fomantic.ui.grid).new {
-                    div(fomantic.ten.wide.column).new {
+                    div(fomantic.six.wide.column).new {
                         h1(fomantic.ui.header).text(title)
                     }
-                    div(fomantic.six.wide.right.aligned.column).new {
+                    div(fomantic.ten.wide.right.aligned.column).new {
                         titleButtons?.let {
                             titleButtons()
                         }

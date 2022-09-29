@@ -270,6 +270,15 @@ enum class WorkflowInputKind {
     ReceiptMail
 }
 
+data class DocumentToAdd(
+    val data: String,
+    val fileName: String,
+    val workflow: String?,
+    val doctagPosX: Float?,
+    val doctagPosY: Float?,
+    val doctagSize: Float?
+)
+
 data class EmbeddedSignature(
         var files: List<FileData>,
         var signature: Signature

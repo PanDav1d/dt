@@ -28,7 +28,9 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.10.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1"
-    compile group: 'javax.mail', name: 'mail', version: '1.4.1'
+    compile group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+    compile group: 'com.sun.mail', name: 'imap', version: '1.6.2'
+    compile group: 'com.sun.mail', name: 'pop3', version: '1.6.2'
 
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'

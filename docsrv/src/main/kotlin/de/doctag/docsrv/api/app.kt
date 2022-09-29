@@ -1,4 +1,5 @@
 import de.doctag.docsrv.api.*
+import de.doctag.docsrv.checkPasswordHash
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.lib.model.PrivatePublicKeyPair
@@ -6,6 +7,7 @@ import de.doctag.lib.toSha1HexString
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.locations.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
@@ -19,6 +21,7 @@ import ktor.swagger.responds
 import ktor.swagger.version.shared.Group
 import org.litote.kmongo.*
 import java.time.ZonedDateTime
+import java.util.*
 
 
 data class AuthInfoResponse(val authenticated: Boolean, val firstName: String?, val lastName: String?)
@@ -38,15 +41,33 @@ data class SignatureResult(
 
 fun PipelineContext<Unit, ApplicationCall>.ensureUserIsAuthenticated() : User {
     val session = this.call.request.cookies["SESSION"]
-    val user = this.db().users.findOne(User::sessions / Session::sessionId eq session)
-        ?: throw UnauthorizedException()
+    if(session != null) {
+        val user = this.db().users.findOne(User::sessions / Session::sessionId eq session)
+            ?: throw UnauthorizedException()
 
-    val userSession = user.sessions?.find { it.sessionId == session }
+        val userSession = user.sessions?.find { it.sessionId == session }
 
-    if(userSession?.expires?.isAfter(ZonedDateTime.now()) != true)
-        throw UnauthorizedException()
+        if (userSession?.expires?.isAfter(ZonedDateTime.now()) != true)
+            throw UnauthorizedException()
 
-    return user
+        return user
+    }
+
+    val basicAuthHeader = this.call.request.header("Authorization")
+    if(basicAuthHeader != null && basicAuthHeader.startsWith("Basic")){
+        val userPassB64 = basicAuthHeader.removePrefix("Basic").trim()
+        val userPass = Base64.getDecoder().decode(userPassB64).toString(charset = Charsets.UTF_8)
+        if(userPass.contains(":")){
+            val (mail, pass) = userPass.split(":")
+
+            val user = this.db().users.findOne(User::emailAdress eq mail)
+            if(user != null &&  checkPasswordHash(user.passwordHash, pass)){
+                return user
+            }
+        }
+    }
+
+    throw UnauthorizedException()
 }
 
 inline fun <reified T> T?.ensureObjectWasFound() : T{

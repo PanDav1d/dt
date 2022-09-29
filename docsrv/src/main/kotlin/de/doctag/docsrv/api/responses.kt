@@ -12,6 +12,10 @@ data class DiscoveryResponse(
         val identity: String
 )
 
+data class DocumentAddResponse(
+    val documentUrl: String
+)
+
 data class EmbeddedDocument(
         val files: List<FileData>,
         val document: Document

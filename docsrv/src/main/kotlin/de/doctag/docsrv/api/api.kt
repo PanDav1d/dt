@@ -3,14 +3,12 @@ package de.doctag.docsrv.api
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
-import de.doctag.lib.fixHttps
-import de.doctag.lib.generateRandomString
-import de.doctag.lib.loadPrivateKey
-import de.doctag.lib.makeSignature
+import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
 import de.doctag.lib.model.PublicKeyVerification
 import de.doctag.lib.model.PublicKeyVerificationResult
 import documentWasSignedMail
+import ensureUserIsAuthenticated
 import io.ktor.application.*
 import ktor.swagger.ok
 import ktor.swagger.responds
@@ -21,6 +19,7 @@ import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ktor.swagger.operationId
@@ -33,7 +32,7 @@ import org.bson.internal.Base64
 import org.litote.kmongo.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-
+import java.time.ZonedDateTime
 
 
 fun Routing.docServerApi(){
@@ -121,6 +120,71 @@ fun Routing.docServerApi(){
         } else {
             throw NotFoundException("Public Key is unknown")
         }
+    }
+
+    @Group("DocServer")
+    @Location("/d/")
+    class AddDocumentRequestPath
+    post<AddDocumentRequestPath, DocumentToAdd>("Add Document".responds(ok<DocumentAddResponse>()).operationId("addDocument"))
+    { req, postData->
+        ensureUserIsAuthenticated()
+
+        logger.info("Received ")
+
+        val workflow = if(postData.workflow != null) {
+            db().workflows.findOne(Workflow::name eq postData.workflow) ?: throw BadRequestException("Workflow not found")
+        } else {
+            val initial = db().currentConfig.workflow?.defaultWorkflowId
+            initial?.let {
+                db().workflows.findOneById(initial)
+            }
+        }
+
+        val fd = FileData()
+        fd.name = postData.fileName
+        fd.contentType = "application/pdf"
+        fd.base64Content = postData.data
+
+
+        val docId = try {
+            extractDocumentIds(postData.data)?.firstOrNull()?.documentId
+        } catch(ex: java.lang.Exception){
+            logger.error(ex)
+            logger.error("Failed to extract document id. Assume no document id is present")
+
+            null
+        }.let {
+            if(it == null){
+                val randomDoctag = "https://${db().currentConfig.hostname}/d/${generateRandomString(16)}"
+                fd.base64Content = insertDoctagIntoPDF(postData.data, randomDoctag, postData.doctagPosX ?: 0.885f, postData.doctagPosY ?: 0.08f, postData.doctagSize ?: 10.0f)
+                DocumentId.parse(randomDoctag)
+            } else {
+                it
+            }
+        }
+
+        if(docId.hostname != db().currentConfig.hostname){
+            throw BadRequestException("Document has unexpected hostname. Expected ${db().currentConfig.hostname}. But was ${docId.hostname}")
+        }
+
+        fd._id = fd.base64Content!!.toSha1HexString()
+
+        val docObj = Document()
+        docObj.url = docId.fullUrl
+        docObj.attachmentId = fd._id
+        docObj.attachmentHash = fd.base64Content?.toSha1HexString()
+        docObj.created = ZonedDateTime.now()
+        docObj.originalFileName = fd.name
+        docObj.fullText = fd.base64Content?.let { extractTextFromPdf(it) }
+        docObj.workflow = workflow
+        docObj.tags = docObj.fullText.determineMatchingTags(db().tags.find().toList())
+
+        db().files.save(fd)
+        db().documents.save(docObj)
+
+        logger.info("Added document with url ${docId.fullUrl}")
+
+        call.respond(HttpStatusCode.OK,DocumentAddResponse(documentUrl = docId.fullUrl))
     }
 
 
@@ -297,7 +361,7 @@ fun Routing.docServerApi(){
     @Location("/f/{fileId}/view")
     class ViewFileRequestPath(val fileId: String)
     get<ViewFileRequestPath>(
-        "Perform Instance discovery".responds(
+        "View a document with the given ID hosted on this instance".responds(
             ok<DiscoveryResponse>()
         ).operationId("viewFile")
     ) { req ->
@@ -312,7 +376,7 @@ fun Routing.docServerApi(){
     @Location("/f/{fileId}/download")
     class DownloadFileRequestPath(val fileId: String)
     get<DownloadFileRequestPath>(
-        "Perform Instance discovery".responds(
+        "Download a document with the given ID hosted on this instance".responds(
             ok<DiscoveryResponse>()
         ).operationId("downloadFile")
     ) { req ->
