@@ -4,8 +4,12 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
+import de.doctag.docsrv.model.authenticatedUser
 import de.doctag.lib.hexStringToByteArray
 import de.doctag.lib.toHex
+import doctag.translation.I18n
+import kweb.Element
+import kweb.ElementCreator
 import kweb.WebBrowser
 import kweb.state.KVar
 import kweb.state.ReversibleFunction
@@ -75,7 +79,14 @@ inline fun <O, reified T : Any?> KVar<T?>.propertyOrDefault2(property: KProperty
     })
 }
 
+fun Element.i18nText(path: String, text: String) : Element{
+    this.text(I18n.t/*ignore*/(path, text))
+    return this
+}
 
+fun ElementCreator<*>.i18n(path: String,text: String) : String{
+    return I18n.t/*ignore*/(path, text)
+}
 
 val WebBrowser.urlParameters:Map<String,String>
     get() = this.url.value.substringAfter('?').split("&").map { tokens -> tokens.split("=") }.map { it[0] to it[1] }.toMap()

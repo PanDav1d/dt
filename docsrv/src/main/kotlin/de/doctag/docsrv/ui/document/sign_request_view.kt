@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.document
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.ToastKind
@@ -28,39 +30,39 @@ fun ElementCreator<*>.handleViewSignRequest(id: String) {
         val previewFileUrl = "https://${docUrl.hostname}/f/${doc.files.first()._id}/view".fixHttps()
 
         render(signRequest){
-            pageBorderAndTitle("Signaturanfrage ansehen") { pageArea ->
+            pageBorderAndTitle(i18n("ui.document.signRequestView.title","Signaturanfrage ansehen")) { pageArea ->
                 div(fomantic.content).new() {
                     div(fomantic.ui.grid).new(){
                         div(fomantic.twelve.wide.column).new {
-                            h4(fomantic.ui.horizontal.divider.header).text("Vorschau")
+                            h4(fomantic.ui.horizontal.divider.header).i18nText("ui.document.signRequestView.preview","Vorschau")
                             element("iframe", mapOf("style" to "position: absolute; height: 80vh; width:90%; border: none", "src" to previewFileUrl))
                         }
                         div(fomantic.four.wide.column).new {
-                            h4(fomantic.ui.horizontal.divider.header).text("Aktionen")
+                            h4(fomantic.ui.horizontal.divider.header).i18nText("ui.document.signRequestView.actions","Aktionen")
 
                                 when(signRequest.value?.status) {
                                     DocumentSignRequestStatus.SIGNED -> {
                                         div(fomantic.ui.message.green).new {
-                                            div(fomantic.header).text("Bereits signiert")
-                                            p().text("Diese Signaturanfrage wurde bereits bearbeitet. Sie können die Signatur im Dokument betrachten.")
+                                            div(fomantic.header).i18nText("ui.document.signRequestView.alreadySigned","Bereits signiert")
+                                            p().i18nText("ui.document.signRequestView.documentWasAlreadySignedInfoMessage","Diese Signaturanfrage wurde bereits bearbeitet. Sie können die Signatur im Dokument betrachten.")
 
                                             val docId = DocumentId.parse(doc.document.url!!)
                                             a(
                                                 fomantic.ui.button,
                                                 href = "/d/${docId.id}/${docId.hostname}"
-                                            ).text("Zum Dokument")
+                                            ).i18nText("ui.document.signRequestView.linkToDocument1","Zum Dokument")
                                         }
                                     }
                                     DocumentSignRequestStatus.REJECTED -> {
                                         div(fomantic.ui.message.yellow).new {
-                                            div(fomantic.header).text("Abgelehnt")
-                                            p().text("Diese Signaturanfrage wurde bereits abgelehnt.")
+                                            div(fomantic.header).i18nText("ui.document.signRequestView.rejectedLabel","Abgelehnt")
+                                            p().i18nText("ui.document.signRequestView.signRequestRejectedInfoText","Diese Signaturanfrage wurde bereits abgelehnt.")
 
                                             val docId = DocumentId.parse(doc.document.url!!)
                                             a(
                                                 fomantic.ui.button,
                                                 href = "/d/${docId.id}/${docId.hostname}"
-                                            ).text("Zum Dokument")
+                                            ).i18nText("ui.document.signRequestView.linkToDocument2","Zum Dokument")
                                         }
                                     }
                                     else -> {
@@ -81,24 +83,24 @@ fun ElementCreator<*>.handleViewSignRequest(id: String) {
                                                     db().signRequests.save(it)
                                                 }
 
-                                                pageArea.showToast("Dokument signiert", ToastKind.Success)
+                                                pageArea.showToast(i18n("ui.document.signRequestView.documentSignedInfoMessage","Dokument signiert"), ToastKind.Success)
 
                                                 GlobalScope.launch {
                                                     delay(150)
                                                     signRequest.value = db().signRequests.findOneById(id)
                                                 }
                                             }
-                                            button(fomantic.ui.button.tertiary.blue).text("Signieren").on.click {
+                                            button(fomantic.ui.button.tertiary.blue).i18nText("ui.document.signRequestView.signButton","Signieren").on.click {
                                                 modal.open()
                                             }
                                         }
 
                                         div(fomantic.ui.item).new {
-                                            button(fomantic.ui.button.tertiary.red).text("Ablehnen").on.click {
+                                            button(fomantic.ui.button.tertiary.red).i18nText("ui.document.signRequestView.rejectButton","Ablehnen").on.click {
                                                 signRequest.value!!.status = DocumentSignRequestStatus.REJECTED
                                                 signRequest.value!!.signedTimestamp = ZonedDateTime.now()
                                                 db().signRequests.save(signRequest.value!!)
-                                                pageArea.showToast("Anfrage abgelehnt", ToastKind.Error)
+                                                pageArea.showToast(i18n("ui.document.signRequestView.requestRejectedLabel","Anfrage abgelehnt"), ToastKind.Error)
 
                                                 GlobalScope.launch {
                                                     delay(150)

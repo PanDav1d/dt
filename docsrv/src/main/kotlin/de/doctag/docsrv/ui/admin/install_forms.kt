@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.admin
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.model.host
@@ -18,19 +20,19 @@ fun ElementCreator<*>.setupPinCheck(expectedPin: String, fileName: String, whenD
     formControl { formCtrl ->
 
 
-        h4(fomantic.ui.header).text("Server-Pin angeben")
+        h4(fomantic.ui.header).i18nText("ui.admin.installForms.serverPin","Server-Pin angeben")
         p().innerHTML(
-                """Bitte geben Sie den Server-Pin an, um mit der Installation fortzufahren. Die Server-Pin erhalten Sie indem Sie den folgenden Befehl im Terminal Ihres Servers ausführen:""".trimIndent()
+                i18n("ui.admin.installForms.requestServerPinText","""Bitte geben Sie den Server-Pin an, um mit der Installation fortzufahren. Die Server-Pin erhalten Sie indem Sie den folgenden Befehl im Terminal Ihres Servers ausführen:""").trimIndent()
         )
         div(fomantic.ui.inverted.segment).new{
             span(fomantic.ui.inverted.purple.text).text("cat ${fileName}")
         }
 
-        formInput("Server-PIN", "bitte angeben", true, actualPin)
+        formInput(i18n("ui.admin.installForms.serverPinInputLabel","Server-PIN"), i18n("ui.admin.installForms.serverPinPlaceholder","bitte angeben"), true, actualPin)
                 .with(formCtrl)
             .validate { input ->
                 if(input != expectedPin){
-                    "Bitte geben Sie die korrekte PIN an"
+                    i18n("ui.admin.installForms.serverPinIncorrectError","Bitte geben Sie die korrekte PIN an")
                 }
                 else {
                     null
@@ -52,16 +54,16 @@ fun ElementCreator<*>.setupDomainNameForm(whenDone: (domainName: String)->Unit){
     formControl { formCtrl ->
 
 
-        h4(fomantic.ui.header).text("Domain-Name festlegen")
+        h4(fomantic.ui.header).i18nText("ui.admin.installForms.setupDomainNameHeadline","Domain-Name festlegen")
         p().innerHTML(
-                """Bitte geben Sie den Domain-Namen ein, unter dem dieses System erreichbar ist.""".trimIndent()
+                i18n("ui.admin.installForms.requestDomainNameText","""Bitte geben Sie den Domain-Namen ein, unter dem dieses System erreichbar ist.""").trimIndent()
         )
 
-        formInput("Domain-Name", "test.doctag.de", true, domainName)
+        formInput(i18n("ui.admin.installForms.domainNameInputLabel", "Domain-Name"), "test.doctag.de", true, domainName)
                 .with(formCtrl)
                 .validate { input ->
                     if(input == null || !Regex("^([a-z0-9]+(-[a-z0-9]+)*\\.)+[a-z]{2,}\$").matches(input)){
-                        "Bitte geben Sie einen korrekten Domain-Namen an"
+                        i18n("ui.admin.installForms.domainNameInvalidError","Bitte geben Sie einen korrekten Domain-Namen an")
                     }
                     else {
                         null

@@ -2,6 +2,8 @@ package de.doctag.docsrv.ui.document
 
 import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.getQRCodeImageAsDataUrl
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import org.litote.kmongo.findOneById
 import de.doctag.docsrv.ui.*
@@ -31,7 +33,7 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?, subPage:
 
 
 
-    pageBorderAndTitle("Dokument",{conditionalRegisterButton();signButton(document.value)}) { pageArea ->
+    pageBorderAndTitle(i18n("ui.document.documentView.title", "Dokument"),{conditionalRegisterButton();signButton(document.value)}) { pageArea ->
         div(fomantic.content).new() {
             render(document) { rDocument: Document ->
 
@@ -60,7 +62,7 @@ fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?, subPage:
 
 fun ElementCreator<*>.conditionalRegisterButton(){
     if(browser.authenticatedUser==null) {
-        button(fomantic.ui.button.tertiary).text("Eigenen Login erhalten").on.click {
+        button(fomantic.ui.button.tertiary).i18nText("ui.document.documentView.createDoctagInstanceLink","Eigenen Login erhalten").on.click {
             browser.navigateTo("https://www.doctag.de/kostenlos-starten")
         }
     }
@@ -70,8 +72,13 @@ fun ElementCreator<*>.signButton(rFile: Document){
     val modal = signDocumentModal(rFile) { signedDocument, _ ->
         db().documents.save(signedDocument)
     }
-    button(fomantic.ui.button.primary).text("Jetzt Signieren").on.click {
-        modal.open()
+
+    if(browser.authenticatedUser != null || rFile.workflow?.actions?.any { it.permissions?.allowAnonymousSubmissions == true } == true) {
+        button(fomantic.ui.button.primary).i18nText("ui.document.documentView.signNow","Jetzt Signieren").on.click {
+            modal.open()
+        }
+    } else {
+        span(fomantic.small.text).i18nText("ui.document.documentView.anonymousSignaturesNotPossibleInfoMessage", "Signaturen ohne Authentifikation sind in diesem Dokument nicht möglich.")
     }
 }
 
@@ -81,20 +88,20 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
 
     div(fomantic.ui.stackable.two.column.grid).new{
         div(fomantic.column).new {
-            h4(fomantic.ui.horizontal.divider.header).text("Infos")
+            h4(fomantic.ui.horizontal.divider.header).i18nText("ui.document.documentView.infosLabel", "Infos")
             div(fomantic.ui.relaxed.list).new {
                 div(fomantic.ui.item).new {
                     i(fomantic.ui.paperclip.icon)
                     div(fomantic.ui.content).new {
                         span(fomantic.header).text(rDocument.originalFileName ?: "")
-                        div(fomantic.description).text("Dateiname")
+                        div(fomantic.description).i18nText("ui.document.documentView.fileName", "Dateiname")
                     }
                 }
                 div(fomantic.ui.item).new {
                     i(fomantic.ui.calendarDay.icon)
                     div(fomantic.ui.content).new {
                         span(fomantic.header).text(rDocument.created?.formatDateTime() ?: "")
-                        div(fomantic.description).text("Erstellungsdatum")
+                        div(fomantic.description).i18nText("ui.document.documentView.creationDate", "Erstellungsdatum")
                     }
                 }
 
@@ -109,7 +116,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                                 }
                             }
                         }
-                        div(fomantic.description).text("Dokumentenaddresse")
+                        div(fomantic.description).i18nText("ui.document.documentView.documentUrl","Dokumentenaddresse")
                     }
                 }
 
@@ -128,7 +135,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                                 }
                             }
                             if(rDocument.tags.isNullOrEmpty()){
-                                span().text("keine")
+                                span().i18nText("ui.document.documentView.noneText","keine")
                             }
                             if(userCanEditTags) {
                                 addTagDropdown(rDocument.tags) {
@@ -140,7 +147,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                             }
                         }
                         div(fomantic.description).new{
-                            span().text("Tags")
+                            span().i18nText("ui.document.documentView.tags","Tags")
                         }
                     }
                 }
@@ -159,14 +166,14 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
 
                         span(fomantic.header).new {
                             when(validationResult){
-                                true -> span().text("Signaturen gültig ")
-                                false -> span().text("Signaturen ungültig ")
-                                null -> span().text("Validierung läuft ")
+                                true -> span().i18nText("ui.document.documentView.signatureValid","Signaturen gültig ")
+                                false -> span().i18nText("ui.document.documentView.signatureNotValid","Signaturen ungültig ")
+                                null -> span().i18nText("ui.document.documentView.validationRunning","Validierung läuft ")
                             }
 
                         }
                         div(fomantic.description).new{
-                            div(fomantic.description).text("Status")
+                            div(fomantic.description).i18nText("ui.document.documentView.status","Status")
                         }
                     }
                 }
@@ -174,17 +181,17 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
         }
 
         div(fomantic.three.wide.column.right.floated).new {
-            h4(fomantic.ui.horizontal.divider.header).text("Aktionen")
+            h4(fomantic.ui.horizontal.divider.header).i18nText("ui.document.documentView.actions","Aktionen")
 
             rDocument.url?.let {url->
 
-                val m = modal("Dokumentenaddresse"){
+                val m = modal(i18n("ui.document.documentView.documentAddress","Dokumentenaddresse")){
                     img(src= getQRCodeImageAsDataUrl(url, 400,400, 5))
                     a(href=url).text(url)
                 }
 
                 div(fomantic.ui.item).new {
-                    button(fomantic.ui.button.tertiary.blue).text("Doctag anzeigen").on.click {
+                    button(fomantic.ui.button.tertiary.blue).i18nText("ui.document.documentView.viewDoctagButton","Doctag anzeigen").on.click {
                         m.open()
                     }
                 }
@@ -195,14 +202,14 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                     val modal = signDocumentModal(rDocument){signedDocument,_->
                         db().documents.save(signedDocument)
                     }
-                    button(fomantic.ui.button.tertiary.blue).text("Signieren").on.click {
+                    button(fomantic.ui.button.tertiary.blue).i18nText("ui.document.documentView.signButton","Signieren").on.click {
                         modal.open()
                     }
                 }
             }
 
             div(fomantic.ui.item).new {
-                a(href = "/d/${rDocument._id}/download", attributes = mapOf("download" to "", "class" to "ui button tertiary blue")).text("Herunterladen")
+                a(href = "/d/${rDocument._id}/download", attributes = mapOf("download" to "", "class" to "ui button tertiary blue")).i18nText("ui.document.documentView.downloadButton","Herunterladen")
             }
         }
     }
@@ -210,7 +217,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
 
 
     h2(fomantic.ui.header).new {
-        span().text("Signaturen")
+        span().i18nText("ui.document.documentView.signatures","Signaturen")
     }
 
     if((rDocument.signatures?.count() ?: 0) > 0 || rDocument.workflow != null) {
@@ -218,12 +225,12 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
             table(fomantic.ui.very.basic.selectable.table.compact).new {
                 thead().new {
                     tr().new {
-                        th().text("Rolle")
-                        th().text("Systembetreiber")
-                        th().text("Addresse")
-                        th().text("Schlüsselinhaber")
-                        th().text("Datum")
-                        th().text("Info")
+                        th().i18nText("ui.document.documentView.role","Rolle")
+                        th().i18nText("ui.document.documentView.operator","Systembetreiber")
+                        th().i18nText("ui.document.documentView.address","Addresse")
+                        th().i18nText("ui.document.documentView.keyOwner","Schlüsselinhaber")
+                        th().i18nText("ui.document.documentView.timestamp","Datum")
+                        th().i18nText("ui.document.documentView.info","Info")
                     }
                 }
                 tbody().new {
@@ -238,13 +245,13 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                                 }
                             }
                         }.new {
-                            td().text(sig.role ?: "n.v.")
+                            td().text(sig.role ?: i18n("ui.document.documentView.notAvailableText","n.v."))
                             td().text(sig.signedByKey?.ownerAddress?.name1 ?: "")
                             td().text("${sig.signedByKey?.ownerAddress?.zipCode ?: ""} ${sig.signedByKey?.ownerAddress?.city ?: ""}")
                             td().text("${sig.signedByKey?.owner?.firstName} ${sig.signedByKey?.owner?.lastName}")
                             td().text(sig.signed?.formatDateTime() ?: "")
                             td().new {
-                                i(fomantic.icon.qrcode).withPopup("Signierende Doctag-Instanz", "${sig.signedByKey?.signingDoctagInstance}")
+                                i(fomantic.icon.qrcode).withPopup(i18n("ui.document.documentView.signingDoctagInstance","Signierende Doctag-Instanz"), "${sig.signedByKey?.signingDoctagInstance}")
                             }
                         }
 
@@ -256,8 +263,8 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                                         table(fomantic.ui.very.basic.very.compact.collapsing.celled.table).new {
                                             thead().new {
                                                 tr().new {
-                                                    th().text("Name")
-                                                    th().text("Wert")
+                                                    th().i18nText("ui.document.documentView.name","Name")
+                                                    th().i18nText("ui.document.documentView.value","Wert")
                                                 }
                                             }
                                             tbody().new {
@@ -285,7 +292,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                                         }
                                     }
                                     else {
-                                        span(fomantic.ui.grey.text).text("Keine Workflow-Eingaben vorhanden")
+                                        span(fomantic.ui.grey.text).i18nText("ui.document.documentView.noWorkflowsFoundInfoText","Keine Workflow-Eingaben vorhanden")
                                     }
                                 }
                             }
@@ -301,7 +308,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                         tr().new {
                             td().text(missingAction?.role ?: "")
                             td(attributes = mapOf("colspan" to "5")).new {
-                                span(fomantic.ui.grey.text).text("Noch keine Signatur vorhanden")
+                                span(fomantic.ui.grey.text).i18nText("ui.document.documentView.noSignaturePresentYetInfoText","Noch keine Signatur vorhanden")
                             }
                         }
                     }
@@ -310,6 +317,6 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
         }
     }
     else {
-        p().text("Keine Signaturen vorhanden")
+        p().i18nText("ui.document.documentView.noSignaturesAvailable","Keine Signaturen vorhanden")
     }
 }

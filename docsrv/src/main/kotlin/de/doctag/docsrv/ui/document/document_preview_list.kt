@@ -1,9 +1,7 @@
 package de.doctag.docsrv.ui.document
 
 import SearchFilter
-import de.doctag.docsrv.formatDateTime
-import de.doctag.docsrv.isImage
-import de.doctag.docsrv.isPdf
+import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.AttachmentImporter
 import de.doctag.docsrv.ui.*
@@ -81,19 +79,19 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                     div(fomantic.sixteen.wide.column).new {
                         div(fomantic.ui.vertical.segment).new {
 
-                            h1(fomantic.ui.header).text("Dokumentenliste")
+                            h1(fomantic.ui.header).i18nText("ui.document.documentPreviewList.documentList","Dokumentenliste")
                             div(fomantic.ui.content).new {
                                 div(fomantic.content).new() {
 
                                     render(isImportRunning, container = {div()}){ isRunning->
                                         documentTabMenu(DocumentTabMenuActiveItem.DocumentList) {
                                             val modal = addDocumentModal { doc->
-                                                logger.info("Dokument hinzufügen")
-                                                pageArea.showToast("Dokument erfolgreich hinzugefügt", ToastKind.Success)
+                                                logger.info("Added document!")
+                                                pageArea.showToast(i18n("ui.document.documentPreviewList.documentSuccessfullyAddedMessage", "Dokument erfolgreich hinzugefügt"), ToastKind.Success)
                                                 documents.value = listOf(doc).plus(documents.value)
                                             }
 
-                                            a(fomantic.item).text("Dokument hinzufügen").on.click {
+                                            a(fomantic.item).i18nText("ui.document.documentPreviewList.documentAddButton","Dokument hinzufügen").on.click {
                                                 modal.open()
                                             }
 
@@ -102,7 +100,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                                 div(fomantic.ui.active.inline.loader)
                                             }
                                             else {
-                                                a(fomantic.item).text("Aus Mail Postfach importieren").on.click {
+                                                a(fomantic.item).i18nText("ui.document.documentPreviewList.importFromMailboxButton","Aus Mail Postfach importieren").on.click {
                                                     try {
                                                         isImportRunning.value = true
                                                         AttachmentImporter(db()).runImport()
@@ -159,10 +157,10 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                                     document.getWorkflowStatus().forEach { (role, signature) ->
                                                         if(signature != null) {
                                                             val signedAt = signature.signed?.formatDateTime()
-                                                            i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}")
+                                                            i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, i18n("ui.document.documentPreviewList.signedOnMessage", "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}"))
                                                         }
                                                         else {
-                                                            i(fomantic.ui.icon.circle.outline.grey).withPopup(role, "Noch nicht signiert")
+                                                            i(fomantic.ui.icon.circle.outline.grey).withPopup(role, i18n("ui.document.documentPreviewList.notYetSignedMessage","Noch nicht signiert"))
                                                         }
                                                     }
                                                     span(mapOf("style" to "float:right")).new {
@@ -229,8 +227,12 @@ fun ElementCreator<*>.renderDocumentPreview(rFile: Document?, showLinkToDocument
                         val modal = signDocumentModal(rFile) { signedDocument, _ ->
                             db().documents.save(signedDocument)
                         }
-                        button(fomantic.ui.button.primary).text("Jetzt Signieren").on.click {
-                            modal.open()
+                        if(browser.authenticatedUser != null || rFile.workflow?.actions?.any { it.permissions?.allowAnonymousSubmissions == true } == true) {
+                            button(fomantic.ui.button.primary).text("Jetzt Signieren").on.click {
+                                modal.open()
+                            }
+                        } else {
+                            span(fomantic.small.text).text("Signaturen ohne Authentifikation sind in diesem Dokument nicht möglich.")
                         }
                     }
                 }

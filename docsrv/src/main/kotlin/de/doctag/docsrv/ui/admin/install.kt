@@ -1,6 +1,8 @@
 package de.doctag.docsrv.ui.admin
 
 import de.doctag.docsrv.generatePasswordHash
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.DocsrvConfig
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.db
@@ -38,8 +40,8 @@ fun WebBrowser.handleInstall(content: ElementCreator<*>) {
 
     if(db(host()).config.findOne(DocsrvConfig::_id eq "1")!=null){
         content.centeredBox {
-            h2().text("Einrichtung abgeschlossen")
-            p().text("Die Einrichtung Ihres Systems wurde bereits durchgeführt. Sie können den Docsrv jetzt verwenden.")
+            h2().text(i18n("ui.admin.install.doneHeader", "Einrichtung abgeschlossen"))
+            p().text(i18n("ui.admin.install.doneText","Die Einrichtung Ihres Systems wurde bereits durchgeführt. Sie können den Docsrv jetzt verwenden."))
         }
     }
     else {
@@ -48,7 +50,7 @@ fun WebBrowser.handleInstall(content: ElementCreator<*>) {
                 div().new {
                     when (rStatus) {
                         SetupSteps.PIN_CHECK -> {
-                            h2().text("System einrichten")
+                            h2().text(i18n("ui.admin.install.pinCheckHeader","System einrichten"))
 
                             val serverPin = Random.nextInt(1_000_000, 9_999_999).toString()
 
@@ -61,7 +63,7 @@ fun WebBrowser.handleInstall(content: ElementCreator<*>) {
                             }
                         }
                         SetupSteps.ENTER_DOMAIN_NAME -> {
-                            h2().text("System einrichten")
+                            h2().text(i18n("ui.admin.install.domainNameHeder","System einrichten"))
 
 
                             setupDomainNameForm { domainName ->
@@ -70,8 +72,8 @@ fun WebBrowser.handleInstall(content: ElementCreator<*>) {
                             }
                         }
                         SetupSteps.ENTER_PERSONAL_DATA -> {
-                            h2().text("System einrichten")
-                            h4().text("Admin-Benutzer anlegen")
+                            h2().text(i18n("ui.admin.install.personalDataHeader", "System einrichten"))
+                            h4().text(i18n("ui.admin.install.createAdminUser","Admin-Benutzer anlegen"))
 
                             userAddForm(User()) { user, passwd ->
 
@@ -83,11 +85,11 @@ fun WebBrowser.handleInstall(content: ElementCreator<*>) {
                             }
                         }
                         SetupSteps.RESULT_PAGE -> {
-                            h2().text("Einrichtung abgeschlossen")
-                            span().text("Das System wurde erfolgreich eingerichtet. Weiter zur ")
-                            a(href = "/login").text("Anmeldung")
+                            h2().i18nText("ui.admin.install.completedHeader","Einrichtung abgeschlossen")
+                            span().i18nText("ui.admin.install.completedText","Das System wurde erfolgreich eingerichtet. Weiter zur ")
+                            a(href = "/login").i18nText("ui.admin.install.loginLinkText", "Anmeldung")
 
-                            p().text("Sie werden automatisch in 5 Sekunden weitergeleitet.")
+                            p().i18nText("ui.admin.install.redirectText", "Sie werden automatisch in 5 Sekunden weitergeleitet.")
                             GlobalScope.launch {
                                 delay(5000)
                                 browser.navigateTo("/login")

@@ -1,4 +1,4 @@
-package com.logenios.plugins
+package doctag.translation
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -118,7 +118,7 @@ fun findI18nCalls(file: File): TranslationForFile {
 }
 
 fun findI18nCallsInString(fileContent: String, filePath: String): TranslationForFile {
-    val findI18nRegex = Regex("(I18n\\.t\\()")
+    val findI18nRegex = Regex("(I18n\\.t\\()|(i18n\\((?!path))|(i18nText\\((?!path))")
     val foundI18nResult = findI18nRegex.findAll(fileContent).toMutableList()
 
     val translationCalls = foundI18nResult.map { matchResult ->
@@ -154,6 +154,12 @@ fun findI18nCallsInString(fileContent: String, filePath: String): TranslationFor
             t
         }
         else {
+            if(splitted.size<2){
+                logger.error("Split not valid: $splitted")
+                return@map null
+            }
+
+
             val firstParamValue = splitted[0].let { findGoosefootRegex.find(it)?.groupValues?.get(1) }
             val secondParamValue = splitted[1].let { findGoosefootRegex.find(it)?.groupValues?.get(1) }
 
@@ -172,7 +178,7 @@ fun findI18nCallsInString(fileContent: String, filePath: String): TranslationFor
     return TranslationForFile(
         filePath = filePath,
         numberOfFoundI18nCalls = foundI18nResult.size,
-        extractedTranslationCalls = translationCalls
+        extractedTranslationCalls = translationCalls.filterNotNull()
     )
 }
 
@@ -199,7 +205,7 @@ fun List<TranslationCall>.toJsonObject(): JsonObject {
         val splittedPath = translationCall.path?.split(".")
         splittedPath?.forEachIndexed { idx, pathEntry ->
             if (idx == splittedPath.size-1) {
-                selectedJsonElement.addProperty(pathEntry, translationCall.defaultText)
+                selectedJsonElement.addProperty(pathEntry, translationCall.defaultText?.trim())
             } else {
                 selectedJsonElement = if (selectedJsonElement.has(pathEntry)) {
                     selectedJsonElement.get(pathEntry) as JsonObject

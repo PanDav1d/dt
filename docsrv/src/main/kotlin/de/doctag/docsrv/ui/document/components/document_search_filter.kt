@@ -1,14 +1,10 @@
+import de.doctag.docsrv.i18n
 import de.doctag.docsrv.model.AttachedTag
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.forms.system.addTagDropdown
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
-import kweb.state.render
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -37,7 +33,7 @@ fun ElementCreator<*>.documentSearchFilterComponent(currentValue : SearchFilter 
 
 
     div(fomantic.ui.input.action.fluid.mini).new {
-        input(InputType.text, placeholder = "suche").apply {
+        input(InputType.text, placeholder = i18n("ui.document.components.searchTextPlaceholder", "suche")).apply {
             value=searchTerm
         }.focus()
         button(fomantic.ui.icon.button.mini.active(currentValue.isExpanded)).apply{
@@ -82,14 +78,14 @@ fun ElementCreator<*>.documentSearchFilterComponent(currentValue : SearchFilter 
             div(fomantic.row.withStyle("padding-bottom:4px;")).new {
                 div(fomantic.eight.wide.column.withStyle("padding-right:4px;")).new {
                     div(fomantic.ui.input.mini.withStyle("width: 100%;")).new {
-                        input(type = InputType.date, placeholder = "Von",attributes = mapOf("style" to "width: 40rw;")).apply {
+                        input(type = InputType.date, placeholder = i18n("ui.document.components.from", "Von"), attributes = mapOf("style" to "width: 40rw;")).apply {
                             value=dateFrom
                         }
                     }
                 }
                 div(fomantic.eight.wide.column.withStyle("padding-left:4px;")).new {
                     div(fomantic.ui.input.mini.withStyle("width: 100%;")).new {
-                        input(type = InputType.date, placeholder = "Bis",attributes = mapOf("style" to "width: 40rw;")).apply {
+                        input(type = InputType.date, placeholder = i18n("ui.document.components.till", "Bis"),attributes = mapOf("style" to "width: 40rw;")).apply {
                             value=dateTo
                         }
                     }
@@ -109,7 +105,7 @@ fun ElementCreator<*>.documentSearchFilterComponent(currentValue : SearchFilter 
                     }
                     addTagDropdown(currentValue.tags?: listOf()){
                         val newTags = (currentValue.tags?: listOf()).plus(it.asAttachedTag())
-                        currentValue.copy(tags = newTags)?.let {
+                        currentValue.copy(tags = newTags).let {
                             setValue(it)
                         }
                     }
@@ -117,5 +113,4 @@ fun ElementCreator<*>.documentSearchFilterComponent(currentValue : SearchFilter 
             }
         }
     }
-
 }

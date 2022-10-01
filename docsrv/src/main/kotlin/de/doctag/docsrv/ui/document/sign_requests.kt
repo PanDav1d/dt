@@ -2,6 +2,8 @@ package de.doctag.docsrv.ui.document
 
 
 import de.doctag.docsrv.formatDateTime
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.AttachmentImporter
 import de.doctag.docsrv.ui.*
@@ -20,17 +22,17 @@ fun ElementCreator<*>.handleSignRequestList() {
     authRequired {
         val requests = KVar(loadDocumentSignRequests())
 
-        pageBorderAndTitle("Signaturanfragen") { pageArea ->
+        pageBorderAndTitle(i18n("ui.document.signRequests.title", "Signaturanfragen")) { pageArea ->
             div(fomantic.content).new() {
 
                 documentTabMenu(DocumentTabMenuActiveItem.SignRequests) {
                     val modal = createDocumentSignRequestModal { docSignRequest ->
-                        logger.info("Dokument erfassen")
-                        pageArea.showToast("Signaturanfrage erfasst", ToastKind.Success)
+                        logger.info("Add signature request")
+                        pageArea.showToast(i18n("ui.document.signRequests.addedSignatureRequestSuccessMessage","Signaturanfrage erfasst"), ToastKind.Success)
                         requests.value = loadDocumentSignRequests()
                     }
 
-                    a(fomantic.item).text("Signaturanfrage erstellen").on.click {
+                    a(fomantic.item).i18nText("ui.document.signRequests.addSignatureRequestButton","Signaturanfrage erstellen").on.click {
                         modal.open()
                     }
                 }
@@ -43,12 +45,12 @@ fun ElementCreator<*>.handleSignRequestList() {
                     table(fomantic.ui.selectable.celled.table).new {
                         thead().new {
                             tr().new {
-                                th().text("Doctag")
-                                th().text("Rolle")
-                                th().text("Erfasst von")
-                                th().text("Erstellt am")
-                                th().text("Status")
-                                th().text("Aktion")
+                                th().i18nText("ui.document.signRequests.documentUrl","Doctag")
+                                th().i18nText("ui.document.signRequests.requestedRole","Rolle")
+                                th().i18nText("ui.document.signRequests.createdBy","Erfasst von")
+                                th().i18nText("ui.document.signRequests.creationDate","Erstellt am")
+                                th().i18nText("ui.document.signRequests.status","Status")
+                                th().i18nText("ui.document.signRequests.actions","Aktion")
                             }
                         }
                         tbody().new {
@@ -66,9 +68,9 @@ fun ElementCreator<*>.handleSignRequestList() {
                                     td().text(req.timestamp?.formatDateTime() ?: "")
                                     td().new {
                                         when(req.status){
-                                            DocumentSignRequestStatus.REQUESTED -> span().text("Angefragt")
-                                            DocumentSignRequestStatus.REJECTED -> span().text("Abgelehnt")
-                                            DocumentSignRequestStatus.SIGNED -> span().text("Signiert")
+                                            DocumentSignRequestStatus.REQUESTED -> span().i18nText("ui.document.signRequests.requestedStatus","Angefragt")
+                                            DocumentSignRequestStatus.REJECTED -> span().i18nText("ui.document.signRequests.rejectedStatus","Abgelehnt")
+                                            DocumentSignRequestStatus.SIGNED -> span().i18nText("ui.document.signRequests.signedStatus","Signiert")
                                         }
                                     }
                                     td().new {

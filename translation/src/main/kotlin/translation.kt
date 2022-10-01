@@ -1,4 +1,4 @@
-package com.logenios.xconvert.base
+package doctag.translation
 
 import com.jayway.jsonpath.Configuration
 import com.jayway.jsonpath.JsonPath

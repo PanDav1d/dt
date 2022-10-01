@@ -1,0 +1,149 @@
+{
+  "ui": {
+    "auth": {
+      "loginHeader": "Anmeldung erforderlich",
+      "login": {
+        "loginFailedErrorMessage": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihren Benutzernamen und Ihr Passwort.",
+        "usernamePlaceholder": "Benutzername"
+      },
+      "passwordPlaceholder": "Passwort",
+      "loginButtonText": "Anmelden",
+      "register": {
+        "registerHeader": "Account erstellen"
+      },
+      "logout": {
+        "logoutHeader": "Abgemeldet",
+        "logoutDescription": "Sie haben sich abgemeldet. Weiter zur",
+        "forwardToLoginLinkText": "Anmeldung",
+        "forwardInFiveSecMessage": "Sie werden automatisch in 5 Sekunden weitergeleitet."
+      }
+    },
+    "admin": {
+      "installForms": {
+        "serverPin": "Server-Pin angeben",
+        "requestServerPinText": "Bitte geben Sie den Server-Pin an, um mit der Installation fortzufahren. Die Server-Pin erhalten Sie indem Sie den folgenden Befehl im Terminal Ihres Servers ausführen:",
+        "serverPinInputLabel": "Server-PIN",
+        "serverPinPlaceholder": "bitte angeben",
+        "serverPinIncorrectError": "Bitte geben Sie die korrekte PIN an",
+        "setupDomainNameHeadline": "Domain-Name festlegen",
+        "requestDomainNameText": "Bitte geben Sie den Domain-Namen ein, unter dem dieses System erreichbar ist.",
+        "domainNameInputLabel": "Domain-Name",
+        "domainNameInvalidError": "Bitte geben Sie einen korrekten Domain-Namen an"
+      },
+      "install": {
+        "doneHeader": "Einrichtung abgeschlossen",
+        "doneText": "Die Einrichtung Ihres Systems wurde bereits durchgeführt. Sie können den Docsrv jetzt verwenden.",
+        "pinCheckHeader": "System einrichten",
+        "domainNameHeder": "System einrichten",
+        "personalDataHeader": "System einrichten",
+        "createAdminUser": "Admin-Benutzer anlegen",
+        "completedHeader": "Einrichtung abgeschlossen",
+        "completedText": "Das System wurde erfolgreich eingerichtet. Weiter zur",
+        "loginLinkText": "Anmeldung",
+        "redirectText": "Sie werden automatisch in 5 Sekunden weitergeleitet."
+      }
+    },
+    "document": {
+      "menu": {
+        "document": "Dokumente",
+        "requests": "Anfragen"
+      },
+      "documentPreviewList": {
+        "documentList": "Dokumentenliste",
+        "documentSuccessfullyAddedMessage": "Dokument erfolgreich hinzugefügt",
+        "documentAddButton": "Dokument hinzufügen",
+        "importFromMailboxButton": "Aus Mail Postfach importieren",
+        "signedOnMessage": "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}",
+        "notYetSignedMessage": "Noch nicht signiert"
+      },
+      "documentView": {
+        "title": "Dokument",
+        "createDoctagInstanceLink": "Eigenen Login erhalten",
+        "signNow": "Jetzt Signieren",
+        "anonymousSignaturesNotPossibleInfoMessage": "Signaturen ohne Authentifikation sind in diesem Dokument nicht möglich.",
+        "infosLabel": "Infos",
+        "fileName": "Dateiname",
+        "creationDate": "Erstellungsdatum",
+        "documentUrl": "Dokumentenaddresse",
+        "noneText": "keine",
+        "tags": "Tags",
+        "signatureValid": "Signaturen gültig",
+        "signatureNotValid": "Signaturen ungültig",
+        "validationRunning": "Validierung läuft",
+        "status": "Status",
+        "actions": "Aktionen",
+        "documentAddress": "Dokumentenaddresse",
+        "viewDoctagButton": "Doctag anzeigen",
+        "signButton": "Signieren",
+        "downloadButton": "Herunterladen",
+        "signatures": "Signaturen",
+        "role": "Rolle",
+        "operator": "Systembetreiber",
+        "address": "Addresse",
+        "keyOwner": "Schlüsselinhaber",
+        "timestamp": "Datum",
+        "info": "Info",
+        "notAvailableText": "n.v.",
+        "signingDoctagInstance": "Signierende Doctag-Instanz",
+        "name": "Name",
+        "value": "Wert",
+        "noWorkflowsFoundInfoText": "Keine Workflow-Eingaben vorhanden",
+        "noSignaturePresentYetInfoText": "Noch keine Signatur vorhanden",
+        "noSignaturesAvailable": "Keine Signaturen vorhanden"
+      },
+      "components": {
+        "searchTextPlaceholder": "suche",
+        "from": "Von",
+        "till": "Bis",
+        "documentViewTab": {
+          "documents": "Dokument",
+          "signatures": "Signaturen"
+        }
+      },
+      "signRequestView": {
+        "title": "Signaturanfrage ansehen",
+        "preview": "Vorschau",
+        "actions": "Aktionen",
+        "alreadySigned": "Bereits signiert",
+        "documentWasAlreadySignedInfoMessage": "Diese Signaturanfrage wurde bereits bearbeitet. Sie können die Signatur im Dokument betrachten.",
+        "linkToDocument1": "Zum Dokument",
+        "rejectedLabel": "Abgelehnt",
+        "signRequestRejectedInfoText": "Diese Signaturanfrage wurde bereits abgelehnt.",
+        "linkToDocument2": "Zum Dokument",
+        "documentSignedInfoMessage": "Dokument signiert",
+        "signButton": "Signieren",
+        "rejectButton": "Ablehnen",
+        "requestRejectedLabel": "Anfrage abgelehnt"
+      },
+      "documentList": {
+        "header": "Dokumente",
+        "documentAddedSuccessfullyMessage": "Dokument erfolgreich hinzugefügt",
+        "addDocument": "Dokument hinzufügen",
+        "importFromEmail": "Aus Mail Postfach importieren",
+        "fileNameLabel": "Dateiname",
+        "statusLabel": "Status",
+        "createdLabel": "Erstellt am",
+        "actionLabel": "Aktion",
+        "signedByPopupText": "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}",
+        "notYetSignedText": "Noch nicht signiert"
+      },
+      "signRequests": {
+        "title": "Signaturanfragen",
+        "addedSignatureRequestSuccessMessage": "Signaturanfrage erfasst",
+        "addSignatureRequestButton": "Signaturanfrage erstellen",
+        "documentUrl": "Doctag",
+        "requestedRole": "Rolle",
+        "createdBy": "Erfasst von",
+        "creationDate": "Erstellt am",
+        "status": "Status",
+        "actions": "Aktion",
+        "requestedStatus": "Angefragt",
+        "rejectedStatus": "Abgelehnt",
+        "signedStatus": "Signiert"
+      }
+    }
+  },
+  "Translation": {
+    "thisMessageWasAutomaticallyGenerated": "Diese Nachricht wurde automatisch vom TRANSLATOR erstellt."
+  }
+}
