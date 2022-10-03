@@ -1,6 +1,8 @@
 package de.doctag.docsrv.ui.forms.system
 
 import de.doctag.docsrv.extractTextFromPdf
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
 import kweb.*
@@ -12,9 +14,9 @@ import java.lang.Exception
 
 fun ElementCreator<*>.search_settings_form(){
 
-    h4(fomantic.ui.header).text("Suche")
+    h4(fomantic.ui.header).i18nText("ui.forms.system.searchForm.title","Suche")
 
-    buttonWithLoader("Index neu erstellen"){
+    buttonWithLoader(i18n("ui.forms.system.searchForm.reindexButton","Index neu erstellen")){
         db().documents.find().forEach { doc->
             try {
                 val file = doc.attachmentId?.let { db().files.findOneById(it) }

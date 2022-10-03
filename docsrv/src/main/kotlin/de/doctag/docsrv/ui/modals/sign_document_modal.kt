@@ -1,11 +1,8 @@
 package de.doctag.docsrv.ui.modals
 
-import de.doctag.docsrv.DataUrlResult
-import de.doctag.docsrv.fromDataUrl
+import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
-import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.remotes.DocServerClient
-import de.doctag.docsrv.trimImage
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
@@ -30,7 +27,7 @@ import javax.imageio.ImageIO
 import kotlin.concurrent.thread
 
 private val mailRegex = "^(.+)@(.+)$".toRegex()
-fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document, addedSig: Signature)->Unit) = modal("Dokument signieren", autoFocus = false) { modal ->
+fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document, addedSig: Signature)->Unit) = modal(i18n("ui.modals.signDocumentModal.title","Dokument signieren"), autoFocus = false) { modal ->
 
     val role = KVar<WorkflowAction?>(null)
     val key = KVar<PrivatePublicKeyPair?>(null)
@@ -39,7 +36,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
 
     formControl { formCtrl->
 
-        h4(fomantic.ui.header.divider.horizontal).text("Allgemeine Angaben").focus()
+        h4(fomantic.ui.header.divider.horizontal).i18nText("ui.modals.signDocumentModal.generalInformation","Allgemeine Angaben").focus()
 
         input(type = InputType.hidden)
 
@@ -49,14 +46,14 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
 
         if(roleOptions != null) {
             div(fomantic.ui.field).new {
-                label().text("Rolle wählen")
+                label().i18nText("ui.modals.signDocumentModal.selectRole","Rolle wählen")
                 dropdown(roleOptions).onSelect { selectedRoleIdx ->
                     role.value = doc.workflow?.actions!![selectedRoleIdx!!.toInt()]
                 }
             }
         }
         formCtrl.withValidation {
-            if(role.value == null) "Bitte wählen Sie eine Rolle aus" else null
+            if(role.value == null) i18n("ui.modals.signDocumentModal.selectRoleMessage","Bitte wählen Sie eine Rolle aus") else null
         }
 
         if(db().currentConfig.security?.defaultKeyForAnonymousSubmissions != null && browser.authenticatedUser == null){
@@ -64,7 +61,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
         } else {
             val keyOptions = db().keys.find().map { it._id to (it.verboseName ?: "") }.toMap()
             div(fomantic.ui.field).new {
-                label().text("Schlüssel wählen")
+                label().i18nText("ui.modals.signDocumentModal.selectKey","Schlüssel wählen")
                 dropdown(keyOptions).onSelect { selectedKeyId ->
                     val currentKey = db().keys.findOne(PrivatePublicKeyPair::_id eq selectedKeyId)
                     logger.info("Selected key: ${selectedKeyId}. key.value = ${currentKey?.verboseName}")
@@ -72,11 +69,11 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                 }
             }
             formCtrl.withValidation {
-                if (key.value == null) "Bitte wählen Sie einen Schlüssel aus" else null
+                if (key.value == null) i18n("ui.modals.signDocumentModal.selectKeyMessage","Bitte wählen Sie einen Schlüssel aus") else null
             }
         }
 
-        h4(fomantic.ui.header.divider.horizontal).text("Zusatzdaten")
+        h4(fomantic.ui.header.divider.horizontal).i18nText("ui.modals.signDocumentModal.additionalData","Zusatzdaten")
 
         render(role){rRole ->
             logger.info("Rendering selected role ${rRole?.role}")
@@ -99,7 +96,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                             formInput(null, "", true, result.propertyOrDefault(WorkflowInputResult::value,""))
                         }
                         formCtrl.withValidation {
-                            if(!result.value.value.isNullOrBlank() && !mailRegex.matches(result.value.value!!)) "Bitte geben Sie eine gültige Mail-Adresse an" else null
+                            if(!result.value.value.isNullOrBlank() && !mailRegex.matches(result.value.value!!)) i18n("ui.modals.signDocumentModal.inputValidEmailMessage","Bitte geben Sie eine gültige Mail-Adresse an") else null
                         }
                     }
                     WorkflowInputKind.Checkbox -> {
@@ -207,7 +204,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
 
         div(fomantic.ui.divider.hidden)
 
-        formSubmitButton(formCtrl, "Dokument signieren"){
+        formSubmitButton(formCtrl, i18n("ui.modals.signDocumentModal.signDocumentButton","Dokument signieren")){
             logger.info("Sign Document button clicked ${doc.url}")
 
             formCtrl.submit()
@@ -219,7 +216,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
             val realResults = workflowResults?.map { it.value }
 
             val user = if(browser.authenticatedUser == null)
-                "Ohne Authentifizierung"
+                i18n("ui.modals.signDocumentModal.noAuthenticationMessage","Ohne Authentifizierung")
             else {
                 "${browser.authenticatedUser?.firstName} ${browser.authenticatedUser?.lastName}"
             }

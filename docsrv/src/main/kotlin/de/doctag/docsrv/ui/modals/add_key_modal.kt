@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.modals
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.forms.keyAddForm
 import de.doctag.docsrv.ui.modal
@@ -14,13 +16,13 @@ import kweb.state.render
 import org.litote.kmongo.save
 import kweb.*
 
-fun ElementCreator<*>.addKeyModal(onKeyAdd: (u: PrivatePublicKeyPair)->Unit) = modal("Schlüssel hinzufügen"){ modal->
+fun ElementCreator<*>.addKeyModal(onKeyAdd: (u: PrivatePublicKeyPair)->Unit) = modal(i18n("ui.modals.addKeyModal.title","Schlüssel hinzufügen")){ modal->
     val hasError = KVar<String?>(null)
 
     render(hasError){ errorMessage->
         errorMessage?.let{
             div(fomantic.ui.message).new {
-                div(fomantic.ui.header).text("Fehler beim Anlegen")
+                div(fomantic.ui.header).i18nText("ui.modals.addKeyModal.keyAddFailed","Fehler beim Anlegen")
                 p().text(errorMessage!!)
             }
         }

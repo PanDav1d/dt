@@ -1,12 +1,11 @@
 package de.doctag.docsrv.ui.forms
 
-import de.doctag.docsrv.formatDateTime
-import de.doctag.docsrv.getQRCodeImageAsDataUrl
+import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
-import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.EmailContent
 import de.doctag.lib.MailSender
+import doctag.translation.I18n
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
@@ -27,7 +26,7 @@ fun ElementCreator<*>.userAddForm(userObj: User, onSaveClick: (user:User, passwo
 
         formCtrl.withValidation {
             if(password.value != passwordConfirm.value){
-                "Beide Passwort-Felder müssen übereinstimmen"
+                i18n("ui.forms.userForms.userAddForm.passwordDoNotMatchError","Beide Passwort-Felder müssen übereinstimmen")
             }
             else {
                 null
@@ -35,32 +34,32 @@ fun ElementCreator<*>.userAddForm(userObj: User, onSaveClick: (user:User, passwo
         }
 
         div(fomantic.ui.field).new{
-            label().text("Name")
+            label().i18nText("ui.forms.userForms.userAddForm.nameLabel","Name")
             div(fomantic.ui.two.fields).new {
-                formInput(null, "Vorname", true, user.propertyOrDefault(User::firstName, ""))
+                formInput(null, i18n("ui.forms.userForms.userAddForm.firstNamePlaceholder","Vorname"), true, user.propertyOrDefault(User::firstName, ""))
                     .with(formCtrl)
-                    .withInputMissingErrorMessage("Bitte geben Sie Ihren Vornamen an.")
+                    .withInputMissingErrorMessage(i18n("ui.forms.userForms.userAddForm.provideFirstNameError","Bitte geben Sie Ihren Vornamen an."))
 
-                formInput(null, "Nachname", true, user.propertyOrDefault(User::lastName, ""))
+                formInput(null, i18n("ui.forms.userForms.userAddForm.lastNamePlaceholder","Nachname"), true, user.propertyOrDefault(User::lastName, ""))
                     .with(formCtrl)
-                    .withInputMissingErrorMessage("Bitte geben Sie Ihren Nachnamen an.")
+                    .withInputMissingErrorMessage(i18n("ui.forms.userForms.userAddForm.provideLastNameError","Bitte geben Sie Ihren Nachnamen an."))
             }
         }
 
-        formInput( "E-Mail", "E-Mail", false, user.propertyOrDefault(User::emailAdress, ""))
+        formInput( i18n("ui.forms.userForms.userAddForm.emailLabel","E-Mail"), i18n("ui.forms.userForms.userAddForm.emailPlaceholder","E-Mail"), false, user.propertyOrDefault(User::emailAdress, ""))
             .with(formCtrl)
             .validate {
                 when{
-                    it?.matches("^[A-Za-z0-9+_.-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$".toRegex(RegexOption.IGNORE_CASE)) != true -> "Bitte geben Sie eine gültige E-Mail Addresse an"
-                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null -> "Die E-Mail Addresse ist bereits vergeben"
+                    it?.matches("^[A-Za-z0-9+_.-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$".toRegex(RegexOption.IGNORE_CASE)) != true -> i18n("ui.forms.userForms.userAddForm.emailInvalidErrorMessage","Bitte geben Sie eine gültige E-Mail Addresse an")
+                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null -> i18n("ui.forms.userForms.userAddForm.emailAddressTakenErrorMessage","Die E-Mail Addresse ist bereits vergeben")
                     else -> null
                 }
             }
 
-        formInput( "Passwort", "Passwort", true, password, InputType.password)
+        formInput( i18n("ui.forms.userForms.userAddForm.passwordLabel","Passwort"), i18n("ui.forms.userForms.userAddForm.passwordPlaceholder","Passwort"), true, password, InputType.password)
             .with(formCtrl)
 
-        formInput( "Passwort bestätigen", "Passwort bestätigen", true, passwordConfirm, InputType.password)
+        formInput( i18n("ui.forms.userForms.userAddForm.passwordConfirmLabel","Passwort bestätigen"), i18n("ui.forms.userForms.userAddForm.passwordConfirmPlaceholder","Passwort bestätigen"), true, passwordConfirm, InputType.password)
             .with(formCtrl)
 
         displayErrorMessages(formCtrl)
@@ -76,21 +75,21 @@ fun ElementCreator<*>.userEditForm(userObj: User, onSaveClick: (user:User)->Unit
 
     formControl { formCtrl ->
 
-        formInput("Vorname", "Vorname", true, user.propertyOrDefault(User::firstName, ""))
+        formInput(i18n("ui.forms.userForms.userEditForm.firstNameLabel","Vorname"), i18n("ui.forms.userForms.userEditForm.firstNamePlaceholder","Vorname"), true, user.propertyOrDefault(User::firstName, ""))
             .with(formCtrl)
-            .withInputMissingErrorMessage("Bitte geben Sie Ihren Vornamen an.")
+            .withInputMissingErrorMessage(i18n("ui.forms.userForms.userEditForm.provideFirstnameErrorMessage","Bitte geben Sie Ihren Vornamen an."))
 
-        formInput("Nachname", "Nachname", true, user.propertyOrDefault(User::lastName, ""))
+        formInput(i18n("ui.forms.userForms.userEditForm.lastNameLabel","Nachname"), i18n("ui.forms.userForms.userEditForm.lastNamePlaceholder","Nachname"), true, user.propertyOrDefault(User::lastName, ""))
             .with(formCtrl)
-            .withInputMissingErrorMessage("Bitte geben Sie Ihren Nachnamen an.")
+            .withInputMissingErrorMessage(i18n("ui.forms.userForms.userEditForm.provideLastNameError","Bitte geben Sie Ihren Nachnamen an."))
 
 
-        formInput( "E-Mail", "E-Mail", false, user.propertyOrDefault(User::emailAdress, ""))
+        formInput( i18n("ui.forms.userForms.userEditForm.emailLabel","E-Mail"), i18n("ui.forms.userForms.userEditForm.emailPlaceholder","E-Mail"), false, user.propertyOrDefault(User::emailAdress, ""))
             .with(formCtrl)
             .validate {
                 when{
-                    it?.matches("^[A-Za-z0-9+_.-]+@(.+)$".toRegex()) != true -> "Bitte geben Sie eine gültige E-Mail Addresse an"
-                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null && it != userObj.emailAdress -> "Die E-Mail Addresse ist bereits vergeben"
+                    it?.matches("^[A-Za-z0-9+_.-]+@(.+)$".toRegex()) != true -> i18n("ui.forms.userForms.userEditForm.provideEmailerrorMessage","Bitte geben Sie eine gültige E-Mail Addresse an")
+                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null && it != userObj.emailAdress -> i18n("ui.forms.userForms.userEditForm.emailAddressAlreadyTakenErrorMessage","Die E-Mail Addresse ist bereits vergeben")
                     else -> null
                 }
             }
@@ -113,7 +112,7 @@ fun ElementCreator<*>.userPasswordEditForm(userObj: User, onSaveClick: (password
 
         formCtrl.withValidation {
             if(password.value != passwordConfirm.value){
-                "Beide Passwort-Felder müssen übereinstimmen"
+                i18n("ui.forms.userForms.userPasswordEditForm.passwordsDoNotMatchError","Beide Passwort-Felder müssen übereinstimmen")
             }
             else {
                 null
@@ -121,10 +120,10 @@ fun ElementCreator<*>.userPasswordEditForm(userObj: User, onSaveClick: (password
         }
 
 
-        formInput( "Neues Passwort", "Passwort", true, password, InputType.password)
+        formInput( i18n("ui.forms.userForms.userPasswordEditForm.newPasswordLabel","Neues Passwort"), i18n("ui.forms.userForms.userPasswordEditForm.newPasswordPlaceholder","Passwort"), true, password, InputType.password)
             .with(formCtrl)
 
-        formInput( "Neues Passwort bestätigen", "Passwort bestätigen", true, passwordConfirm, InputType.password)
+        formInput( i18n("ui.forms.userForms.userPasswordEditForm.confirmPasswordLabel","Neues Passwort bestätigen"), i18n("ui.forms.userForms.userPasswordEditForm.confirmPasswordPlaceholder","Passwort bestätigen"), true, passwordConfirm, InputType.password)
             .with(formCtrl)
 
         displayErrorMessages(formCtrl)
@@ -143,22 +142,22 @@ fun ElementCreator<*>.userDeleteForm(userObj: User, onSaveClick: ()->Unit){
 
         formCtrl.withValidation {
             if(userObj.emailAdress != emailConfirm.value){
-                "Beide Felder müssen übereinstimmen"
+                i18n("ui.forms.userForms.userDeleteForm.usernamesDoNotMatchError","Beide Felder müssen übereinstimmen")
             }
             else {
                 null
             }
         }
 
-        h2().text("Den Benutzer ${userObj.firstName} ${userObj.lastName} wirklich löschen?")
-        p().text("Bitte geben Sie die E-Mail Addresse ${userObj.emailAdress} des Nutzers ein um die Löschung zu bestätigen.")
+        h2().i18nText("ui.forms.userForms.userDeleteForm.deleteConfirmMessage","Den Benutzer ${userObj.firstName} ${userObj.lastName} wirklich löschen?")
+        p().i18nText("ui.forms.userForms.userDeleteForm.pleaseTypeEmailMessage","Bitte geben Sie die E-Mail Addresse ${userObj.emailAdress} des Nutzers ein um die Löschung zu bestätigen.")
 
-        formInput( "E-Mail Addresse", "E-Mail", true, emailConfirm, InputType.text)
+        formInput( i18n("ui.forms.userForms.userDeleteForm.emailLabel","E-Mail Addresse"), i18n("ui.forms.userForms.userDeleteForm.emailPlaceholder","E-Mail"), true, emailConfirm, InputType.text)
             .with(formCtrl)
 
         displayErrorMessages(formCtrl)
 
-        formSubmitButton(formCtrl, "Löschen", fomantic.ui.button.red){
+        formSubmitButton(formCtrl, i18n("ui.forms.userForms.userDeleteForm.deleteButton","Löschen"), fomantic.ui.button.red){
             onSaveClick()
         }
     }
@@ -171,8 +170,8 @@ fun ElementCreator<*>.userSessionsForm(userObj: User, onSaveClick: () -> Unit){
         table(fomantic.ui.celled.table).new {
             thead().new {
                 tr().new {
-                    th().text("Auf Gerät")
-                    th().text("Gültig bis")
+                    th().i18nText("ui.forms.userForms.userSessionForm.onDevice","Auf Gerät")
+                    th().i18nText("ui.forms.userForms.userSessionForm.validTill","Gültig bis")
                     th().text("")
                 }
             }
@@ -191,14 +190,14 @@ fun ElementCreator<*>.userSessionsForm(userObj: User, onSaveClick: () -> Unit){
                 }
                 if(userObj.sessions.isNullOrEmpty()){
                     tr().new {
-                        td(mapOf("colspan" to "3")).text("Keine Anmeldungen vorhanden")
+                        td(mapOf("colspan" to "3")).i18nText("ui.forms.userForms.userSessionForm.noLoginAvailableMessage","Keine Anmeldungen vorhanden")
                     }
                 }
             }
         }
 
         if(changeCounter.value > 0) {
-            buttonWithLoader("Änderungen übernehmen", fomantic.ui.button.primary) {
+            buttonWithLoader(i18n("ui.forms.userForms.userSessionForm.confirmChangesButton","Änderungen übernehmen"), fomantic.ui.button.primary) {
                 onSaveClick()
                 changeCounter.value = 0
             }
@@ -211,8 +210,8 @@ data class SmartphoneLoginData(val doctagUrl:String, val sessionId: String)
 fun ElementCreator<*>.userAppForm(userObj:User, onSaveClick: () -> Unit) = useState(null as Session?){ newSession, setState ->
 
     if(newSession == null) {
-        button(fomantic.ui.button.primary).text("Hinzufügen").on.click {
-            val session = Session(UUID.randomUUID().toString(), ZonedDateTime.now().plusYears(5), "Doctag App Anmeldung")
+        button(fomantic.ui.button.primary).i18nText("ui.forms.userForms.userAppForm.addButton","Hinzufügen").on.click {
+            val session = Session(UUID.randomUUID().toString(), ZonedDateTime.now().plusYears(5), i18n("ui.forms.userForms.userAppForm.appSessionName","Doctag App Anmeldung"))
             userObj.sessions = (userObj.sessions ?: listOf()).plus(session)
 
             onSaveClick()
@@ -223,8 +222,8 @@ fun ElementCreator<*>.userAppForm(userObj:User, onSaveClick: () -> Unit) = useSt
         val qr = getQRCodeImageAsDataUrl(SmartphoneLoginData(db().currentConfig.hostname, newSession.sessionId).toJson(), 400,400, 5)
 
         h3(fomantic.ui.header).new {
-            span().text("Doctag App Anmeldung")
-            div(fomantic.ui.sub.header).text("Direkt scannen")
+            span().i18nText("ui.forms.userForms.userAppForm.addSessionForAppHeader","Doctag App Anmeldung")
+            div(fomantic.ui.sub.header).i18nText("ui.forms.userForms.userAppForm.scanImmediately","Direkt scannen")
         }
 
         img(src=qr)
@@ -235,15 +234,15 @@ fun ElementCreator<*>.userAppForm(userObj:User, onSaveClick: () -> Unit) = useSt
                 useState(false){didSendMail, markMailAsSent->
                     if(!didSendMail) {
 
-                        buttonWithLoader("Per E-Mail senden") {
-                            sendAppLoginMail(mailConfig, mailAddress, qr)
+                        buttonWithLoader(i18n("ui.forms.userForms.userAppForm.sendViaEmail","Per E-Mail senden")) {
+                            sendAppLoginMail(mailConfig, mailAddress, qr, browser.sessionLanguage)
                             markMailAsSent(true)
                         }
                     }
                     else {
                         div(fomantic.ui.message.info).new {
-                            div(fomantic.header).text("Mail gesendet")
-                            p().text("Die Zugangsdaten wurden erfolgreich an ${mailAddress} gesendet.")
+                            div(fomantic.header).i18nText("ui.forms.userForms.userAppForm.successMessageTitle","Mail gesendet")
+                            p().i18nText("ui.forms.userForms.userAppForm.successMessageBody","Die Zugangsdaten wurden erfolgreich an ${mailAddress} gesendet.")
                         }
                     }
                 }
@@ -252,19 +251,19 @@ fun ElementCreator<*>.userAppForm(userObj:User, onSaveClick: () -> Unit) = useSt
     }
 }
 
-private fun sendAppLoginMail(conf: OutboundMailConfig, toAddress: String, qrCode: String) : Boolean{
+private fun sendAppLoginMail(conf: OutboundMailConfig, toAddress: String, qrCode: String, locale: Locale) : Boolean{
     val email = EmailContent(
-        greeting = "Hallo",
-        text = """
+        greeting = I18n.t("ui.forms.userForms.sendAppLoginMail.greeting","Hallo", language = locale),
+        text = I18n.t("ui.forms.userForms.sendAppLoginMail.mailBody","""
                     | Anbei erhalten Sie Ihre Zugangsdaten für die Doctag App. 
                     | Bitte öffnen Sie die Doctag App und scannen den 
                     | nachfolgenden QR-Code um sich anzumelden.
                     | 
                     | <img src="${qrCode}"/>
-                    """.trimMargin(),
+                    """.trimMargin(), language = locale),
         actionText = null,
         actionUrl = null,
-        byeText = "Viele Grüße "
+        byeText = I18n.t("ui.forms.userForms.sendAppLoginMail.byteText","Viele Grüße ", language = locale)
     )
 
     val ms = MailSender(
@@ -273,7 +272,7 @@ private fun sendAppLoginMail(conf: OutboundMailConfig, toAddress: String, qrCode
         smtpHost = conf.server!!,
         smtpUser = conf.user,
         smtpPassword = conf.password,
-        subject = "Zugangsdaten für die Doctag App",
+        subject = I18n.t("ui.forms.userForms.sendAppLoginMail.subject","Zugangsdaten für die Doctag App", language = locale),
         content = email,
         smtpProtocol = conf.protocol
     )

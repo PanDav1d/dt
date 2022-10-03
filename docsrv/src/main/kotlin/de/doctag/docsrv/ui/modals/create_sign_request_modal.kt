@@ -1,6 +1,8 @@
 package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.formatDateTime
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.*
@@ -13,9 +15,11 @@ import kweb.state.KVar
 import kweb.state.render
 import java.time.ZonedDateTime
 
-fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:DocumentSignRequest)->Unit) = modal("Signaturanfrage erstellen") { modal ->
+fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:DocumentSignRequest)->Unit) = modal(i18n("ui.modals.createSignRequest.title","Signaturanfrage erstellen")) { modal ->
 
     val scannedCode = KVar("")
+
+    val rescanButtonText = i18n("ui.modals.createSignRequest.reScanButton","Erneut Scannen")
 
     render(scannedCode){ code ->
         when{
@@ -33,24 +37,24 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
 
                 if(doc == null) {
                     div(fomantic.ui.message.success).new {
-                        div(fomantic.ui.header).text("URL erkannt")
+                        div(fomantic.ui.header).i18nText("ui.modals.createSignRequest.detectedUrl","URL erkannt")
                         p().text("$code")
                     }
-                    button(fomantic.ui.button).text("Öffnen").on.click {
+                    button(fomantic.ui.button).i18nText("ui.modals.createSignRequest.openButton","Öffnen").on.click {
                         browser.url.value = code
                         modal.close()
                     }
-                    button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
+                    button(fomantic.ui.button.tertiary.blue).text(rescanButtonText).on.click {
                         scannedCode.value = ""
                     }
                 } else {
                     logger.info("Found remote document. Allow signing it")
 
                     div(fomantic.ui.message.success).new {
-                        div(fomantic.ui.header).text("Dokument erkannt")
-                        div().text("Dateiname: ${doc.originalFileName}")
-                        div().text("Erstellt am: ${doc.created?.formatDateTime()}")
-                        div().text("Quelle: ${doc.url}")
+                        div(fomantic.ui.header).i18nText("ui.modals.createSignRequest.foundDocumentMessage","Dokument erkannt")
+                        div().i18nText("ui.modals.createSignRequest.fileName","Dateiname: ${doc.originalFileName}")
+                        div().i18nText("ui.modals.createSignRequest.creationDate","Erstellt am: ${doc.created?.formatDateTime()}")
+                        div().i18nText("ui.modals.createSignRequest.source","Quelle: ${doc.url}")
                     }
 
                     val selection = KVar<String?>(null)
@@ -58,7 +62,7 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
                     if(opts != null) {
                         formControl {
                             div(fomantic.ui.field).new {
-                                label().text("Rolle wählen")
+                                label().i18nText("ui.modals.createSignRequest.selectRoleLabel","Rolle wählen")
                                 dropdown(opts, selection).onSelect {
                                     selection.value = it
                                 }
@@ -68,7 +72,7 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
 
                     div(fomantic.ui.divider.hidden)
 
-                    button(fomantic.ui.button).text("Signaturanfrage erstellen").on.click {
+                    button(fomantic.ui.button).i18nText("ui.modals.createSignRequest.signatureRequestCreatedMessage","Signaturanfrage erstellen").on.click {
                         logger.info("Creating document sign reqeust")
 
                         val docSignRequest = DocumentSignRequest(
@@ -85,7 +89,7 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
                         modal.close()
                         onCreate(docSignRequest)
                     }
-                    button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
+                    button(fomantic.ui.button.tertiary.blue).text(rescanButtonText).on.click {
                         scannedCode.value = ""
                     }
                 }
@@ -94,7 +98,7 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
                 val sig = DoctagSignatureData.load(code)
                 if(sig.valid){
                     div(fomantic.ui.message.success).new {
-                        div(fomantic.ui.header).text("Signatur gültig")
+                        div(fomantic.ui.header).i18nText("ui.modals.createSignRequest.signatureValidMessage","Signatur gültig")
                         p().text("${sig.publicKey?.owner?.firstName} ${sig.publicKey?.owner?.lastName}")
                         p().text("${sig.publicKey?.ownerAddress?.name1}")
                         p().text("${sig.publicKey?.ownerAddress?.name2}")
@@ -104,20 +108,20 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
                 }
                 else {
                     div(fomantic.ui.message.warning).new {
-                        div(fomantic.ui.header).text("Signatur nicht gültig")
+                        div(fomantic.ui.header).i18nText("ui.modals.createSignRequest.signatureNotValid","Signatur nicht gültig")
                         p().text(sig.message!!)
                     }
 
                 }
 
                 if(sig.valid){
-                    button(fomantic.ui.button).text("Übernehmen").on.click {
+                    button(fomantic.ui.button).i18nText("ui.modals.createSignRequest.confirmButton","Übernehmen").on.click {
                         //onScanSuccessful(sig)
                         modal.close()
                     }
                 }
 
-                button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
+                button(fomantic.ui.button.tertiary.blue).text(rescanButtonText).on.click {
                     scannedCode.value = ""
                 }
             }

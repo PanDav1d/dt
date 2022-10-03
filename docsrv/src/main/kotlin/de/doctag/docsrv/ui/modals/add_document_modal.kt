@@ -1,6 +1,7 @@
 package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.extractTextFromPdf
+import de.doctag.docsrv.i18n
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.Document
 import de.doctag.docsrv.model.db
@@ -11,7 +12,7 @@ import kweb.ElementCreator
 import org.litote.kmongo.save
 import java.time.ZonedDateTime
 
-fun ElementCreator<*>.addDocumentModal(onDocumentAdd: (d: Document)->Unit) = modal("Dokument hinzufügen"){ modal->
+fun ElementCreator<*>.addDocumentModal(onDocumentAdd: (d: Document)->Unit) = modal(i18n("ui.modals.addDocumentModal.modalTitle","Dokument hinzufügen")){ modal->
     val document  = Document()
     documentAddForm(document) { fileObj, docObj ->
 

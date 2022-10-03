@@ -9,50 +9,50 @@ import de.doctag.lib.publicKeyFingerprint
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 
-fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal("Schlüssel ${
-    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)} anzeigen"){ modal->
+fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal(i18n("ui.modals.showSignatureModal.title", "Schlüssel ${
+    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)} anzeigen")){ modal->
 
 
-    h4(fomantic.ui.dividing.header).text("Schlüssel")
+    h4(fomantic.ui.dividing.header).i18nText("ui.modals.showSignatureModal.keyHeader","Schlüssel")
 
     table(fomantic.ui.selectable.celled.table).new {
         tr().new {
-            td().text("Von Nutzer")
+            td().i18nText("ui.modals.showSignatureModal.fromUser","Von Nutzer")
             td().text("${key.owner.firstName} ${key.owner.lastName}")
         }
 
         tr().new {
-            td().text("Doctag System")
+            td().i18nText("ui.modals.showSignatureModal.doctagSource","Doctag System")
             td().text("${key.signingDoctagInstance}/${publicKeyFingerprint(loadPublicKey(key.publicKey)!!)}")
         }
 
         tr().new {
-            td().text("Name 1")
+            td().i18nText("ui.modals.showSignatureModal.name1","Name 1")
             td().text("${key.ownerAddress.name1}")
         }
 
         tr().new {
-            td().text("Name 2")
+            td().i18nText("ui.modals.showSignatureModal.name2","Name 2")
             td().text("${key.ownerAddress.name2}")
         }
 
         tr().new {
-            td().text("Straße")
+            td().i18nText("ui.modals.showSignatureModal.street","Straße")
             td().text("${key.ownerAddress.street}")
         }
 
         tr().new {
-            td().text("PLZ - Ort")
+            td().i18nText("ui.modals.showSignatureModal.zipAndCity","PLZ - Ort")
             td().text("${key.ownerAddress.zipCode} - ${key.ownerAddress.city}")
         }
 
         tr().new {
-            td().text("Land")
+            td().i18nText("ui.modals.showSignatureModal.countryCode","Land")
             td().text("${key.ownerAddress.countryCode}")
         }
     }
 
-    h4(fomantic.ui.dividing.header).text("Verifikation")
+    h4(fomantic.ui.dividing.header).i18nText("ui.modals.showSignatureModal.verification","Verifikation")
     if(key.verification?.signatureOfPublicKeyEntry != null){
 
         table(fomantic.ui.selectable.celled.table).apply {
@@ -63,38 +63,38 @@ fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal(
                 td(attributes= mapOf("style" to "width: 500px;overflow-wrap: break-word;")).text("${key.verification?.signedByParty}")
             }
             tr().new {
-                td().text("Mit öffentlichem Schlüssel")
+                td().i18nText("ui.modals.showSignatureModal.selectedPublicKey","Mit öffentlichem Schlüssel")
                 td().new{
                     div(attributes = mapOf("style" to "font-family: monospace;overflow-wrap: break-word;"))
                         .text("${key.verification?.signedByPublicKey}")
                 }
             }
             tr().new {
-                td().text("Signatur dieses Schlüssels")
+                td().i18nText("ui.modals.showSignatureModal.signatureOfKey","Signatur dieses Schlüssels")
                 td().new{
                     div(attributes = mapOf("style" to "font-family: monospace;overflow-wrap: break-word;"))
                         .text("${key.verification?.signatureOfPublicKeyEntry}")
                 }
             }
             tr().new {
-                td().text("Signatur gültig")
+                td().i18nText("ui.modals.showSignatureModal.signatureValidMessage","Signatur gültig")
                 td().text(key.verifySignature().toYesNoString())
             }
             tr().new {
-                td().text("Gültig bis:")
+                td().i18nText("ui.modals.showSignatureModal.validTill","Gültig bis:")
                 td().text("${key.verification?.signatureValidUntil}")
             }
             tr().new {
-                td().text("Addresse gültig:")
+                td().i18nText("ui.modals.showSignatureModal.addressValid","Addresse gültig:")
                 td().text("${key.verification?.isAddressVerified?.toYesNoString()}")
             }
             tr().new {
-                td().text("DocTag Host gültig:")
+                td().i18nText("ui.modals.showSignatureModal.doctagHostValid","DocTag Host gültig:")
                 td().text("${key.verification?.isSigningDoctagInstanceVerified?.toYesNoString()}")
             }
         }
     }
     else {
-        div().text("Nicht verifiziert")
+        div().i18nText("ui.modals.showSignatureModal.notVerified","Nicht verifiziert")
     }
 }

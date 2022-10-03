@@ -1,6 +1,8 @@
 package de.doctag.docsrv.ui.forms.system
 
 import de.doctag.docsrv.getQRCodeImageAsDataUrl
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
@@ -16,19 +18,19 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
     val activeActionIdx = KVar(0)
     val editMode = KVar(false)
 
+    val unnamed = i18n("ui.forms.system.workflowForm.unnamed","unbenannt")
 
     formControl { formCtrl ->
-        formInput( "Name", "Name", true, workflow.propertyOrDefault(Workflow::name, ""))
-                .with(formCtrl)
+        formInput( i18n("ui.forms.system.workflowForm.nameLabel","Name"), i18n("ui.forms.system.workflowForm.namePlaceholder","Name"), true, workflow.propertyOrDefault(Workflow::name, "")).with(formCtrl)
                 .validate {
                     when{
-                        it.isNullOrBlank() -> "Bitte geben Sie einen Namen für den Workflow an"
+                        it.isNullOrBlank() -> i18n("ui.forms.system.workflowForm.nameRequiredErrorMessage","Bitte geben Sie einen Namen für den Workflow an")
                         else -> null
                     }
                 }
 
 
-        h4(fomantic.ui.header).text("Rollen")
+        h4(fomantic.ui.header).i18nText("ui.forms.system.workflowForm.roles","Rollen")
         render(activeActionIdx){
             render(workflow){ rWorkflow ->
                 logger.info("Render workflow")
@@ -40,7 +42,7 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                             render(editMode){
                                 when{
                                     !editMode.value || idx != activeActionIdx.value -> {
-                                        span().text(wfAction.role ?: "unbenannt")
+                                        span().text(wfAction.role ?: unnamed)
 
                                         if(idx == activeActionIdx.value) {
                                             span().text(" ")
@@ -50,7 +52,7 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                                         }
                                     }
                                     editMode.value && idx == activeActionIdx.value -> {
-                                        val nameInput = KVar(wfAction.role ?: "unbenannt")
+                                        val nameInput = KVar(wfAction.role ?: unnamed)
                                         div(fomantic.ui.icon.input.mini.transparent).apply {
                                             this.setAttributeRaw("style", "margin: -5px;")
                                         }.new {
@@ -72,10 +74,10 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                     }
                     div(fomantic.right.menu).new {
                         a(fomantic.item).on.click {
-                            workflow.value = rWorkflow.copy(actions = (rWorkflow.actions?:listOf()).plus(WorkflowAction("unbenannt")))
+                            workflow.value = rWorkflow.copy(actions = (rWorkflow.actions?:listOf()).plus(WorkflowAction(unnamed)))
                         }.new {
                             i(fomantic.icon.add)
-                            span().text("Hinzufügen")
+                            span().i18nText("ui.forms.system.workflowForm.addActionButton","Hinzufügen")
                         }
                     }
                 }
@@ -87,9 +89,9 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                         table(fomantic.ui.table.very.basic.table).new {
                             thead().new {
                                 tr().new {
-                                    th(fomantic.four.wide).text("Feldname")
-                                    th(fomantic.four.wide).text("Eingabe Typ")
-                                    th(fomantic.six.wide).text("Beschreibung")
+                                    th(fomantic.four.wide).i18nText("ui.forms.system.workflowForm.fieldName","Feldname")
+                                    th(fomantic.four.wide).i18nText("ui.forms.system.workflowForm.inputKind","Eingabe Typ")
+                                    th(fomantic.six.wide).i18nText("ui.forms.system.workflowForm.description","Beschreibung")
                                     th(fomantic.two.wide).text("")
                                 }
                             }
@@ -138,7 +140,7 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                             }
                         }
 
-                        h4(fomantic.ui.dividing.header).text("Erweiterte Optionen")
+                        h4(fomantic.ui.dividing.header).i18nText("ui.forms.system.workflowForm.advancedOptions","Erweiterte Optionen")
                         if(workflow.value.actions?.get(activeActionIdx.value)?.permissions == null){
                             workflow.value.actions?.get(activeActionIdx.value)?.permissions = WorkflowActionPermissions()
                         }
@@ -150,7 +152,7 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                         }
 
                         div(fomantic.ui.field).new {
-                            checkBoxInput("Ausfüllen ohne Anmeldung erlauben",derivedKvar)
+                            checkBoxInput(i18n("ui.forms.system.workflowForm.allowAnonymousSignatureCheckbox","Ausfüllen ohne Anmeldung erlauben"),derivedKvar)
                         }
                     }
                 }
@@ -173,15 +175,15 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
     tr().new {
 
         td().new{
-            input(InputType.text,placeholder = "Name").apply { value=input.propertyOrDefault(WorkflowInput::name, "") }
+            input(InputType.text,placeholder = i18n("ui.forms.system.workflowForm.fieldNamePlaceholder","Name")).apply { value=input.propertyOrDefault(WorkflowInput::name, "") }
         }
         td().new{
             dropdown(mapOf(
-                    WorkflowInputKind.Checkbox.name to "Checkbox",
-                    WorkflowInputKind.FileInput.name to "Datei anfügen",
-                    WorkflowInputKind.TextInput.name to "Texteingabe",
-                    WorkflowInputKind.Sign.name to "Signieren",
-                    WorkflowInputKind.ReceiptMail.name to "E-Mailaddresse",
+                    WorkflowInputKind.Checkbox.name to i18n("ui.forms.system.workflowForm.inputKindCheckbox","Checkbox"),
+                    WorkflowInputKind.FileInput.name to i18n("ui.forms.system.workflowForm.inputKindAttachFile","Datei anfügen"),
+                    WorkflowInputKind.TextInput.name to i18n("ui.forms.system.workflowForm.inputKindText","Texteingabe"),
+                    WorkflowInputKind.Sign.name to i18n("ui.forms.system.workflowForm.inputKindSignature","Signieren"),
+                    WorkflowInputKind.ReceiptMail.name to i18n("ui.forms.system.workflowForm.inputKIndEmail","E-Mailaddresse"),
                 ),
             ).onSelect{ selectedKey->
                 val kind = WorkflowInputKind.valueOf(selectedKey!!)
@@ -189,7 +191,7 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
             }
         }
         td().new{
-            input(InputType.text, placeholder = "Beschreibung").apply { value=input.propertyOrDefault(WorkflowInput::description, "") }
+            input(InputType.text, placeholder = i18n("ui.forms.system.workflowForm.descriptionInputPlaceholder","Beschreibung")).apply { value=input.propertyOrDefault(WorkflowInput::description, "") }
         }
         td().new{
 
@@ -207,7 +209,7 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
                     when (inputKind) {
                         WorkflowInputKind.TextInput -> {
                             div(fomantic.ui.field).new {
-                                checkBoxInput("Mehrzeilig?", KVar(false))
+                                checkBoxInput(i18n("ui.forms.system.workflowForm.multilineCheckbox","Mehrzeilig?"), KVar(false))
                             }
                         }
                         WorkflowInputKind.Sign -> {
@@ -215,18 +217,18 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
 
                             render(imgChanges, {div(fomantic.ui.field)}){
                                 if(workFlowInput.options?.signInputOptions?.backgroundImage != null){
-                                    label().text("Hintergrundbild")
+                                    label().text(i18n("ui.forms.system.workflowForm.backgroundImage","Hintergrundbild"))
 
                                     img(src=workFlowInput.options?.signInputOptions?.backgroundImage, mapOf("style" to "max-width: 770px;"))
 
-                                    button(fomantic.ui.button.tertiary).text("Löschen").on.click {
+                                    button(fomantic.ui.button.tertiary).i18nText("ui.forms.system.workflowForm.deleteBackgroundImage","Löschen").on.click {
                                         workFlowInput.options?.signInputOptions?.backgroundImage = null
                                         imgChanges.value += 1
                                     }
                                 } else {
 
                                     val formField = fileInput(
-                                        "Hintergrundbild",
+                                        i18n("ui.forms.system.workflowForm.backgroundImageInputLabel","Hintergrundbild"),
                                         "",
                                         false,
                                         KVar(""),

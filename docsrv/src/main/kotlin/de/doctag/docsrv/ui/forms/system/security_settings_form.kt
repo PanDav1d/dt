@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.forms.system
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.InboundMailConfig
 import de.doctag.docsrv.model.SecurityConfig
 import de.doctag.docsrv.model.db
@@ -18,7 +20,7 @@ import org.litote.kmongo.findOne
 
 fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit){
 
-    h4(fomantic.ui.header).text("Sicherheit")
+    h4(fomantic.ui.header).i18nText("ui.forms.system.securitySettingsForm.title","Sicherheit")
 
     formControl { formCtrl ->
         val conf = db().currentConfig.security ?: SecurityConfig()
@@ -28,8 +30,8 @@ fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit)
         render(secConf){
             if(secConf.value.acceptSignaturesByUnverifiedKeys == true) {
                 div(fomantic.ui.message.red).new {
-                    div(fomantic.header).text("Achtung")
-                    p().text("""
+                    div(fomantic.header).i18nText("ui.forms.system.securitySettingsForm.attentionTitle","Achtung")
+                    p().i18nText("ui.forms.system.securitySettingsForm.attentionText","""
                         Ihr System akzeptiert Signaturen von noch nicht verzifizierten Schlüsseln. 
                         
                         Mit dieser Einstellung ist nicht mehr sichergestellt, dass die im Schlüssel 
@@ -46,7 +48,7 @@ fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit)
 
 
         checkBoxInput(
-            "Signaturen von unverifizierten Schlüsseln akzeptieren.",
+            i18n("ui.forms.system.securitySettingsForm.acceptSignaturesFromUnverifiedKeysCheckbox","Signaturen von unverifizierten Schlüsseln akzeptieren."),
             secConf.propertyOrDefault(SecurityConfig::acceptSignaturesByUnverifiedKeys, false)
         )
 
@@ -54,7 +56,7 @@ fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit)
 
         val keyOptions = db().keys.find().map { it._id to (it.verboseName ?:"")}.toMap()
         div(fomantic.ui.field).new {
-            label().text("Standart Schlüssel für anonyme Signaturaktionen")
+            label().i18nText("ui.forms.system.securitySettingsForm.defaultKey","Standart Schlüssel für anonyme Signaturaktionen")
             dropdown(keyOptions, secConf.propertyOrDefault(SecurityConfig::defaultKeyForAnonymousSubmissions, null)).onSelect { selectedKeyId ->
                 logger.info("Selected key: ${selectedKeyId}. key.value = $selectedKeyId" )
             }

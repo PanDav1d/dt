@@ -3,6 +3,8 @@ package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.api.EmbeddedDocument
 import de.doctag.docsrv.formatDateTime
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.modal
 import de.doctag.docsrv.ui.scanQrCode
@@ -23,9 +25,9 @@ data class ScanDocTagResult(
         val document: EmbeddedDocument
 )
 
-fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->Unit) = modal("Status erfassen"){ modal->
+fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->Unit) = modal(i18n("ui.modals.scanDoctagModal.title","Status erfassen")){ modal->
     val scannedCode = KVar("")
-
+    val rescanButtonText = i18n("ui.modals.scanDoctagModal.rescanButton","Erneut Scannen")
     render(scannedCode){ code->
 
         when{
@@ -41,36 +43,36 @@ fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->U
 
                 if(doc == null) {
                     div(fomantic.ui.message.success).new {
-                        div(fomantic.ui.header).text("URL erkannt")
+                        div(fomantic.ui.header).i18nText("ui.modals.scanDoctagModal.urlDetectedMessage","URL erkannt")
                         p().text("$code")
                     }
-                    button(fomantic.ui.button).text("Öffnen").on.click {
+                    button(fomantic.ui.button).i18nText("ui.modals.scanDoctagModal.openButton","Öffnen").on.click {
                         browser.url.value = code
                         modal.close()
                     }
-                    button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
+                    button(fomantic.ui.button.tertiary.blue).text(rescanButtonText).on.click {
                         scannedCode.value = ""
                     }
                 }else {
                     logger.info("Found remote document. Allow signing it")
                     div(fomantic.ui.message.success).new {
-                        div(fomantic.ui.header).text("Dokument erkannt")
-                        div().text("Dateiname: ${doc.originalFileName}")
-                        div().text("Erstellt am: ${doc.created?.formatDateTime()}")
-                        div().text("Quelle: ${doc.url}")
+                        div(fomantic.ui.header).i18nText("ui.modals.scanDoctagModal.documentDetectedMessage","Dokument erkannt")
+                        div().i18nText("ui.modals.scanDoctagModal.fileName","Dateiname: ${doc.originalFileName}")
+                        div().i18nText("ui.modals.scanDoctagModal.createdDate","Erstellt am: ${doc.created?.formatDateTime()}")
+                        div().i18nText("ui.modals.scanDoctagModal.source","Quelle: ${doc.url}")
                     }
-                    button(fomantic.ui.button).text("Signieren").on.click {
+                    button(fomantic.ui.button).i18nText("ui.modals.scanDoctagModal.signButton","Signieren").on.click {
                         logger.info("Signing document")
                         logger.info("Embedded document contains the following files:")
                         onScanSuccessful(ScanDocTagResult(SelectedAction.SIGN_DOCUMENT, embeddedDoc))
                         modal.close()
                     }
-                    button(fomantic.ui.tertiary.button).text("Signaturanfrage").on.click {
+                    button(fomantic.ui.tertiary.button).i18nText("ui.modals.scanDoctagModal.signRequestButton","Signaturanfrage").on.click {
                         onScanSuccessful(ScanDocTagResult(SelectedAction.CREATE_SIGN_REQUEST, embeddedDoc))
                         logger.info("Created Signature Request")
                         modal.close()
                     }
-                    button(fomantic.ui.button.tertiary.blue).text("Erneut Scannen").on.click {
+                    button(fomantic.ui.button.tertiary.blue).text(rescanButtonText).on.click {
                         scannedCode.value = ""
                     }
                 }
@@ -82,7 +84,7 @@ fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->U
                     p().text("Zu dem gescannten QR-Code konnte kein gültiges Dokument erkannt werden. Bitte versuchen Sie es erneut.")
                 }
 
-                button(fomantic.ui.button.blue).text("Erneut Scannen").on.click {
+                button(fomantic.ui.button.blue).text(rescanButtonText).on.click {
                     scannedCode.value = ""
                 }
 

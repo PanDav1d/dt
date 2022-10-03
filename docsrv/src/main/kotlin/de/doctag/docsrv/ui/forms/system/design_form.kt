@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.forms.system
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.DesignConfig
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
@@ -14,19 +16,19 @@ fun ElementCreator<*>.designForm(designConfig: DesignConfig, onSaveClick: (desig
 
     formControl { formCtrl ->
 
-        h4(fomantic.ui.header).text("Darstellung")
+        h4(fomantic.ui.header).i18nText("ui.forms.system.designForm.title","Darstellung")
 
 
         div(fomantic.ui.field).new {
-            label().text("Farbe des Seitenkopfs")
+            label().i18nText("ui.forms.system.designForm.formDescription","Farbe des Seitenkopfs")
             namedColorPicker(conf.property(DesignConfig::headerColor))
         }
 
         div(fomantic.ui.field).new {
-            label().text("Titel")
+            label().i18nText("ui.forms.system.designForm.titleInputLabel","Titel")
             formInput(null, "DocSrv", true, conf.propertyOrDefault(DesignConfig::headerTitle, ""))
                     .with(formCtrl)
-                    .withInputMissingErrorMessage("Bitte geben Sie die Titelzeile an, die im Seitenkopf angezeigt werden soll")
+                    .withInputMissingErrorMessage(i18n("ui.forms.system.designForm.inputMissingErrorMessage","Bitte geben Sie die Titelzeile an, die im Seitenkopf angezeigt werden soll"))
         }
 
         displayErrorMessages(formCtrl)

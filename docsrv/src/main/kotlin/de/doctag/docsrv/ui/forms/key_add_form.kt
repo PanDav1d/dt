@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.forms
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.propertyOrDefault
@@ -18,54 +20,54 @@ fun ElementCreator<*>.keyAddForm(onSaveClick: (vname: String, address: Address)-
 
     formControl { formCtrl ->
 
-        h4(fomantic.ui.dividing.header).text("Anzeigename")
+        h4(fomantic.ui.dividing.header).i18nText("ui.forms.keyAddForm.displayNameHeader","Anzeigename")
         div(fomantic.ui.field).new {
-            label().text("Anzeigename")
-            formInput(null, "Vorname", true, verboseName)
+            label().i18nText("ui.forms.keyAddForm.displayNameLabel","Anzeigename")
+            formInput(null, i18n("ui.forms.keyAddForm.displayNamePlaceholder","Vorname"), true, verboseName)
                 .with(formCtrl)
-                .withInputMissingErrorMessage("Bitte geben Sie einen Anzeigenamen für den Schlüssel an")
+                .withInputMissingErrorMessage(i18n("ui.forms.keyAddForm.provideDisplayNameError","Bitte geben Sie einen Anzeigenamen für den Schlüssel an"))
         }
 
-        h4(fomantic.ui.dividing.header).text("Für Organisation")
+        h4(fomantic.ui.dividing.header).i18nText("ui.forms.keyAddForm.organizationNameHeader","Für Organisation")
 
         div(fomantic.ui.field).new {
-            label().text("Name")
-            formInput(null, "Name", true, address.propertyOrDefault(Address::name1, ""))
+            label().i18nText("ui.forms.keyAddForm.organizationNameLabel","Name")
+            formInput(null, i18n("ui.forms.keyAddForm.organizationNamePlaceholder","Name"), true, address.propertyOrDefault(Address::name1, ""))
                 .with(formCtrl)
-                .withInputMissingErrorMessage("Bitte geben Sie den Namen der zugehörigen Organisation an")
+                .withInputMissingErrorMessage(i18n("ui.forms.keyAddForm.provideOrganizationNameErrorMessage","Bitte geben Sie den Namen der zugehörigen Organisation an"))
         }
         div(fomantic.ui.field).new {
-            label().text("Name 2")
-            formInput(null, "Name 2", false, address.propertyOrDefault(Address::name2, ""))
+            label().i18nText("ui.forms.keyAddForm.name2Label","Name 2")
+            formInput(null, i18n("ui.forms.keyAddForm.name2Placeholder","Name 2"), false, address.propertyOrDefault(Address::name2, ""))
                 .with(formCtrl)
-        }
-
-        div(fomantic.ui.field).new {
-            label().text("Straße")
-            formInput(null, "Straße", true, address.propertyOrDefault(Address::street, ""))
-                .with(formCtrl)
-                .withInputMissingErrorMessage("Bitte geben Sie die Straße der zugehörigen Organisation an")
         }
 
         div(fomantic.ui.field).new {
-            label().text("Land / PLZ / Ort")
+            label().i18nText("ui.forms.keyAddForm.streetLabel","Straße")
+            formInput(null, i18n("ui.forms.keyAddForm.streetPlaceholder","Straße"), true, address.propertyOrDefault(Address::street, ""))
+                .with(formCtrl)
+                .withInputMissingErrorMessage(i18n("ui.forms.keyAddForm.pleaseProvideStreetErrorMessage","Bitte geben Sie die Straße der zugehörigen Organisation an"))
+        }
+
+        div(fomantic.ui.field).new {
+            label().i18nText("ui.forms.keyAddForm.countryCityZipLabel","Land / PLZ / Ort")
             div(fomantic.ui.three.fields).new {
-                formInput(null, "Land", true, address.propertyOrDefault(Address::countryCode, ""))
+                formInput(null, i18n("ui.forms.keyAddForm.countryPlaceholder","Land"), true, address.propertyOrDefault(Address::countryCode, ""))
                     .with(formCtrl)
                     .validate {
                         when{
-                            it?.matches("^[A-Z]{2}$".toRegex()) != true -> "Bitte geben Sie ein gültiges Länderkennzeichen an"
+                            it?.matches("^[A-Z]{2}$".toRegex()) != true -> i18n("ui.forms.keyAddForm.provideCountryCodeError","Bitte geben Sie ein gültiges Länderkennzeichen an")
                             else -> null
                         }
                     }
 
-                formInput(null, "PLZ", true, address.propertyOrDefault(Address::zipCode, ""))
+                formInput(null, i18n("ui.forms.keyAddForm.zipCodePlaceholder","PLZ"), true, address.propertyOrDefault(Address::zipCode, ""))
                     .with(formCtrl)
-                    .withInputMissingErrorMessage("Bitte geben Sie die Postleitzahl an")
+                    .withInputMissingErrorMessage(i18n("ui.forms.keyAddForm.provideZipCodeErrorMessage","Bitte geben Sie die Postleitzahl an"))
 
-                formInput(null, "Ort", true, address.propertyOrDefault(Address::city, ""))
+                formInput(null, i18n("ui.forms.keyAddForm.cityPlaceholder","Ort"), true, address.propertyOrDefault(Address::city, ""))
                     .with(formCtrl)
-                    .withInputMissingErrorMessage("Bitte geben Sie den Ort an")
+                    .withInputMissingErrorMessage(i18n("ui.forms.keyAddForm.provideCityError","Bitte geben Sie den Ort an"))
             }
         }
 

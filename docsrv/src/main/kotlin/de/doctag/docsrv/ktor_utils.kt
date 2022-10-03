@@ -52,7 +52,7 @@ class NoZoomPlugin: KwebPlugin() {
 
         doc.head().appendElement("meta")
             .attr("name", "Description")
-            .attr("content", "Logenios Auftrag")
+            .attr("content", "Doctag")
 
         doc.head().appendElement("link")
             .attr("rel", "stylesheet")

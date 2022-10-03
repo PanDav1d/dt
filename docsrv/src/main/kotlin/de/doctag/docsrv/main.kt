@@ -140,7 +140,7 @@ fun Application.kwebFeature(){
 
             doc.head.new {
                 // Not required, but recommended by HTML spec
-                meta(name = "Description", content = "Dokumentenserver für signierte Dokumente")
+                meta(name = "Description", content = i18n("main.metaDescription","Dokumentenserver für signierte Dokumente"))
             }
             doc.body.new {
                 route {

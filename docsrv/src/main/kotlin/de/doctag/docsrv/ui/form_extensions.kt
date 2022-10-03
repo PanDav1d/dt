@@ -1,6 +1,8 @@
 package de.doctag.docsrv.ui
 
 import com.github.salomonbrys.kotson.fromJson
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.DesignConfig
 import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
@@ -198,7 +200,7 @@ fun ElementCreator<*>.dropdown(
     container.new {
         input(type=InputType.hidden, name="dropdown", initialValue = currentValue.value)
         i(fomantic.icon.dropdown)
-        div(fomantic.text.default).text("Auswahl")
+        div(fomantic.text.default).i18nText("ui.formExtensions.dropdownLabel","Auswahl")
         div(fomantic.menu).new{
             options.forEach { (key, displayText) ->
                 div(fomantic.item).apply { this.setAttributeRaw("data-value", key) }.new {
@@ -232,19 +234,19 @@ fun ElementCreator<*>.dropdown(
 
 fun ElementCreator<*>.namedColorPicker(currentValue: KVar<String?>) {
     dropdown(mapOf(
-        "red" to "Rot",
-        "orange" to "Orange",
-        "yellow" to "Gelb",
-        "olive" to "Olivgrün",
-        "green" to "Grün",
-        "teal" to "Türkis",
-        "blue" to "Blau",
-        "violet" to "Violett",
-        "pink" to "Magenta",
-        "brown" to "Braun",
-        "grey" to "Grau",
-        "black" to "Schwarz",
-        "" to "Keine"
+        "red" to i18n("ui.formExtensions.colorPicker.red","Rot"),
+        "orange" to i18n("ui.formExtensions.colorPicker.orange","Orange"),
+        "yellow" to i18n("ui.formExtensions.colorPicker.yellow","Gelb"),
+        "olive" to i18n("ui.formExtensions.colorPicker.olive","Olivgrün"),
+        "green" to i18n("ui.formExtensions.colorPicker.green","Grün"),
+        "teal" to i18n("ui.formExtensions.colorPicker.teal","Türkis"),
+        "blue" to i18n("ui.formExtensions.colorPicker.blue","Blau"),
+        "violet" to i18n("ui.formExtensions.colorPicker.purple","Violett"),
+        "pink" to i18n("ui.formExtensions.colorPicker.magenta","Magenta"),
+        "brown" to i18n("ui.formExtensions.colorPicker.brown","Braun"),
+        "grey" to i18n("ui.formExtensions.colorPicker.gray","Grau"),
+        "black" to i18n("ui.formExtensions.colorPicker.black","Schwarz"),
+        "" to i18n("ui.formExtensions.colorPicker.none","Keine")
     ), currentValue){ k, v->
         div(fomantic.ui.circle.label.withColor(k!!))
         span().text(v?:"")
@@ -272,7 +274,7 @@ fun ElementCreator<*>.buttonWithLoader(label:String, classes: FomanticUIClasses=
     whenDone()
 }
 
-fun ElementCreator<*>.formSubmitButton(formCtrl: FormControl, label:String="Speichern", classes: FomanticUIClasses= fomantic.ui.button, submitAction: ()->Unit) = buttonWithLoader(label, classes) {
+fun ElementCreator<*>.formSubmitButton(formCtrl: FormControl, label:String?=null, classes: FomanticUIClasses= fomantic.ui.button, submitAction: ()->Unit) = buttonWithLoader(label ?: i18n("ui.formExtensions.submitButtonDefaultLabel", "Speichern"), classes) {
     if(formCtrl.isValid) {
         submitAction()
     }
@@ -455,7 +457,7 @@ fun ElementCreator<*>.displayErrorMessages(form:FormControl)  {
     render(form.errors){errors ->
         if(errors.isNotEmpty()) {
             div(fomantic.ui.message).new {
-                div(fomantic.ui.header).text("Bitte überprüfen Sie Ihre Eingaben.")
+                div(fomantic.ui.header).i18nText("ui.formExtensions.pleaseConfirmInput", "Bitte überprüfen Sie Ihre Eingaben.")
                 ul(fomantic.ui.list).new {
                     errors.forEach { error ->
                         li().text(error)

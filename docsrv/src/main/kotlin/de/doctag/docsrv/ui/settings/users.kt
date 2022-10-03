@@ -2,6 +2,8 @@ package de.doctag.docsrv.ui.settings
 
 import de.doctag.docsrv.formatDate
 import de.doctag.docsrv.generatePasswordHash
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.authRequired
@@ -29,16 +31,16 @@ fun ElementCreator<*>.handleUsersSettings(){
         val users = KVar(db().users.find().toList())
 
         
-        pageBorderAndTitle("Einstellungen") {pageArea->
+        pageBorderAndTitle(i18n("ui.settings.users.pageTitle","Einstellungen")) {pageArea->
 
             val modal = addUserModal {userObj->
                 users.value = listOf(userObj).plus(users.value)
-                pageArea.showToast("Benutzer hinzugefügt", ToastKind.Success)
+                pageArea.showToast(i18n("ui.settings.users.userAddedSuccessMessage","Benutzer hinzugefügt"), ToastKind.Success)
             }
 
             div(fomantic.content).new() {
                 settingsTabMenu(SettingsTabMenuActiveItem.User) {
-                    button(fomantic.ui.button.mini).text("Neuer Benutzer").on.click {
+                    button(fomantic.ui.button.mini).i18nText("ui.settings.users.newUser","Neuer Benutzer").on.click {
                         modal.open()
                     }
                 }
@@ -53,11 +55,11 @@ fun ElementCreator<*>.handleUsersSettings(){
                     table(fomantic.ui.selectable.celled.table).new {
                         thead().new {
                             tr().new {
-                                th().text("Vorname")
-                                th().text("Nachname")
-                                th().text("E-Mail")
-                                th().text("Erstellt am")
-                                th().text("Aktion")
+                                th().i18nText("ui.settings.users.firstName","Vorname")
+                                th().i18nText("ui.settings.users.lastName","Nachname")
+                                th().i18nText("ui.settings.users.email","E-Mail")
+                                th().i18nText("ui.settings.users.created","Erstellt am")
+                                th().i18nText("ui.settings.users.actions","Aktion")
                             }
                         }
                         tbody().new {
@@ -77,16 +79,16 @@ fun ElementCreator<*>.handleUsersSettings(){
                                                 when(action){
                                                     UserEditAction.UserDeleted -> {
                                                         users.value = users.value.filter { it._id!=user._id }
-                                                        pageArea.showToast("Benutzer entfernt", ToastKind.Success)
+                                                        pageArea.showToast(i18n("ui.settings.users.userDeletedMessage","Benutzer entfernt"), ToastKind.Success)
                                                     }
                                                     UserEditAction.PasswordChanged -> {
-                                                        pageArea.showToast("Passwort geändert", ToastKind.Success)
+                                                        pageArea.showToast(i18n("ui.settings.users.passwordChangedMessage","Passwort geändert"), ToastKind.Success)
                                                     }
                                                     UserEditAction.UserModified -> {
                                                         users.value = users.value.map{
                                                             if(it._id==user._id) user else it
                                                         }
-                                                        pageArea.showToast("Benutzer bearbeitet", ToastKind.Success)
+                                                        pageArea.showToast(i18n("ui.settings.users.userModifiedMessage","Benutzer bearbeitet"), ToastKind.Success)
                                                     }
                                                 }
                                             }

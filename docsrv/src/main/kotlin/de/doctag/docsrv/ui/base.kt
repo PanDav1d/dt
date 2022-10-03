@@ -1,6 +1,8 @@
 package de.doctag.docsrv.ui
 
 import de.doctag.docsrv.Resources
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.modals.SelectedAction
 import de.doctag.docsrv.ui.modals.scanDoctagModal
@@ -162,7 +164,7 @@ fun ElementCreator<*>.pageHeader() : PageArea {
                                 ),
                                 timestamp = ZonedDateTime.now()
                         ))
-                        area.showToast("Signaturanfrage erstellt", ToastKind.Success)
+                        area.showToast(i18n("ui.base.signatureRequestCreatedMessage","Signaturanfrage erstellt"), ToastKind.Success)
                     }
                     SelectedAction.SIGN_DOCUMENT->{
                         val modal = signDocumentModal(sig.document.document){signedDocument,_->
@@ -170,7 +172,7 @@ fun ElementCreator<*>.pageHeader() : PageArea {
                                 db().files.save(it)
                             }
                             db().documents.save(signedDocument)
-                            area.showToast("Dokument signiert", ToastKind.Success)
+                            area.showToast(i18n("ui.base.documentSignedMessage","Dokument signiert"), ToastKind.Success)
                         }
                         modal.open()
                     }
@@ -184,7 +186,7 @@ fun ElementCreator<*>.pageHeader() : PageArea {
                 a(fomantic.item, href = "/settings/users").new {
                     i(fomantic.ui.cog.icon)
                 }
-                a(fomantic.item, href = "/logout").text("Abmelden")
+                a(fomantic.item, href = "/logout").i18nText("ui.base.logoutButton","Abmelden")
             }
         }
 

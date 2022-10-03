@@ -1,6 +1,8 @@
 package de.doctag.docsrv.ui.settings
 
 import de.doctag.docsrv.formatDateTime
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
@@ -23,16 +25,16 @@ fun ElementCreator<*>.handleKeySettings(){
         val keys = KVar(db().keys.find().toList())
 
         
-        pageBorderAndTitle("Teilnehmerzertifikat") {pageArea->
+        pageBorderAndTitle(i18n("ui.settings.keys.pageTitle","Teilnehmerzertifikat")) {pageArea->
 
             val modal = addKeyModal {keyObj->
                 keys.value = listOf(keyObj).plus(keys.value)
-                pageArea.showToast("Schüsselpaar hinzugefügt", ToastKind.Success)
+                pageArea.showToast(i18n("ui.settings.keys.addedKeySuccessMessage","Schüsselpaar hinzugefügt"), ToastKind.Success)
             }
 
             div(fomantic.content).new() {
                 settingsTabMenu(SettingsTabMenuActiveItem.Keys) {
-                    button(fomantic.ui.button.mini).text("Neuer Schlüssel").on.click {
+                    button(fomantic.ui.button.mini).i18nText("ui.settings.keys.newKey","Neuer Schlüssel").on.click {
                         modal.open()
                     }
                 }
@@ -46,23 +48,23 @@ fun ElementCreator<*>.handleKeySettings(){
                     table(fomantic.ui.selectable.celled.table).new {
                         thead().new {
                             tr().new {
-                                th().text("Anzeigename")
-                                th().text("Erstellt am")
-                                th().text("von")
+                                th().i18nText("ui.settings.keys.displayName","Anzeigename")
+                                th().i18nText("ui.settings.keys.createdAt","Erstellt am")
+                                th().i18nText("ui.settings.keys.createdBy","von")
                                 th().new {
-                                    span().text("Verifizierung")
-                                    i(fomantic.ui.icon.info).withPopup(null, "Gibt an, ob der Schlüssel bereits von DocTag verifiziert wurde")
+                                    span().i18nText("ui.settings.keys.verification","Verifizierung")
+                                    i(fomantic.ui.icon.info).withPopup(null, i18n("ui.settings.keys.verificationInfoMessage","Gibt an, ob der Schlüssel bereits von DocTag verifiziert wurde"))
                                 }
-                                th().text("Gültig bis")
-                                th().text("Aktion")
+                                th().i18nText("ui.settings.keys.keyValidTill","Gültig bis")
+                                th().i18nText("ui.settings.keys.action","Aktion")
                             }
                         }
                         tbody().new {
                             rKeys.forEach { key ->
 
                                 val verificationStatus = when{
-                                    key.verification?.signatureOfPublicKeyEntry != null  -> "ja"
-                                    else -> "nicht abgeschlossen"
+                                    key.verification?.signatureOfPublicKeyEntry != null  -> i18n("ui.settings.keys.yes","ja")
+                                    else -> i18n("ui.settings.keys.notYetConfirmed","nicht abgeschlossen")
                                 }
 
                                 tr().new {
@@ -88,16 +90,16 @@ fun ElementCreator<*>.handleKeySettings(){
                                                     db().keys.save(key)
                                                 }
 
-                                                pageArea.showToast("Schlüssel aktualisiert", ToastKind.Success)
+                                                pageArea.showToast(i18n("ui.settings.keys.keyUpdatedInfo","Schlüssel aktualisiert"), ToastKind.Success)
                                             }
                                             else {
-                                                pageArea.showToast("Veröffentlichen fehlgeschlagen.", ToastKind.Error)
+                                                pageArea.showToast(i18n("ui.settings.keys.keyUpdateFailedError","Veröffentlichen fehlgeschlagen."), ToastKind.Error)
                                             }
                                         }
 
                                         i(fomantic.ui.remove.icon).on.click {
                                             logger.info("Removing key ${key.verboseName}")
-                                            val removeModal = deleteVerifyModal("Schlüssel", key.verboseName?:""){
+                                            val removeModal = deleteVerifyModal(i18n("ui.settings.keys.deleteKeyObjectName","Schlüssel"), key.verboseName?:""){
                                                 db().keys.deleteOneById(key._id!!)
                                             }
                                             removeModal.open()

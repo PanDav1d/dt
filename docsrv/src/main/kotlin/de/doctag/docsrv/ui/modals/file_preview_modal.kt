@@ -9,7 +9,7 @@ import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 
 
-fun ElementCreator<*>.filePreviewModal(file: FileData) = modal("Vorschau"){ modal->
+fun ElementCreator<*>.filePreviewModal(file: FileData) = modal(i18n("ui.modals.filePreviewModal.title","Vorschau")){ modal->
     div(fomantic.ui.placeholder.segment).new{
 
         when{
@@ -24,12 +24,12 @@ fun ElementCreator<*>.filePreviewModal(file: FileData) = modal("Vorschau"){ moda
             else -> {
                 div(fomantic.ui.icon.header).new {
                     i(fomantic.icon.file.pdf.outline)
-                    span().text("Keine Vorschau verfügbar")
+                    span().i18nText("ui.modals.filePreviewModal.noPreviewAvailable","Keine Vorschau verfügbar")
                 }
             }
         }
         div(fomantic.inline).new {
-            a(href = "/f/${file._id}/download", attributes = mapOf("download" to "", "class" to "ui button blue")).text("Herunterladen")
+            a(href = "/f/${file._id}/download", attributes = mapOf("download" to "", "class" to "ui button blue")).i18nText("ui.modals.filePreviewModal.downloadButton","Herunterladen")
         }
     }
 }

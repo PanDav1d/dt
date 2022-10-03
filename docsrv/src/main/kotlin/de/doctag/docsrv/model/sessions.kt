@@ -41,6 +41,9 @@ fun ElementCreator<*>.authRequired(block: ElementCreator<*>.()->Unit) {
 val WebBrowser.authenticatedUser : User?
     get() = getOrCreateSessionId()?.let{Sessions.get(this,it)}
 
+val WebBrowser.sessionLanguage: Locale
+    get() = Locale.GERMANY
+
 fun WebBrowser.clearSession() {
     val sessionId = getOrCreateSessionId()
     doc.cookie.set("SESSION", UUID.randomUUID().toString(), expires = Duration.ofDays(14))

@@ -33,6 +33,7 @@ import org.litote.kmongo.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.ZonedDateTime
+import java.util.*
 
 
 fun Routing.docServerApi(){
@@ -219,7 +220,7 @@ fun Routing.docServerApi(){
 
         val docToSign = db().files.findOneById(doc.attachmentId!!)
 
-        val renderer = PdfBuilder(doc, db())
+        val renderer = PdfBuilder(doc, db(), language = Locale.GERMANY)
 
         renderer.let { fd ->
             val signaturePage = renderer.render().toByteArray()
@@ -316,7 +317,8 @@ fun Routing.docServerApi(){
                     documentWasSignedMail(
                         it,
                         mail,
-                        doc.url!!
+                        doc.url!!,
+                        Locale.GERMANY
                     )
                 }
             }

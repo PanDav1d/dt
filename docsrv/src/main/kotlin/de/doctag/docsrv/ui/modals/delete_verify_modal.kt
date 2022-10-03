@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.modals
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.ui.buttonWithAsyncLoader
 import de.doctag.docsrv.ui.modal
 import de.doctag.docsrv.ui.tertiary
@@ -9,21 +11,21 @@ import kweb.state.KVar
 import kweb.state.render
 import kweb.*
 
-fun ElementCreator<*>.deleteVerifyModal(objectKind: String, elementToDelete: String, onVerifyDelete: ()->Unit) = modal("Löschen bestätigen"){ modal->
+fun ElementCreator<*>.deleteVerifyModal(objectKind: String, elementToDelete: String, onVerifyDelete: ()->Unit) = modal(i18n("ui.modals.deleteVerifyModal.title","Löschen bestätigen")){ modal->
     val hasError = KVar<String?>(null)
 
     render(hasError){ errorMessage->
         errorMessage?.let{
             div(fomantic.ui.message).new {
-                div(fomantic.ui.header).text("Fehler beim Löschen")
+                div(fomantic.ui.header).i18nText("ui.modals.deleteVerifyModal.errorMessage","Fehler beim Löschen")
                 p().text(errorMessage!!)
             }
         }
     }
 
-    h3().text("Bitte bestätigen Sie dass Sie den ${objectKind} '$elementToDelete' wirklich löschen möchten")
+    h3().i18nText("ui.modals.deleteVerifyModal.confirmText","Bitte bestätigen Sie dass Sie den ${objectKind} '$elementToDelete' wirklich löschen möchten")
 
-    buttonWithAsyncLoader("Löschen", fomantic.ui.red.button, renderInline = true){
+    buttonWithAsyncLoader(i18n("ui.modals.deleteVerifyModal.deleteButton","Löschen"), fomantic.ui.red.button, renderInline = true){
         try {
             onVerifyDelete()
             modal.close()
@@ -32,7 +34,7 @@ fun ElementCreator<*>.deleteVerifyModal(objectKind: String, elementToDelete: Str
             hasError.value=ex.message
         }
     }
-    button(fomantic.ui.tertiary.button).text("Abbrechen").on.click {
+    button(fomantic.ui.tertiary.button).i18nText("ui.modals.deleteVerifyModal.abortButton","Abbrechen").on.click {
         modal.close()
     }
 }

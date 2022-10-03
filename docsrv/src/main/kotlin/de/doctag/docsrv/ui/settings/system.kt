@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.settings
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.ToastKind
 import de.doctag.docsrv.ui.active
@@ -18,7 +20,7 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
         val activeItem = SystemSettingsActiveItem.valueOf(rSubPage.toUpperCase())
 
         authRequired {
-            pageBorderAndTitle("Einstellungen") { pageArea ->
+            pageBorderAndTitle(i18n("ui.settings.system.pageTitle","Einstellungen")) { pageArea ->
 
                 div(fomantic.content).new() {
                     div(fomantic.ui.grid).new {
@@ -38,7 +40,7 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                             conf.hostname = newHostName
                                             db().config.save(conf)
 
-                                            pageArea.showToast("Hostname geändert", ToastKind.Success)
+                                            pageArea.showToast(i18n("ui.settings.keys.hostnameChangedMessage","Hostname geändert"), ToastKind.Success)
                                         }
                                     }
                                 }
@@ -53,7 +55,7 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                             conf.inboundMail = inbound
                                             db().config.save(conf)
 
-                                            pageArea.showToast("E-Mail Einstellungen geändert", ToastKind.Success)
+                                            pageArea.showToast(i18n("ui.settings.keys.mailSettingsChanged","E-Mail Einstellungen geändert"), ToastKind.Success)
                                         }
                                     }
                                 }
@@ -68,7 +70,7 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                             conf.design = designConfig
                                             db().config.save(conf)
                                         }
-                                        pageArea.showToast("Design Einstellungen geändert", ToastKind.Success)
+                                        pageArea.showToast(i18n("ui.settings.keys.designSettingsChanged","Design Einstellungen geändert"), ToastKind.Success)
                                     }
                                 }
                                 SystemSettingsActiveItem.SEARCH->{
@@ -110,13 +112,13 @@ enum class SystemSettingsActiveItem {
 
 fun ElementCreator<*>.systemSettingsMenu(activeItem: SystemSettingsActiveItem) {
     div(fomantic.ui.secondary.vertical.menu).new {
-        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.HOST), "/settings/system/host").text("Hostname")
-        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.MAIL), "/settings/system/mail").text("E-Mail")
-        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.WORKFLOW), "/settings/system/workflow").text("Workflows")
-        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.DESIGN), "/settings/system/design").text("Design")
-        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SEARCH), "/settings/system/search").text("Suche")
-        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SECURITY), "/settings/system/security").text("Sicherheit")
-        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.TAGS), "/settings/system/tags").text("Tags")
-        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.NOTIFICATIONS), "/settings/system/notifications").text("Benachrichtigungen")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.HOST), "/settings/system/host").i18nText("ui.settings.keys.menu.hostname","Hostname")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.MAIL), "/settings/system/mail").i18nText("ui.settings.keys.menu.mail","E-Mail")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.WORKFLOW), "/settings/system/workflow").i18nText("ui.settings.keys.menu.workflows","Workflows")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.DESIGN), "/settings/system/design").i18nText("ui.settings.keys.menu.design","Design")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SEARCH), "/settings/system/search").i18nText("ui.settings.keys.menu.search","Suche")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.SECURITY), "/settings/system/security").i18nText("ui.settings.keys.security","Sicherheit")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.TAGS), "/settings/system/tags").i18nText("ui.settings.keys.menu.tags","Tags")
+        a(fomantic.ui.item.active(activeItem == SystemSettingsActiveItem.NOTIFICATIONS), "/settings/system/notifications").i18nText("ui.settings.keys.menu.notifications","Benachrichtigungen")
     }
 }

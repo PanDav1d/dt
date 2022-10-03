@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.forms.system
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.propertyOrDefault2
@@ -25,36 +27,36 @@ fun ElementCreator<*>.tagForm(tag: Tag, onSaveClick: (tag: Tag)->Unit) {
     }
 
     formControl { formCtrl ->
-        formInput("Name", "Name", true, tag.propertyOrDefault(Tag::name, ""))
+        formInput(i18n("ui.forms.system.tagForm.nameLabel","Name"), "Name", true, tag.propertyOrDefault(Tag::name, ""))
             .with(formCtrl)
             .validate {
                 when {
-                    it.isNullOrBlank() -> "Bitte geben Sie einen Namen für das Tag an"
+                    it.isNullOrBlank() -> i18n("ui.forms.system.tagForm.nameRequiredMessage","Bitte geben Sie einen Namen für das Tag an")
                     else -> null
                 }
             }
 
-        formInput("Beschreibung", "Beschreibung", true, tag.propertyOrDefault(Tag::description, ""))
+        formInput(i18n("ui.forms.system.tagForm.tagDescription","Beschreibung"), i18n("ui.forms.system.tagForm.tagDescriptionInputPlaceholderText","Beschreibung"), true, tag.propertyOrDefault(Tag::description, ""))
             .with(formCtrl)
             .validate {
                 when {
-                    it.isNullOrBlank() -> "Bitte geben Sie eine Beschreibung für das Tag an"
+                    it.isNullOrBlank() -> i18n("ui.forms.system.tagForm.descriptionRequiredMessage","Bitte geben Sie eine Beschreibung für das Tag an")
                     else -> null
                 }
             }
 
         div(fomantic.ui.field).new {
-            label().text("Farbe des Tags")
+            label().i18nText("ui.forms.system.tagForm.colorLabel","Farbe des Tags")
             namedColorPicker(tag.property(Tag::style).propertyOrDefault2(TagStyle::backgroundColor, ""))
         }
 
 
         div(fomantic.ui.fluid.styled.accordion).new {
-            div(fomantic.title).text("Automatisch anfügen").new {
+            div(fomantic.title).i18nText("ui.forms.system.tagForm.alwaysAttachTitle","Automatisch anfügen").new {
                 i(fomantic.icon.dropdown)
             }
             div(fomantic.content).new {
-                formInput("Wenn das Dokument den Text enthält", "ABC", false, tag.propertyOrDefault(Tag::options, TagOptions()).propertyOrDefault(TagOptions::appendRules, TagAppendRules()).propertyOrDefault(TagAppendRules::whenDocumentContains, ""))
+                formInput(i18n("ui.forms.system.tagForm.autoAttachWhenTextContainsLabel","Wenn das Dokument den Text enthält"), "ABC", false, tag.propertyOrDefault(Tag::options, TagOptions()).propertyOrDefault(TagOptions::appendRules, TagAppendRules()).propertyOrDefault(TagAppendRules::whenDocumentContains, ""))
                     .with(formCtrl)
             }
         }

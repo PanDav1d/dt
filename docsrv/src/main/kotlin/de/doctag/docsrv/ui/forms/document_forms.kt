@@ -74,7 +74,7 @@ fun ElementCreator<*>.drawDoctagElement(file: FileData, size:Float=4.29f, onSubm
     }
 
     div(fomantic.divider.hidden)
-    buttonWithLoader("Übernehmen"){
+    buttonWithLoader(i18n("ui.forms.documentForms.drawDoctagForm.confirm","Übernehmen")){
         val callbackId = Random.nextInt()
         browser.executeWithCallback("callbackWs($callbackId,{x: 1.0*currentX/canvas.width, y: 1.0*currentY/canvas.height});", callbackId){inputData->
             val pos : ImagePositionOnCanvas = gson.fromJson(inputData.toString())
@@ -124,9 +124,9 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
         render(state){rState->
             when(rState){
                 DocumentAddState.UPLOAD-> {
-                    val formField = fileInput("Datei", "", false, KVar(""), accept = "application/pdf")
+                    val formField = fileInput(i18n("ui.forms.documentForms.documentAddForm.file","Datei"), "", false, KVar(""), accept = "application/pdf")
 
-                    buttonWithAsyncLoader("Hochladen"){whenDone->
+                    buttonWithAsyncLoader(i18n("ui.forms.documentForms.documentAddForm.upload","Hochladen")){whenDone->
                         formField.retrieveFile { file ->
                             logger.info("Received file ${file.fileName}")
 
@@ -158,12 +158,12 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                 }
                 DocumentAddState.INSERT_DOCTAG -> {
 
-                    h4(fomantic.ui.header).text("Doctag einfügen")
+                    h4(fomantic.ui.header).i18nText("ui.forms.documentForms.documentAddForm.insertDoctagButton","Doctag einfügen")
 
                     val sizeOptions = mapOf<String, String>("Groß" to "4.29", "Mittel" to "2.5", "Klein" to "1.8")
                     val sizeSelection = KVar(sizeOptions.values.first())
                     p().new {
-                        span().text("Positionieren Sie das DocTag mit der Maus an der gewünschten Position")
+                        span().i18nText("ui.forms.documentForms.documentAddForm.placeDoctagMessage","Positionieren Sie das DocTag mit der Maus an der gewünschten Position")
                         //radioInput("Größe",options = sizeOptions, false, true, sizeSelection)
                     }
 
@@ -180,13 +180,13 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                     div(fomantic.ui.icon.message).new {
                         i(fomantic.icon.qrcode)
                         div(fomantic.content).new {
-                            div(fomantic.header).text("DocTag erkannt")
-                            p().text("Das hochgeladene Dokument hat das DocTag ${document.value.url}. Drücken Sie auf Speichern um den Import abzuschließen.")
+                            div(fomantic.header).i18nText("ui.forms.documentForms.documentAddForm.foundDoctag","DocTag erkannt")
+                            p().i18nText("ui.forms.documentForms.documentAddForm.foundDoctagDescription","Das hochgeladene Dokument hat das DocTag ${document.value.url}. Drücken Sie auf Speichern um den Import abzuschließen.")
                         }
                     }
 
                     div(fomantic.ui.field).new {
-                        label().text("Workflow wählen")
+                        label().i18nText("ui.forms.documentForms.documentAddForm.selectWorkflowLabel","Workflow wählen")
                         val initial = db().currentConfig.workflow?.defaultWorkflowId
 
                         initial?.let {
@@ -204,7 +204,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
 
                     var tags = KVar(document.value.fullText.determineMatchingTags(db().tags.find().toList()))
                     div(fomantic.ui.field).new {
-                        label().text("Tags wählen")
+                        label().i18nText("ui.forms.documentForms.documentAddForm.selectTagsLabel","Tags wählen")
                         render(tags){ value->
                             value.forEach {
                                 tag(it, true){ tag->
@@ -217,7 +217,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                         }
                     }
 
-                    buttonWithLoader("Speichern"){
+                    buttonWithLoader(i18n("ui.forms.documentForms.documentAddForm.saveButton","Speichern")){
                         val doc = document.value
                         doc.isMirrored = DocumentId.parse(doc.url!!).hostname != db().currentConfig.hostname
                         doc.tags = if(!tags.value.isEmpty()) tags.value else null

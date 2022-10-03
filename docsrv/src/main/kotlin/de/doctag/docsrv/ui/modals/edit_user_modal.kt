@@ -1,6 +1,7 @@
 package de.doctag.docsrv.ui.modals
 
 import de.doctag.docsrv.generatePasswordHash
+import de.doctag.docsrv.i18n
 import de.doctag.docsrv.model.DbContext
 import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.db
@@ -20,9 +21,9 @@ enum class UserEditAction{
 }
 
 fun ElementCreator<*>.editUserModal(user: User, onEdit: (u:User, action: UserEditAction)->Unit) =
-        modal("${user.firstName} ${user.lastName} bearbeiten") { modal ->
+        modal(i18n("ui.modals.editUserModal.title","${user.firstName} ${user.lastName} bearbeiten")) { modal ->
 
-            tab(TabPane("Profil") {
+            tab(TabPane(i18n("ui.modals.editUserModal.profileTitle","Profil")) {
                     userEditForm(user) { user ->
                         logger.info("Saving changed user")
                         db().users.replaceOneById(user._id!!, user)
@@ -30,7 +31,7 @@ fun ElementCreator<*>.editUserModal(user: User, onEdit: (u:User, action: UserEdi
                         onEdit(user, UserEditAction.UserModified)
                     }
                 },
-                TabPane("Passwort ändern") {
+                TabPane(i18n("ui.modals.editUserModal.changePasswordTitle","Passwort ändern")) {
                     userPasswordEditForm(user) { newPassword ->
                         user.passwordHash = generatePasswordHash(newPassword)
                         db().users.replaceOneById(user._id!!, user)
@@ -38,19 +39,19 @@ fun ElementCreator<*>.editUserModal(user: User, onEdit: (u:User, action: UserEdi
                         onEdit(user, UserEditAction.PasswordChanged)
                     }
                 },
-                TabPane("Anmeldungen"){
+                TabPane(i18n("ui.modals.editUserModal.loginsTitle","Anmeldungen")){
                     userSessionsForm(user){
                         db().users.replaceOneById(user._id!!, user)
                         onEdit(user, UserEditAction.UserModified)
                     }
                 },
-                TabPane("Doctag App"){
+                TabPane(i18n("ui.modals.editUserModal.doctagAppTitle","Doctag App")){
                     userAppForm(user){
                         db().users.replaceOneById(user._id!!, user)
                         onEdit(user, UserEditAction.UserModified)
                     }
                 },
-                TabPane("Löschen") {
+                TabPane(i18n("ui.modals.editUserModal.deleteTitle","Löschen")) {
                     userDeleteForm(user){
                         logger.info("User ${user.emailAdress} will be removed")
 

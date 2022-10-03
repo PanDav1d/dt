@@ -1,5 +1,7 @@
 package de.doctag.docsrv.ui.forms.system
 
+import de.doctag.docsrv.i18n
+import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.WorkflowConfig
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
@@ -16,13 +18,13 @@ import org.litote.kmongo.save
 fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) = useState(1){currentState, setState->
     val rWorkflows = db().workflows.find().toList()
 
-    h4(fomantic.ui.dividing.header).text("Workflows")
+    h4(fomantic.ui.dividing.header).i18nText("ui.forms.system.workflowListEditForm.title", "Workflows")
 
     val modal = addWorkflowModal{addedWorkflow ->
-        pageArea.showToast("Workflow erfolgreich hinzugefügt", ToastKind.Success)
+        pageArea.showToast(i18n("ui.forms.system.workflowListEditForm.successfullyAddedMessage","Workflow erfolgreich hinzugefügt"), ToastKind.Success)
         setState(currentState+1)
     }
-    button(fomantic.ui.button.mini).text("Neuer Workflow").on.click {
+    button(fomantic.ui.button.mini).i18nText("ui.forms.system.workflowListEditForm.addWorkflowButton","Neuer Workflow").on.click {
         modal.open()
     }
     div(fomantic.ui.divider.hidden)
@@ -30,9 +32,9 @@ fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) = useState(1){cur
     table(fomantic.ui.selectable.celled.table).new {
         thead().new {
             tr().new {
-                th().text("Name")
-                th().text("Rollen")
-                th().text("Aktion")
+                th().i18nText("ui.forms.system.workflowListEditForm.name","Name")
+                th().i18nText("ui.forms.system.workflowListEditForm.roles","Rollen")
+                th().i18nText("ui.forms.system.workflowListEditForm.actions","Aktion")
             }
         }
         tbody().new {
@@ -44,15 +46,15 @@ fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) = useState(1){cur
                         a(href = "#").new {
                             i(fomantic.icon.edit).on.click {
                                 modifyWorkflowModal(wf) {
-                                    pageArea.showToast("Workflow bearbeitet", ToastKind.Success)
+                                    pageArea.showToast(i18n("ui.forms.system.workflowListEditForm.successfullyEdited","Workflow bearbeitet"), ToastKind.Success)
                                     setState(currentState+1)
                                 }.open()
-                            }.withPopup(null, "Workflow bearbeiten")
+                            }.withPopup(null, i18n("ui.forms.system.workflowListEditForm.editWorkflow","Workflow bearbeiten"))
                         }
 
                         a(href="#").new {
                             if(wf._id == db().currentConfig.workflow?.defaultWorkflowId) {
-                                i(fomantic.icon.star).withPopup(null, "Standart-Workflow")
+                                i(fomantic.icon.star).withPopup(null, i18n("ui.forms.system.workflowListEditForm.markAsDefaultWorkflow","Standart-Workflow"))
                             }
                             else {
                                 i(fomantic.icon.starOutline).on.click {
@@ -63,21 +65,21 @@ fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) = useState(1){cur
                                         this.workflow?.defaultWorkflowId = wf._id
                                         db().config.save(this)
                                     }
-                                    pageArea.showToast("Standart Workflow festgelegt", ToastKind.Success)
+                                    pageArea.showToast(i18n("ui.forms.system.workflowListEditForm.successfullySetAsDefaultWorkflow","Standart Workflow festgelegt"), ToastKind.Success)
                                     setState(currentState+1)
-                                }.withPopup(null, "Als Standart-Workflow festlegen")
+                                }.withPopup(null, i18n("ui.forms.system.workflowListEditForm.setAsDefaultWorkflow","Als Standart-Workflow festlegen"))
                             }
                         }
                         a(href="#").new {
                             i(fomantic.icon.remove).on.click {
-                                val modal = deleteVerifyModal("Workflow", wf.name ?: ""){
+                                val modal = deleteVerifyModal(i18n("ui.forms.system.workflowListEditForm.deleteModalObjectKind","Workflow"), wf.name ?: ""){
                                     db().workflows.deleteOneById(wf._id!!)
                                 }
                                 modal.open()
                                 modal.onClose {
                                     setState(currentState + 1)
                                 }
-                            }.withPopup(null, "Workflow löschen")
+                            }.withPopup(null, i18n("ui.forms.system.workflowListEditForm.deleteWorkflow","Workflow löschen"))
                         }
                     }
                 }
