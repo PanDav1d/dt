@@ -136,6 +136,7 @@ fun Application.kwebFeature(){
         }
 
         buildPage = {
+
             logger.info("Cookie SESSION / Main is ${this.httpRequestInfo.cookies.get("SESSION")}")
 
             doc.head.new {

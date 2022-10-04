@@ -3,12 +3,10 @@ package de.doctag.docsrv.ui
 import com.github.salomonbrys.kotson.fromJson
 import de.doctag.docsrv.i18n
 import de.doctag.docsrv.i18nText
-import de.doctag.docsrv.model.DesignConfig
 import kweb.*
 import kweb.plugins.fomanticUI.FomanticUIClasses
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
-import kweb.state.property
 import kweb.state.render
 import kweb.util.random
 import kweb.util.gson

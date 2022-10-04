@@ -1,17 +1,17 @@
 {
   "pdfBuilder": {
-    "noSignaturesAvailableMessage": "Noch keine Signaturen vorhanden",
-    "file": "Datei ${attachment?.name}",
-    "technicalInfos": "Technische Informationen",
-    "operator": "Systembetreiber",
-    "responsibleSystem": "verantwortlicher Doctag-Server",
-    "signatureInfos": "Angaben zur Signatur",
-    "publicKey": "Öffentlicher Schlüssel:",
-    "checksum": "Prüfsumme",
-    "signatureIdxOfN": "Signatur ${idx+1} von ${doc.signatures?.size}",
-    "userInput": "Benutzereingaben",
-    "date": "Datum",
-    "user": "Benutzer"
+    "noSignaturesAvailableMessage": "No signatures available",
+    "file": "File ${attachment?.name}",
+    "technicalInfos": "Technical information",
+    "operator": "System operator",
+    "responsibleSystem": "Responsible Doctag-Server",
+    "signatureInfos": "Signature information",
+    "publicKey": "Public Key:",
+    "signatureIdxOfN": "Signature ${idx+1} of ${doc.signatures?.size}",
+    "userInput": "User inputs",
+    "date": "Date",
+    "user": "User",
+    "checksum": "Checksum"
   },
   "ui": {
     "settings": {

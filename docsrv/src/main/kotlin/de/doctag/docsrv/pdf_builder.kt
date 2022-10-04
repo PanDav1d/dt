@@ -94,7 +94,7 @@ class PdfBuilder(val doc: Document, val db: DbContext, val language: Locale)  {
                 ${sig.signedByKey?.ownerAddress?.countryCode} - ${sig.signedByKey?.ownerAddress?.zipCode} ${sig.signedByKey?.ownerAddress?.city}<br />
             </td>
             <td>${sig.data?.signingDoctagInstance}<br/>${I18n.t("pdfBuilder.publicKey","Öffentlicher Schlüssel:", language=language)} ${sig.signedByKey?.publicKey?.take(16)+"..."}<br/></td>
-            <td>Prüfsumme: ${sig.data?.documentHash?.take(16)}<br/>${I18n.t("pdfBuilder.signatureIdxOfN","Signatur ${idx+1} von ${doc.signatures?.size}", language=language)}<br/></td>
+            <td>${I18n.t("pdfBuilder.checksum","Prüfsumme", language)}: ${sig.data?.documentHash?.take(16)}<br/>${I18n.t("pdfBuilder.signatureIdxOfN","Signatur ${idx+1} von ${doc.signatures?.size}", language=language)}<br/></td>
         </tr>
         </table>
         

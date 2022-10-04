@@ -7,6 +7,7 @@ import de.doctag.docsrv.model.*
 import de.doctag.docsrv.ui.modals.SelectedAction
 import de.doctag.docsrv.ui.modals.scanDoctagModal
 import de.doctag.docsrv.ui.modals.signDocumentModal
+import doctag.translation.I18n
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -178,6 +179,39 @@ fun ElementCreator<*>.pageHeader() : PageArea {
                     }
                 }
             }
+
+            supportedLocales.find { it.locale == browser.sessionLanguage}?.flag?.let{
+
+                div(fomantic.ui.dropdown.item).apply {}.new {
+                    i(it.flag)
+
+                    i(fomantic.icon.dropdown)
+                    div(fomantic.menu).new {
+                        supportedLocales.forEach { lang->
+                            div(fomantic.item).apply{
+                                on.click {
+                                    logger.info("Setting language to ${lang.browserLanguageIso2}")
+                                    browser.setLanguage(lang)
+                                    browser.execute("console.log('reloading');window.location.reload();")
+                                }
+                            }.new {
+                                i(lang.flag.flag)
+                                span().text(lang.browserLanguageIso2)
+                            }
+                        }
+
+
+                    }
+                }
+
+                element("script").innerHTML("""
+                (function() {
+                    $('.ui.dropdown').dropdown();
+              
+                })();
+                """.trimIndent())
+            }
+
 
             if(browser.authenticatedUser != null) {
                 a(fomantic.item, href = "#").apply { on.click { scanModal.open() } }.new {

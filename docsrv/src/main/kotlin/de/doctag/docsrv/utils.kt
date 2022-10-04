@@ -5,6 +5,7 @@ import com.google.zxing.EncodeHintType
 import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
 import de.doctag.docsrv.model.authenticatedUser
+import de.doctag.docsrv.model.sessionLanguage
 import de.doctag.lib.hexStringToByteArray
 import de.doctag.lib.toHex
 import doctag.translation.I18n
@@ -80,12 +81,12 @@ inline fun <O, reified T : Any?> KVar<T?>.propertyOrDefault2(property: KProperty
 }
 
 fun Element.i18nText(path: String, text: String) : Element{
-    this.text(I18n.t/*ignore*/(path, text))
+    this.text(I18n.t/*ignore*/(path, text, language = browser.sessionLanguage))
     return this
 }
 
 fun ElementCreator<*>.i18n(path: String,text: String) : String{
-    return I18n.t/*ignore*/(path, text)
+    return I18n.t/*ignore*/(path, text, language = browser.sessionLanguage)
 }
 
 val WebBrowser.urlParameters:Map<String,String>

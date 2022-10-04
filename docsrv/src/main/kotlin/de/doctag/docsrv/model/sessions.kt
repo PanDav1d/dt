@@ -1,6 +1,7 @@
 package de.doctag.docsrv.model
 
 import de.doctag.docsrv.ui.centeredBox
+import de.doctag.docsrv.ui.getOrDetectBrowserLanguage
 import de.doctag.docsrv.ui.navigateTo
 import kweb.*
 import org.litote.kmongo.div
@@ -42,7 +43,7 @@ val WebBrowser.authenticatedUser : User?
     get() = getOrCreateSessionId()?.let{Sessions.get(this,it)}
 
 val WebBrowser.sessionLanguage: Locale
-    get() = Locale.GERMANY
+    get() = getOrDetectBrowserLanguage()
 
 fun WebBrowser.clearSession() {
     val sessionId = getOrCreateSessionId()

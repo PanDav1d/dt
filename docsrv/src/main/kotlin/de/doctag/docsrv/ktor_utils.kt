@@ -54,10 +54,10 @@ class NoZoomPlugin: KwebPlugin() {
             .attr("name", "Description")
             .attr("content", "Doctag")
 
-        doc.head().appendElement("link")
+        /*doc.head().appendElement("link")
             .attr("rel", "stylesheet")
             .attr("type", "text/css")
-            .attr("href", "/ressources/override.css")
+            .attr("href", "/ressources/override.css")*/
 
         doc.head().appendElement("style")
             .attr("type", "text/css")

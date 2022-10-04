@@ -249,6 +249,74 @@ val FomanticUIClasses.scrolling : FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.langDe: FomanticUIClasses
+    get(){
+        classes("de")
+        return this
+    }
+
+val FomanticUIClasses.langPl: FomanticUIClasses
+    get(){
+        classes("pl")
+        return this
+    }
+
+val FomanticUIClasses.langRu: FomanticUIClasses
+    get(){
+        classes("ru")
+        return this
+    }
+
+
+val FomanticUIClasses.langGb: FomanticUIClasses
+    get(){
+        classes("gb uk")
+        return this
+    }
+
+val FomanticUIClasses.langNl: FomanticUIClasses
+    get(){
+        classes("nl")
+        return this
+    }
+
+val FomanticUIClasses.langFr: FomanticUIClasses
+    get(){
+        classes("fr")
+        return this
+    }
+
+val FomanticUIClasses.langTr: FomanticUIClasses
+    get(){
+        classes("tr")
+        return this
+    }
+
+val FomanticUIClasses.langIt: FomanticUIClasses
+    get(){
+        classes("it")
+        return this
+    }
+
+val FomanticUIClasses.langBg: FomanticUIClasses
+    get(){
+        classes("bg")
+        return this
+    }
+
+val FomanticUIClasses.langEs: FomanticUIClasses
+    get(){
+        classes("es")
+        return this
+    }
+
+val FomanticUIClasses.langLt: FomanticUIClasses
+    get(){
+        classes("lt")
+        return this
+    }
+
+
 fun FomanticUIClasses.withColor(color: String?):FomanticUIClasses{
     if(color != null) {
         classes(color)

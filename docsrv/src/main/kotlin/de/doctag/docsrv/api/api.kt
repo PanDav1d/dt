@@ -3,6 +3,7 @@ package de.doctag.docsrv.api
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.DocServerClient
+import de.doctag.docsrv.ui.parseLanguageHeaders
 import de.doctag.lib.*
 import de.doctag.lib.model.PrivatePublicKeyPair
 import de.doctag.lib.model.PublicKeyVerification
@@ -220,7 +221,7 @@ fun Routing.docServerApi(){
 
         val docToSign = db().files.findOneById(doc.attachmentId!!)
 
-        val renderer = PdfBuilder(doc, db(), language = Locale.GERMANY)
+        val renderer = PdfBuilder(doc, db(), language = call.request.parseLanguageHeaders())
 
         renderer.let { fd ->
             val signaturePage = renderer.render().toByteArray()
@@ -318,7 +319,7 @@ fun Routing.docServerApi(){
                         it,
                         mail,
                         doc.url!!,
-                        Locale.GERMANY
+                        language = call.request.parseLanguageHeaders()
                     )
                 }
             }
