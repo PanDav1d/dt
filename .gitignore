@@ -54,3 +54,4 @@ gradle-app.setting
 /test.pdf
 
 docsrv-hosting-controller/docsrvHostingController.env
+/xconvert-base/src/main/resources/locales/deu_debug.json

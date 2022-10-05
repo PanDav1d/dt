@@ -180,6 +180,17 @@ fun ElementCreator<*>.pageHeader() : PageArea {
                 }
             }
 
+
+            if(browser.authenticatedUser != null) {
+                a(fomantic.item, href = "#").apply { on.click { scanModal.open() } }.new {
+                    i(fomantic.ui.key.icon)
+                }
+                a(fomantic.item, href = "/settings/users").new {
+                    i(fomantic.ui.cog.icon)
+                }
+                a(fomantic.item, href = "/logout").i18nText("ui.base.logoutButton","Abmelden")
+            }
+
             supportedLocales.find { it.locale == browser.sessionLanguage}?.flag?.let{
 
                 div(fomantic.ui.dropdown.item).apply {}.new {
@@ -210,17 +221,6 @@ fun ElementCreator<*>.pageHeader() : PageArea {
               
                 })();
                 """.trimIndent())
-            }
-
-
-            if(browser.authenticatedUser != null) {
-                a(fomantic.item, href = "#").apply { on.click { scanModal.open() } }.new {
-                    i(fomantic.ui.key.icon)
-                }
-                a(fomantic.item, href = "/settings/users").new {
-                    i(fomantic.ui.cog.icon)
-                }
-                a(fomantic.item, href = "/logout").i18nText("ui.base.logoutButton","Abmelden")
             }
         }
 

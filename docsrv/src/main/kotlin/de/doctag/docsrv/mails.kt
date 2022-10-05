@@ -7,9 +7,7 @@ import java.util.*
 fun documentWasSignedMail(conf: OutboundMailConfig, toAddress: String, documentUrl: String, language: Locale) : Boolean{
     val email = EmailContent(
         greeting = I18n.t("mails.documentWasSignedMail.greeting","Hallo", language= language),
-        text = I18n.t("mails.documentWasSignedMail.text","""
-                    | Ein von Ihnen beobachtetes Dokument wurde signiert. Öffnen Sie das Dokument um weitere Informationen
-                    | zur Signatur zu erhalten
+        text = I18n.t("mails.documentWasSignedMail.text","""Ein von Ihnen beobachtetes Dokument wurde signiert. Öffnen Sie das Dokument um weitere Informationen zur Signatur zu erhalten
                     """.trimMargin(), language = language),
         actionText = I18n.t("mails.documentWasSignedMail.actionLink","Dokument öffnen", language=language),
         actionUrl = documentUrl,
