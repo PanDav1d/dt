@@ -255,12 +255,12 @@ private fun sendAppLoginMail(conf: OutboundMailConfig, toAddress: String, qrCode
     val email = EmailContent(
         greeting = I18n.t("ui.forms.userForms.sendAppLoginMail.greeting","Hallo", language = locale),
         text = I18n.t("ui.forms.userForms.sendAppLoginMail.mailBody","""
-                    | Anbei erhalten Sie Ihre Zugangsdaten für die Doctag App. 
-                    | Bitte öffnen Sie die Doctag App und scannen den 
-                    | nachfolgenden QR-Code um sich anzumelden.
-                    | 
-                    | <img src="${qrCode}"/>
-                    """.trimMargin(), language = locale),
+                    Anbei erhalten Sie Ihre Zugangsdaten für die Doctag App. 
+                    Bitte öffnen Sie die Doctag App und scannen den 
+                    nachfolgenden QR-Code um sich anzumelden.
+                     
+                    <img src="${qrCode}"/>
+                    """, language = locale),
         actionText = null,
         actionUrl = null,
         byeText = I18n.t("ui.forms.userForms.sendAppLoginMail.byteText","Viele Grüße ", language = locale)

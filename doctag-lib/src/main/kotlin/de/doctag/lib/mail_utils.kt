@@ -40,6 +40,7 @@ class MailSender(
                 smtpProtocol: SendMailProtocol?,
                 attachmentFile: File? = null) : this(receiverAddresses, subject, content.asHtml(), smtpHost, smtpUser, smtpPassword, fromAddress, date, smtpProtocol, attachmentFile)
 
+
     companion object {
         var isTestModeEnabled = false
         val outgoingEmails = mutableListOf<MailSender>()

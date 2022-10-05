@@ -131,9 +131,7 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
 private fun sendTestMail(conf: OutboundMailConfig, toAddress: String, locale: Locale) : Boolean{
     val email = EmailContent(
             greeting = I18n.t("ui.forms.system.mailSettingsEditForm.testMail.greeting","Hallo", language = locale),
-            text = I18n.t("ui.forms.system.mailSettingsEditForm.testMail.text", """
-                    | Dies ist eine Test-Nachricht welche über die Web-Konsole versendet wurde
-                    """, language = locale).trimMargin(),
+            text = I18n.t("ui.forms.system.mailSettingsEditForm.testMail.text", """Dies ist eine Test-Nachricht welche über die Web-Konsole versendet wurde""", language = locale),
             actionText = null,
             actionUrl = null,
             byeText = I18n.t("ui.forms.system.mailSettingsEditForm.testMail.byeText","Viele Grüße ", language = locale)
