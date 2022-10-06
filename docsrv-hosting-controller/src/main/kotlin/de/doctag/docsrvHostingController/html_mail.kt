@@ -39,7 +39,7 @@ fun sendSetupCompletedMail(receiver: User, instanceUrl: String){
                     erreichbar unter: 
                     <strong>${instanceUrl}</strong>
                     Um Doctag nutzen zu können, müssen Sie als nächstes einen Schlüssel erzeugen. Eine Kurzanleitung
-                    finden Sie <a href="http://www.doctag.de/erste-schritte.html">hier</a>. 
+                    finden Sie <a href="https://www.doctag.de/kostenlos-starten">hier</a>. 
                     
                     """.trimIndent(),
         actionText = null,
