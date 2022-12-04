@@ -11,11 +11,6 @@ import de.doctag.lib.model.PublicKeyVerificationResult
 import documentWasSignedMail
 import ensureUserIsAuthenticated
 import io.ktor.application.*
-import ktor.swagger.ok
-import ktor.swagger.responds
-import ktor.swagger.get
-import ktor.swagger.put
-import ktor.swagger.post
 import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.response.*
@@ -23,8 +18,9 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ktor.swagger.operationId
+import ktor.swagger.*
 import ktor.swagger.version.shared.Group
+import ktor.swagger.version.v3.Example
 import kweb.logger
 import org.apache.pdfbox.io.MemoryUsageSetting
 import org.apache.pdfbox.multipdf.PDFMergerUtility
@@ -34,7 +30,6 @@ import org.litote.kmongo.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.ZonedDateTime
-import java.util.*
 
 
 fun Routing.docServerApi(){
@@ -127,7 +122,33 @@ fun Routing.docServerApi(){
     @Group("DocServer")
     @Location("/d/")
     class AddDocumentRequestPath
-    post<AddDocumentRequestPath, DocumentToAdd>("Add Document".responds(ok<DocumentAddResponse>()).operationId("addDocument"))
+    post<AddDocumentRequestPath, DocumentToAdd>(
+        "Add Document"
+            .examples(
+                "Example 01" to Example(
+                    summary = "Create document",
+                    value = DocumentToAdd(
+                        data = "JVBERi0xLjIgCjkgMCBvYmoKPDwKPj4Kc3RyZWFtCkJULyA5IFRmKFRlc3QpJyBFVAplbmRzdHJlYW0KZW5kb2JqCjQgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCA1IDAgUgovQ29udGVudHMgOSAwIFIKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0tpZHMgWzQgMCBSIF0KL0NvdW50IDEKL1R5cGUgL1BhZ2VzCi9NZWRpYUJveCBbIDAgMCA5OSA5IF0KPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1BhZ2VzIDUgMCBSCi9UeXBlIC9DYXRhbG9nCj4+CmVuZG9iagp0cmFpbGVyCjw8Ci9Sb290IDMgMCBSCj4+CiUlRU9G",
+                        fileName = "test.pdf",
+                        workflow = null,
+                        doctagPosX = null,
+                        doctagPosY = null,
+                        doctagSize = null
+                    ),
+                    externalValue = null,
+                    description = null,
+                    `$ref` = null,
+                )
+            )
+            .responds(ok<DocumentAddResponse>())
+            .operationId("addDocument")
+            .description("""Use this endpoint to create a new document to be signed. The document to add must be 
+                | encoded to base64 format and included in the post request. If it does not already contain a 
+                | DocTag QR-Code, a new QR-Code is created and added to the document. The location can be specified
+                | during the post request. Authentication with AUTH Basic is required to use this endpoint.
+            """.trimMargin()
+            )
+    )
     { req, postData->
         ensureUserIsAuthenticated()
 

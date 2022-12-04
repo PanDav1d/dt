@@ -114,13 +114,15 @@ class ApiClient {
         : await serializeAsync(body);
       final nullableHeaderParams = headerParams.isEmpty ? null : headerParams;
 
+      final uurl = Uri.parse(url);
+
       switch(method) {
-        case 'POST': return await _client.post(url, headers: nullableHeaderParams, body: msgBody,);
-        case 'PUT': return await _client.put(url, headers: nullableHeaderParams, body: msgBody,);
-        case 'DELETE': return await _client.delete(url, headers: nullableHeaderParams,);
-        case 'PATCH': return await _client.patch(url, headers: nullableHeaderParams, body: msgBody,);
-        case 'HEAD': return await _client.head(url, headers: nullableHeaderParams,);
-        case 'GET': return await _client.get(url, headers: nullableHeaderParams,);
+        case 'POST': return await _client.post(uurl, headers: nullableHeaderParams, body: msgBody,);
+        case 'PUT': return await _client.put(uurl, headers: nullableHeaderParams, body: msgBody,);
+        case 'DELETE': return await _client.delete(uurl, headers: nullableHeaderParams,);
+        case 'PATCH': return await _client.patch(uurl, headers: nullableHeaderParams, body: msgBody,);
+        case 'HEAD': return await _client.head(uurl, headers: nullableHeaderParams,);
+        case 'GET': return await _client.get(uurl, headers: nullableHeaderParams,);
       }
     } on SocketException catch (e, trace) {
       throw ApiException.withInner(HttpStatus.badRequest, 'Socket operation failed: $method $path', e, trace,);

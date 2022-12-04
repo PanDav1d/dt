@@ -8,6 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.JsonPrimitive
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
@@ -223,10 +224,23 @@ class SignatureElement(
     }
 }
 
+fun ElementCreator<Element>.canvas(
+    attributes: Map<String, Any> = emptyMap(),
+    new: (ElementCreator<CanvasElement>.(CanvasElement) -> Unit)? = null
+): CanvasElement {
+    return CanvasElement(
+        element(
+            "canvas",
+            attributes
+        )
+    )
+}
+
 fun ElementCreator<*>.inputSignatureElement(backgroundImage: String? = null) : SignatureElement {
     element("script", mapOf("src" to "/ressources/signature_pad.min.js"))
-    val canvas = canvas(420, 300).apply {
-        this.setAttributeRaw("style", "border: 1px solid black;")
+
+    val canvas = canvas(/*420,300*/).apply {
+        this.setAttributeRaw("style", "border: 1px solid black;width: 100%; height: 300px;")
     }//.focus()
 
     val pad  = SignatureElement(canvas)
@@ -235,7 +249,13 @@ fun ElementCreator<*>.inputSignatureElement(backgroundImage: String? = null) : S
         delay(100)
         browser.execute("""
         canvas = document.getElementById("${canvas.id}");
-        window.signaturePad = new SignaturePad(canvas);
+        
+        console.log("width", canvas.offsetWidth)
+        console.log("height", canvas.offsetHeight)
+        canvas.width = canvas.offsetWidth
+        canvas.height = canvas.offsetHeight
+        
+        window.signaturePad = new SignaturePad(canvas,{width:canvas.offsetWidth, height: canvas.offsetHeight });
 
         function drawBackground()
         {
