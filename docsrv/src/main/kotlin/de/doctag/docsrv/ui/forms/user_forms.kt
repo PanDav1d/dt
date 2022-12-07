@@ -258,9 +258,7 @@ private fun sendAppLoginMail(conf: OutboundMailConfig, toAddress: String, qrCode
                     Anbei erhalten Sie Ihre Zugangsdaten für die Doctag App. 
                     Bitte öffnen Sie die Doctag App und scannen den 
                     nachfolgenden QR-Code um sich anzumelden.
-                     
-                    <img src="${qrCode}"/>
-                    """, language = locale),
+                    """, language = locale) + "<img src=\"${qrCode}\"/>",
         actionText = null,
         actionUrl = null,
         byeText = I18n.t("ui.forms.userForms.sendAppLoginMail.byteText","Viele Grüße ", language = locale)

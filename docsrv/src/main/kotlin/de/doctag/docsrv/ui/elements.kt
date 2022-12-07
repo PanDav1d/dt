@@ -176,11 +176,18 @@ class SignatureElement(
     fun onEndDraw(callback:()->Unit) {
         val callbackId = Random.nextInt()
         GlobalScope.launch {
-            delay(100)
             canvasElement.browser.executeWithCallback("""
-            window.signaturePad.onEnd = function(){
-                callbackWs($callbackId,{});
-            }
+                function setupSignaturePadOnEnd() {
+                    if(!window.signaturePad) {
+                        setTimeout(setupSignaturePadOnEnd, 50)
+                    } else {
+                        window.signaturePad.onEnd = function(){
+                            callbackWs($callbackId,{});
+                        }
+                    }
+                }
+                setupSignaturePadOnEnd()
+            
         """.trimIndent(), callbackId){inputData ->
                 callback()
             }
@@ -245,36 +252,54 @@ fun ElementCreator<*>.inputSignatureElement(backgroundImage: String? = null) : S
 
     val pad  = SignatureElement(canvas)
 
-    GlobalScope.launch {
-        delay(100)
-        browser.execute("""
-        canvas = document.getElementById("${canvas.id}");
-        
-        console.log("width", canvas.offsetWidth)
-        console.log("height", canvas.offsetHeight)
-        canvas.width = canvas.offsetWidth
-        canvas.height = canvas.offsetHeight
-        
-        window.signaturePad = new SignaturePad(canvas,{width:canvas.offsetWidth, height: canvas.offsetHeight });
 
-        function drawBackground()
-        {
-          context = canvas.getContext('2d');
-          base_image = new Image();
-          base_image.src = '${backgroundImage}';
-          base_image.onload = function(){
-            context.drawImage(base_image, 0,0, 420, 300);
-          }
-          
-        }
-        
-        if(${backgroundImage != null}){
-            drawBackground()
-        }
-
-        canvas.focus();
-        """.trimIndent())
+    val callbackId = Math.abs(random.nextInt())
+    browser.executeWithCallback("""
+    canvas = null;
+    
+    function drawBackground()
+    {
+      context = canvas.getContext('2d');
+      base_image = new Image();
+      base_image.src = '${backgroundImage}';
+      base_image.onload = function(){
+        context.drawImage(base_image, 0,0, 420, 300);
+      }  
     }
+    
+    function initCanvas(){
+        try{
+            canvas = document.getElementById("${canvas.id}");
+            
+            if(!canvas){
+                console.log("Canvas element not ready, retry later")
+                setTimeout(initCanvas, 50)
+            }
+            
+            console.log("width", canvas.offsetWidth)
+            console.log("height", canvas.offsetHeight)
+            canvas.width = canvas.offsetWidth
+            canvas.height = canvas.offsetHeight
+            
+            window.signaturePad = new SignaturePad(canvas,{width:canvas.offsetWidth, height: canvas.offsetHeight });
+            
+            if(${backgroundImage != null}){
+                drawBackground()
+            }
+    
+            canvas.focus();
+            callbackWs($callbackId, {"setup":"ok"});
+        }
+        catch(ex){
+            console.log("SignaturePad js not ready, retry later")
+            setTimeout(initCanvas, 50)
+        }
+    }
+    initCanvas()
+    """.trimIndent(), callbackId){
+
+    }
+
 
     return pad
 }

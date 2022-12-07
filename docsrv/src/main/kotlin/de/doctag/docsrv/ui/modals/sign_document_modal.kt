@@ -12,22 +12,16 @@ import kweb.logger
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
+import mergeSignatureWithBackgroundImage
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.save
-import java.awt.image.BufferedImage
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.time.Duration
-import java.time.ZonedDateTime
-import java.util.*
-import java.util.concurrent.CompletableFuture
-import javax.imageio.ImageIO
-import kotlin.concurrent.thread
 
 private val mailRegex = "^(.+)@(.+)$".toRegex()
-fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document, addedSig: Signature)->Unit) = modal(i18n("ui.modals.signDocumentModal.title","Dokument signieren"), autoFocus = false) { modal ->
+fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document, addedSig: Signature)->Unit) = modal(
+    i18n("ui.modals.signDocumentModal.title","Dokument signieren"),
+    autoFocus = false) { modal ->
 
     val role = KVar<WorkflowAction?>(null)
     val key = KVar<PrivatePublicKeyPair?>(null)
@@ -59,7 +53,9 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
         if(db().currentConfig.security?.defaultKeyForAnonymousSubmissions != null && browser.authenticatedUser == null){
             key.value = db().keys.findOne(PrivatePublicKeyPair::_id eq db().currentConfig?.security?.defaultKeyForAnonymousSubmissions)
         } else {
-            val keyOptions = db().keys.find().map { it._id to (it.verboseName ?: "") }.toMap()
+            val allKeys = db().keys.find()
+            val keyOptions = allKeys.map { it._id to (it.verboseName ?: "") }.toMap()
+            key.value = allKeys.firstOrNull{it.defaultKey == true} ?: allKeys.firstOrNull()
             div(fomantic.ui.field).new {
                 label().i18nText("ui.modals.signDocumentModal.selectKey","Schlüssel wählen")
                 dropdown(keyOptions).onSelect { selectedKeyId ->
@@ -157,16 +153,22 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                                signatureData?.let {
                                    val (contentType, data) = it
 
-                                   val stream = ByteArrayInputStream(Base64.getDecoder().decode(data))
-                                   val signature = ImageIO.read(stream)
-                                   val trimmedImage = trimImage(signature)
-                                   val outStream = ByteArrayOutputStream()
-                                   ImageIO.write(trimmedImage, "png", outStream)
-                                   val trimmedDataB64 = Base64.getEncoder().encodeToString(outStream.toByteArray())
+                                   //val stream = ByteArrayInputStream(Base64.getDecoder().decode(data))
+                                   //val signature = ImageIO.read(stream)
+                                   //val trimmedImage = trimImage(signature)
+                                   //val outStream = ByteArrayOutputStream()
+                                   //ImageIO.write(trimmedImage, "png", outStream)
+                                   //val trimmedDataB64 = Base64.getEncoder().encodeToString(outStream.toByteArray())
+
+                                   val mergedSignature = mergeSignatureWithBackgroundImage(
+                                       if(browser.authenticatedUser!=null){ db().currentConfig.design?.signatureBackground }
+                                       else { null },
+                                       data
+                                   )
 
                                    val fd = FileData(
-                                       _id = trimmedDataB64.toSha1HexString(),
-                                       base64Content = trimmedDataB64,
+                                       _id = mergedSignature.toSha1HexString(),
+                                       base64Content = mergedSignature,
                                        contentType = contentType,
                                        name = "signature.png"
                                    )

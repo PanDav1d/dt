@@ -40,13 +40,6 @@ private fun defaultWorkflow() = Workflow(name = "Default", actions = listOf(
     )
 )
 
-private fun vaccineWorkflow() = Workflow(name = "Impfpass", actions = listOf(
-        WorkflowAction("Arzt", inputs = listOf(
-            WorkflowInput("Impfstoff", "Eingesetzer Impfstoff", kind = WorkflowInputKind.TextInput),
-            WorkflowInput("Charge", "Chargen-Nummer", kind = WorkflowInputKind.TextInput))
-        )
-    )
-)
 
 fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
 

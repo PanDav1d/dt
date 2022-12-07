@@ -22,6 +22,5 @@ fun ElementCreator<*>.documentTabMenu(activeItem: DocumentTabMenuActiveItem, rig
         div(fomantic.right.menu).new {
             rightAction()
         }
-
     }
 }

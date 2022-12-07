@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.xenomachina.argparser.ArgParser
 import de.doctag.docsrv.api.BadRequestException
 import de.doctag.docsrv.api.docServerApi
+import de.doctag.docsrv.api.internalRoutes
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.static.staticFiles
 import de.doctag.docsrv.ui.*
@@ -139,6 +140,13 @@ fun Application.kwebFeature(){
 
             logger.info("Cookie SESSION / Main is ${this.httpRequestInfo.cookies.get("SESSION")}")
 
+            if(this.httpRequestInfo.cookies.get("UI_LANG")== null){
+                val lang = this.httpRequestInfo.request.parseLanguageHeaders()
+                supportedLocales.find { it.locale == lang }?.let{
+                    this.setLanguage(it)
+                }
+            }
+
             doc.head.new {
                 // Not required, but recommended by HTML spec
                 meta(name = "Description", content = i18n("main.metaDescription","Dokumentenserver für signierte Dokumente"))
@@ -213,7 +221,7 @@ fun Application.kwebFeature(){
 
             docServerApi()
             appRoutes()
-
+            internalRoutes()
 
             staticFiles()
 

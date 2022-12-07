@@ -113,6 +113,7 @@
 				"anonymousSignaturesNotPossibleInfoMessage": "Anonymous signatures are not possible in this document.",
 				"createDoctagInstanceLink": "Get a DocTag Login",
 				"creationDate": "Creation date",
+				"deleteButton": "Delete",
 				"documentAddress": "Document address",
 				"documentUrl": "Document address",
 				"downloadButton": "download",
@@ -140,6 +141,10 @@
 				"title": "Document",
 				"validationRunning": "Validating...",
 				"value": "Value",
+				"verifyDeleteModal": {
+					"document": "Document",
+					"the": "the"
+				},
 				"viewDoctagButton": "Show DocTag"
 			},
 			"menu": {
@@ -282,7 +287,7 @@
 						"byeText": "Best regards",
 						"greeting": "Hello",
 						"subject": "Test-Mail",
-						"text": ""
+						"text": "This is a test message sent by the web console."
 					}
 				},
 				"notificationForm": {
@@ -371,7 +376,7 @@
 				"sendAppLoginMail": {
 					"byteText": "Best regards",
 					"greeting": "Hello",
-					"mailBody": "",
+					"mailBody": "In this e-mail you find your login information for the DocTag App. Please open the DocTag app and scan the following QR-Code to authenticate. ",
 					"subject": "Login information for your Doctag App"
 				},
 				"userAddForm": {

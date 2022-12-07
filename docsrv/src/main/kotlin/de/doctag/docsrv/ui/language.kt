@@ -24,21 +24,9 @@ data class SupportedLocale(
 val supportedLocales = listOf(
     SupportedLocale("de", Locale.GERMANY, fomantic.ui.langDe),
     SupportedLocale("en", Locale.ENGLISH, fomantic.ui.langGb),
+    SupportedLocale("es", Locale("ES"), fomantic.ui.langEs),
 )
 
-private fun WebBrowser.detectLanguage(languageHandler: (lang: String) -> Unit) {
-    val callbackId = Math.abs(random.nextInt())
-    val js = """
-        var userLang = navigator.language || navigator.userLanguage; 
-        callbackWs($callbackId ,{language: userLang});
-    """.trimIndent()
-    this.executeWithCallback(js, callbackId) {
-        if (!(it is JsonNull)) {
-            val resp: LanguageResponse = gson.fromJson(it.toString())
-            languageHandler(resp.language)
-        }
-    }
-}
 
 private fun parseBrowserLanguage(langStr: String): Locale {
     val iso2Code = langStr.split("-")[0].toLowerCase()
@@ -53,6 +41,8 @@ fun ApplicationRequest.parseLanguageHeaders(): Locale{
         val language = langHeader?.let { parseBrowserLanguage(langHeader)} ?: Locale.ENGLISH
 
         //logger.info("Language string is ${langHeader}. Detected Language: ${language}")
+
+
 
         language
 

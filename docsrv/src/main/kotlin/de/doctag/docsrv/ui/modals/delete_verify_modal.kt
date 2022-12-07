@@ -11,7 +11,7 @@ import kweb.state.KVar
 import kweb.state.render
 import kweb.*
 
-fun ElementCreator<*>.deleteVerifyModal(objectKind: String, elementToDelete: String, onVerifyDelete: ()->Unit) = modal(i18n("ui.modals.deleteVerifyModal.title","Löschen bestätigen")){ modal->
+fun ElementCreator<*>.deleteVerifyModal(objectKind: String, elementToDelete: String, article: String="den", onVerifyDelete: ()->Unit) = modal(i18n("ui.modals.deleteVerifyModal.title","Löschen bestätigen")){ modal->
     val hasError = KVar<String?>(null)
 
     render(hasError){ errorMessage->
@@ -23,7 +23,7 @@ fun ElementCreator<*>.deleteVerifyModal(objectKind: String, elementToDelete: Str
         }
     }
 
-    h3().i18nText("ui.modals.deleteVerifyModal.confirmText","Bitte bestätigen Sie dass Sie den ${objectKind} '$elementToDelete' wirklich löschen möchten")
+    h3().i18nText("ui.modals.deleteVerifyModal.confirmText","Bitte bestätigen Sie dass Sie ${article} ${objectKind} '$elementToDelete' wirklich löschen möchten")
 
     buttonWithAsyncLoader(i18n("ui.modals.deleteVerifyModal.deleteButton","Löschen"), fomantic.ui.red.button, renderInline = true){
         try {

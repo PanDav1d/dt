@@ -131,12 +131,27 @@ fun Routing.appRoutes(){
             DocServerClient.loadDocument("https://${req.hostname}/d/${req.documentId}").ensureObjectWasFound()
         }
 
+        val workflowOfRole = doc.document.workflow?.actions?.find { it.role == data.role }
+
         val filesToInsert = data.files?.map {
             val input = data.inputs?.find { input -> input.fileId == it._id }
+            val matchingInput = workflowOfRole?.inputs?.find { it.name == input?.name }
+            if(matchingInput?.kind == WorkflowInputKind.Sign){
+                if(!db().currentConfig.design?.signatureBackground.isNullOrBlank() ){
+                    it.base64Content?.let{content->
+                        it.base64Content = mergeSignatureWithBackgroundImage(
+                            db().currentConfig.design?.signatureBackground,
+                            content
+                        )
+                    }
+                }
+            }
+
             it._id = it.base64Content!!.toSha1HexString()
             if(input != null) {
                 input.fileId = it._id
             }
+
             it
         }
         filesToInsert?.let{

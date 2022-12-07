@@ -1,13 +1,12 @@
 package de.doctag.docsrv.remotes
 
+import com.sun.mail.pop3.POP3Store
 import de.doctag.docsrv.extractDocumentIdAndSplitDocument
 import de.doctag.docsrv.extractDocumentIds
 import de.doctag.docsrv.extractTextFromPdf
 import de.doctag.docsrv.model.*
 import de.doctag.lib.toSha1HexString
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOneById
-import org.litote.kmongo.save
+import org.litote.kmongo.*
 import org.slf4j.LoggerFactory
 import java.io.InputStream
 import java.lang.Exception
@@ -65,9 +64,16 @@ class MailReceiver(val store: Store){
         val inbox: Folder = store.getFolder("INBOX")
         inbox.open(Folder.READ_WRITE)
 
+        val flag = when{
+            store is POP3Store -> Flags.Flag.DELETED
+            else -> Flags.Flag.SEEN
+        }
+
+
         val flags = Flags()
-        flags.add(Flags.Flag.SEEN)
+        flags.add(flag)
         inbox.setFlags(listOf(message.messageNumber).toIntArray(), flags, true)
+        inbox.close(true)
     }
 }
 
@@ -145,8 +151,30 @@ class AttachmentImporter(val dbContext: DbContext){
                 val doctagId = it.documentId
                 logger.info("Found doctag -> ${doctagId.fullUrl}")
 
+
                 if (dbContext.documents.countDocuments(Document::url eq doctagId.fullUrl) != 0L) {
-                    logger.info("Document already imported. Skipping  $doctagId")
+                    val currentlyExistingDocument = dbContext.documents.findOne(Document::url eq doctagId.fullUrl)
+                    logger.info("Document already imported. Is document already signed? ${currentlyExistingDocument?.signatures?.size != 0} ")
+                    if(doctagId.isOwnedByThisMachine() && (currentlyExistingDocument?.signatures == null || currentlyExistingDocument.signatures?.size != 0)){
+                        logger.info("Document is not signed yet. Updating")
+                        val fd = FileData(
+                            _id = documentData.toSha1HexString(),
+                            name = fileName,
+                            base64Content = documentData,
+                            contentType = "application/pdf"
+                        )
+                        fd.apply { dbContext.files.save(fd) }
+                        currentlyExistingDocument?.let {
+                            it.attachmentId?.let{dbContext.files.deleteOneById(it)}
+                            it.attachmentId = fd._id
+                            it.attachmentHash = fd.base64Content?.toSha1HexString()
+                            dbContext.documents.save(it)
+                        }
+                    } else{
+                        logger.info("Document is already signed. Skipping")
+                    }
+
+
                     return
                 }
 

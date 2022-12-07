@@ -95,6 +95,7 @@ data class PrivatePublicKeyPair(
     var _id: String? = null,
     var privateKey: String? = null,
     var fingerprint: String? = null,
+    var defaultKey: Boolean? = null,
     override var publicKey : String? = null,
     override var verboseName: String? = null,
     override var created: String? = null,

@@ -5,13 +5,14 @@ import de.doctag.docsrv.getQRCodeImageAsDataUrl
 import de.doctag.docsrv.i18n
 import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
-import org.litote.kmongo.findOneById
 import de.doctag.docsrv.ui.*
 import de.doctag.docsrv.ui.document.components.DocumentViewActiveItem
 import de.doctag.docsrv.ui.document.components.documentViewTabMenu
 import de.doctag.docsrv.ui.forms.system.addTagDropdown
+import de.doctag.docsrv.ui.modals.deleteVerifyModal
 import de.doctag.docsrv.ui.modals.filePreviewModal
 import de.doctag.docsrv.ui.modals.signDocumentModal
+import doctag.translation.I18n
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,9 +20,7 @@ import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOne
-import org.litote.kmongo.save
+import org.litote.kmongo.*
 
 
 fun ElementCreator<*>.handleDocument(docId: String?, hostname: String?, subPage: String) {
@@ -210,6 +209,29 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
 
             div(fomantic.ui.item).new {
                 a(href = "/d/${rDocument._id}/download", attributes = mapOf("download" to "", "class" to "ui button tertiary blue")).i18nText("ui.document.documentView.downloadButton","Herunterladen")
+            }
+
+            if(this.browser.authenticatedUser != null) {
+                div(fomantic.ui.item).new {
+                    val modal = deleteVerifyModal(I18n.t("ui.document.documentView.verifyDeleteModal.document", "Dokument"), rDocument.originalFileName ?: "unbekannt", I18n.t("ui.document.documentView.verifyDeleteModal.the","das")) {
+
+                        val attachedFiles =
+                            rDocument.signatures?.flatMap { it.inputs?.mapNotNull { it.fileId } ?: listOf() }
+
+                        db().files.deleteOneById(rDocument.attachmentId!!)
+                        attachedFiles?.forEach { f ->
+                            db().files.deleteOneById(f)
+                        }
+                        db().documents.deleteOneById(rDocument._id!!)
+                        browser.navigateTo("/documents")
+                    }
+                    button(fomantic.ui.button.tertiary.red).i18nText(
+                        "ui.document.documentView.deleteButton",
+                        "Löschen"
+                    ).on.click {
+                        modal.open()
+                    }
+                }
             }
         }
     }

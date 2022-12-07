@@ -40,8 +40,9 @@ data class WorkflowConfig(
 )
 
 data class DesignConfig(
-        val headerColor: String?=null,
-        val headerTitle: String?=null
+    val headerColor: String?=null,
+    val headerTitle: String?=null,
+    val signatureBackground: String? = null,
 )
 
 
@@ -221,7 +222,13 @@ data class Workflow(
 data class WorkflowAction(
         var role: String? = null,
         var inputs: List<WorkflowInput>? = null,
-        var permissions: WorkflowActionPermissions?=null
+        var permissions: WorkflowActionPermissions?=null,
+        var dependencies: List<WorkflowActionDependency>?=null
+)
+
+data class WorkflowActionDependency(
+    var afterRole: String? = null,
+    var beforeRole: String? = null
 )
 
 data class WorkflowActionPermissions(
