@@ -3,40 +3,27 @@ package api
 import SignatureInputs
 import TESTING_PORT
 import WithTestDatabase
-import com.github.salomonbrys.kotson.fromJson
-import com.mongodb.ServerAddress
-import de.bwaldvogel.mongo.MongoServer
 import de.bwaldvogel.mongo.backend.Assert
-import de.bwaldvogel.mongo.backend.memory.MemoryBackend
-import de.doctag.docsrv.Config
-import de.doctag.docsrv.DocSrvConfig
-import de.doctag.docsrv.kwebFeature
 import de.doctag.docsrv.model.*
 import de.doctag.docsrv.remotes.AppApiClient
-import de.doctag.docsrv.remotes.DocServerClient
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.server.testing.*
-import kweb.util.gson
 import makeDocument
 import makePPK
 import makeWorkflow
-import org.bson.internal.Base64
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
+import mu.KotlinLogging
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.litote.kmongo.eq
-import org.litote.kmongo.findOne
-import org.litote.kmongo.findOneById
 import org.litote.kmongo.save
-import setupApi
-import java.io.File
-import java.net.InetSocketAddress
 import java.time.ZonedDateTime
+import org.litote.kmongo.deleteMany
 
+private val logger = KotlinLogging.logger {}
 
 class AppApiTest : WithTestDatabase() {
 
+    @BeforeEach
+    fun `Cleanup keys`(){
+        dbContext.keys.deleteMany()
+    }
 
     @Test
     fun `Check Session validity`() {
@@ -81,6 +68,7 @@ class AppApiTest : WithTestDatabase() {
         //
         // Then
         //
+        logger.info("Available key: ${preparedWorkflow.availableKeys.joinToString { it.ppkId }}")
         Assert.equals(ppk._id, preparedWorkflow.availableKeys.single().ppkId)
         Assert.equals(wf._id, preparedWorkflow.workflow?._id)
     }
