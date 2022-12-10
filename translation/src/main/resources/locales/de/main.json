@@ -467,7 +467,7 @@
 			},
 			"deleteVerifyModal": {
 				"abortButton": "Abbrechen",
-				"confirmText": "Bitte bestätigen Sie dass Sie ${article} ${objectKind} '$elementToDelete' wirklich löschen möchten",
+				"confirmText": "Bitte bestätigen Sie dass Sie ${article} / ${objectKind} '$elementToDelete' wirklich löschen möchten",
 				"deleteButton": "Löschen",
 				"errorMessage": "Fehler beim Löschen",
 				"title": "Löschen bestätigen"

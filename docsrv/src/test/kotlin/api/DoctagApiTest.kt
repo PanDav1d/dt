@@ -72,7 +72,7 @@ class DoctagApiTest : WithTestDatabase() {
         dbContext.files.insertMany(doc.second)
 
         val ppk = makePPK()
-        val sig = doc.first.makeSignature(ppk, null, null)
+        val sig = doc.first.makeSignature(ppk, null, null, "none")
 
         val embeddedSignature = EmbeddedSignature(listOf(), sig)
 

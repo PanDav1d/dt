@@ -1,6 +1,5 @@
 package de.doctag.docsrv.ui.forms.system
 
-import de.doctag.docsrv.getQRCodeImageAsDataUrl
 import de.doctag.docsrv.i18n
 import de.doctag.docsrv.i18nText
 import de.doctag.docsrv.model.*
@@ -145,15 +144,24 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                             workflow.value.actions?.get(activeActionIdx.value)?.permissions = WorkflowActionPermissions()
                         }
 
-                        val derivedKvar =  KVar(workflow.value.actions?.get(activeActionIdx.value)?.permissions?.allowAnonymousSubmissions ?: false)
-                        derivedKvar.addListener{a,b->
+                        val kvarAnonymousSubmission =  KVar(workflow.value.actions?.get(activeActionIdx.value)?.permissions?.allowAnonymousSubmissions ?: false)
+                        kvarAnonymousSubmission.addListener{ a, b->
                             logger.info("Checkbox Changed from $a to $b")
                             workflow.value.actions?.get(activeActionIdx.value)?.permissions?.allowAnonymousSubmissions = b
                         }
 
                         div(fomantic.ui.field).new {
-                            checkBoxInput(i18n("ui.forms.system.workflowForm.allowAnonymousSignatureCheckbox","Ausfüllen ohne Anmeldung erlauben"),derivedKvar)
+                            checkBoxInput(i18n("ui.forms.system.workflowForm.allowAnonymousSignatureCheckbox","Ausfüllen ohne Anmeldung erlauben"),kvarAnonymousSubmission)
                         }
+
+                        val kvarMaxSubmissions =  KVar(workflow.value.actions?.get(activeActionIdx.value)?.permissions?.maxSubmissions?.toString()?:"")
+                        kvarMaxSubmissions.addListener{ a, b->
+                            logger.info("Checkbox Changed from $a to $b")
+                            workflow.value.actions?.get(activeActionIdx.value)?.permissions?.maxSubmissions = b.toIntOrNull()
+                        }
+                        formInput(i18n("ui.forms.system.workflowForm.maxNumberOfSignatures","Maximale Anzahl an Signaturen"), "", false, kvarMaxSubmissions)
+                            .with(formCtrl)
+
                     }
                 }
             }

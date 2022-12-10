@@ -80,8 +80,8 @@ inline fun <O, reified T : Any?> KVar<T?>.propertyOrDefault2(property: KProperty
     })
 }
 
-fun Element.i18nText(path: String, text: String) : Element{
-    this.text(I18n.t/*ignore*/(path, text, language = browser.sessionLanguage))
+fun Element.i18nText(path: String, text: String, variables: Map<String,String>?=null) : Element{
+    this.text(I18n.t/*ignore*/(path, text, language = browser.sessionLanguage, additionalReplacementContextMap = variables))
     return this
 }
 

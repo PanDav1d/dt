@@ -73,8 +73,15 @@ fun ElementCreator<*>.signButton(rFile: Document){
     }
 
     if(browser.authenticatedUser != null || rFile.workflow?.actions?.any { it.permissions?.allowAnonymousSubmissions == true } == true) {
-        button(fomantic.ui.button.primary).i18nText("ui.document.documentView.signNow","Jetzt Signieren").on.click {
-            modal.open()
+        if((rFile.getAvailableWorkflowActions(browser.authenticatedUser != null)?.size ?: 0) > 0) {
+            button(fomantic.ui.button.primary).i18nText(
+                "ui.document.documentView.signNow",
+                "Jetzt Signieren"
+            ).on.click {
+                modal.open()
+            }
+        } else {
+            span(fomantic.small.text).i18nText("ui.document.documentView.signingNoLongerPossible", "Dokument kann nicht mehr signiert werden")
         }
     } else {
         span(fomantic.small.text).i18nText("ui.document.documentView.anonymousSignaturesNotPossibleInfoMessage", "Signaturen ohne Authentifikation sind in diesem Dokument nicht möglich.")

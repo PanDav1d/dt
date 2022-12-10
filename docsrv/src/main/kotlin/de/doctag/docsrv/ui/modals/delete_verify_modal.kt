@@ -23,7 +23,11 @@ fun ElementCreator<*>.deleteVerifyModal(objectKind: String, elementToDelete: Str
         }
     }
 
-    h3().i18nText("ui.modals.deleteVerifyModal.confirmText","Bitte bestätigen Sie dass Sie ${article} ${objectKind} '$elementToDelete' wirklich löschen möchten")
+    h3().i18nText("ui.modals.deleteVerifyModal.confirmText","Bitte bestätigen Sie dass Sie ${article} / ${objectKind} '${elementToDelete}' wirklich löschen möchten", mapOf(
+        "\${article}" to article,
+        "\${objectKind}" to objectKind,
+        "\${elementToDelete}" to elementToDelete
+    ))
 
     buttonWithAsyncLoader(i18n("ui.modals.deleteVerifyModal.deleteButton","Löschen"), fomantic.ui.red.button, renderInline = true){
         try {

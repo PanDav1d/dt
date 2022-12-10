@@ -34,15 +34,15 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
 
         input(type = InputType.hidden)
 
-        val roleOptions : Map<String?, String>? = doc.workflow?.actions?.filter { it.permissions?.allowAnonymousSubmissions == true || this.browser.authenticatedUser != null  }?.mapIndexed { index, workflowAction ->
-            index.toString() to (workflowAction.role ?: "")
+        val roleOptions : Map<String?, String>? = doc.getAvailableWorkflowActions(browser.authenticatedUser != null)?.mapIndexed { index, workflowAction ->
+            workflowAction.role to (workflowAction.role ?: "")
         }?.toMap()
 
         if(roleOptions != null) {
             div(fomantic.ui.field).new {
                 label().i18nText("ui.modals.signDocumentModal.selectRole","Rolle wählen")
-                dropdown(roleOptions).onSelect { selectedRoleIdx ->
-                    role.value = doc.workflow?.actions!![selectedRoleIdx!!.toInt()]
+                dropdown(roleOptions).onSelect { roleName ->
+                    role.value = doc.workflow?.actions!!.find { it.role == roleName }
                 }
             }
         }

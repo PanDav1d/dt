@@ -17,7 +17,7 @@ Restart=always
 RestartSec=10
 TimeoutSec=300
 WorkingDirectory=/root/
-ExecStart=/usr/bin/java -Xms256m -Xmx1024m -XX:MaxDirectMemorySize=1024M -XX:MaxGCPauseMillis=50 -jar docsrv-0.1.0.jar --dbName docsrv-@hostname
+ExecStart=/usr/bin/java -Xms256m -Xmx1500m -XX:MaxDirectMemorySize=1500M -XX:MaxGCPauseMillis=50 -jar docsrv-0.1.0.jar --dbName docsrv-@hostname
 
 
 [Install]

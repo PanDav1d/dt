@@ -161,6 +161,16 @@ data class Document(
 
         return EmbeddedDocument(files, this.copy(tags = null))
     }
+
+    fun getAvailableWorkflowActions(isAuthenticated: Boolean) : List<WorkflowAction>?{
+        return workflow?.actions?.filter { a->
+            a.dependencies == null || a.dependencies?.all { dependency -> dependency.isFulfilled(signatures)}==true
+        }?.filter{
+             it.permissions?.allowAnonymousSubmissions == true || isAuthenticated
+        }?.filter {
+            it.permissions?.maxSubmissions == null || it.permissions?.maxSubmissions!! > (this.signatures?.count { s->s.role == it.role }?: 0)
+        }
+    }
 }
 
 data class FileData(
@@ -229,10 +239,21 @@ data class WorkflowAction(
 data class WorkflowActionDependency(
     var afterRole: String? = null,
     var beforeRole: String? = null
-)
+) {
+    fun isFulfilled(signatures: List<Signature>?) : Boolean {
+        if(afterRole != null){
+            return signatures?.any { it.role == afterRole } == true
+        }
+        if(beforeRole != null){
+            return signatures?.none { it.role == beforeRole } == true || signatures == null
+        }
+        return true
+    }
+}
 
 data class WorkflowActionPermissions(
-    var allowAnonymousSubmissions: Boolean? = null
+    var allowAnonymousSubmissions: Boolean? = null,
+    var maxSubmissions: Int? = null
 )
 
 data class WorkflowInput(
@@ -334,6 +355,8 @@ data class Signature(
 
         return verifySignature(pk, "?;"+msg.substringAfter(";"), sig)
     }
+
+
 
     companion object {
         fun make(currentKey: PrivatePublicKeyPair, documentUrl: String?, documentHash:String?, role:String?, result: List<WorkflowInputResult>?, previousSignatureHash: String?, signingUser: String) : Signature{

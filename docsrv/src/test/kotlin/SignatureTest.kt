@@ -19,7 +19,7 @@ class SignatureTest  {
         //
         // When
         //
-        val currentSig = doc.makeSignature(ppk, "ABC", listOf(WorkflowInputResult("a", "1",null), WorkflowInputResult("b", null, "999")))
+        val currentSig = doc.makeSignature(ppk, "ABC", listOf(WorkflowInputResult("a", "1",null), WorkflowInputResult("b", null, "999")), "")
 
         //
         // Then
@@ -42,9 +42,9 @@ class SignatureTest  {
         //
         // When
         //
-        val currentSig = doc.makeSignature(ppk, "ABC", listOf(WorkflowInputResult("a", "1",null), WorkflowInputResult("b", null, null)))
+        val currentSig = doc.makeSignature(ppk, "ABC", listOf(WorkflowInputResult("a", "1",null), WorkflowInputResult("b", null, null)),"")
         doc.signatures = (doc.signatures?: listOf()) + currentSig
-        val currentSig2 = doc.makeSignature(ppk, "DEF", listOf(WorkflowInputResult("c", "e",null), WorkflowInputResult("x", null, null)))
+        val currentSig2 = doc.makeSignature(ppk, "DEF", listOf(WorkflowInputResult("c", "e",null), WorkflowInputResult("x", null, null)),"")
         doc.signatures = (doc.signatures?: listOf()) + currentSig2
 
         val edoc = EmbeddedDocument(files, doc)
@@ -68,9 +68,9 @@ class SignatureTest  {
         //
         // When
         //
-        val currentSig = doc.makeSignature(ppk, "ABC", listOf(WorkflowInputResult("a", "1",null), WorkflowInputResult("b", null, workflowFileInput._id)))
+        val currentSig = doc.makeSignature(ppk, "ABC", listOf(WorkflowInputResult("a", "1",null), WorkflowInputResult("b", null, workflowFileInput._id)),"")
         doc.signatures = (doc.signatures?: listOf()) + currentSig
-        val currentSig2 = doc.makeSignature(ppk, "DEF", listOf(WorkflowInputResult("c", "e",null), WorkflowInputResult("x", null, null)))
+        val currentSig2 = doc.makeSignature(ppk, "DEF", listOf(WorkflowInputResult("c", "e",null), WorkflowInputResult("x", null, null)),"")
         doc.signatures = (doc.signatures?: listOf()) + currentSig2
 
         val edoc = EmbeddedDocument(files+workflowFileInput, doc)
@@ -94,7 +94,7 @@ class SignatureTest  {
         //
         // When
         //
-        val currentSig = doc.makeSignature(ppk, "ABC", listOf(WorkflowInputResult("a", "1",null), WorkflowInputResult("b", "999", null)))
+        val currentSig = doc.makeSignature(ppk, "ABC", listOf(WorkflowInputResult("a", "1",null), WorkflowInputResult("b", "999", null)),"")
         doc.signatures = (doc.signatures?: listOf()) + currentSig + currentSig
 
 

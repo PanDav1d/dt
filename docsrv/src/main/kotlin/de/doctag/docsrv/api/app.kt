@@ -109,7 +109,15 @@ fun Routing.appRoutes(){
 
         call.respond(
             PreparedSignature(
-                doc?.document?.workflow,
+                doc?.document?.workflow?.copy(
+                    actions = doc.document.getAvailableWorkflowActions(true)
+                        ?.map {
+                            // Don't give a <null> description to the app as it may crash then
+                            it.copy(
+                                inputs = it.inputs?.map { i->i.copy(description = i.description?:"") }
+                            )
+                        }
+                ),
                 db().keys.find().map {
                     PrivatePublicKeyInfo(it._id!!, it.verboseName!!)
                 }.toList()
