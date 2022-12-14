@@ -34,7 +34,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
 
         input(type = InputType.hidden)
 
-        val roleOptions : Map<String?, String>? = doc.getAvailableWorkflowActions(browser.authenticatedUser != null)?.mapIndexed { index, workflowAction ->
+        val roleOptions : Map<String?, String>? = doc.getAvailableWorkflowActions(browser.authenticatedUser != null, db().currentConfig.hostname)?.mapIndexed { index, workflowAction ->
             workflowAction.role to (workflowAction.role ?: "")
         }?.toMap()
 

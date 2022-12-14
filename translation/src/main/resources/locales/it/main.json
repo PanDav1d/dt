@@ -1,0 +1,606 @@
+{
+	"Translation": {
+		"thisMessageWasAutomaticallyGenerated": "Questo messaggio è stato creato automaticamente da TRANSLATOR."
+	},
+	"mails": {
+		"documentWasSignedMail": {
+			"actionLink": "Aprire il documento",
+			"byeText": "Tanti saluti",
+			"greeting": "Ciao",
+			"subject": "Un documento che avete osservato è stato firmato",
+			"text": "Un documento osservato è stato firmato. Aprire il documento per ottenere maggiori informazioni sulla firma"
+		}
+	},
+	"main": {
+		"metaDescription": "Server di documenti per documenti firmati"
+	},
+	"pdfBuilder": {
+		"checksum": "checksum",
+		"date": "Data",
+		"file": "File ${attachment?.name}",
+		"noSignaturesAvailableMessage": "Non ci sono ancora firme disponibili",
+		"operator": "Operatore di sistema",
+		"publicKey": "Chiave pubblica:",
+		"responsibleSystem": "Server Doctag responsabile",
+		"signatureIdxOfN": "Firma ${idx+1} di ${doc.signatures?.size}",
+		"signatureInfos": "Dettagli della firma",
+		"technicalInfos": "Informazioni tecniche",
+		"user": "Utente",
+		"userInput": "Input dell'utente"
+	},
+	"ui": {
+		"admin": {
+			"install": {
+				"completedHeader": "Struttura completata",
+				"completedText": "Il sistema è stato configurato con successo. Proseguire fino al",
+				"createAdminUser": "Creare un utente amministratore",
+				"domainNameHeder": "Impostazione del sistema",
+				"doneHeader": "Struttura completata",
+				"doneText": "La configurazione del sistema è già stata eseguita. Ora è possibile utilizzare DocServer.",
+				"loginLinkText": "registrazione",
+				"personalDataHeader": "Impostazione del sistema",
+				"pinCheckHeader": "Impostazione del sistema",
+				"redirectText": "Verrete reindirizzati automaticamente dopo 5 secondi."
+			},
+			"installForms": {
+				"domainNameInputLabel": "Nome del dominio",
+				"domainNameInvalidError": "Inserire un nome di dominio corretto",
+				"requestDomainNameText": "Inserire il nome di dominio con cui è possibile raggiungere questo sistema.",
+				"requestServerPinText": "Immettere il PIN del server per continuare l'installazione. È possibile ottenere il PIN del server eseguendo il seguente comando nel terminale del server:",
+				"serverPin": "Specificare il PIN del server",
+				"serverPinIncorrectError": "Inserire il PIN corretto",
+				"serverPinInputLabel": "PIN del server",
+				"serverPinPlaceholder": "specificare",
+				"setupDomainNameHeadline": "Impostazione del nome di dominio"
+			}
+		},
+		"auth": {
+			"login": {
+				"loginFailedErrorMessage": "Accesso fallito. Controllare il nome utente e la password.",
+				"usernamePlaceholder": "Nome utente"
+			},
+			"loginButtonText": "entrare",
+			"loginHeader": "Registrazione obbligatoria",
+			"logout": {
+				"forwardInFiveSecMessage": "Verrete reindirizzati automaticamente dopo 5 secondi.",
+				"forwardToLoginLinkText": "registrazione",
+				"logoutDescription": "L'utente si è disconnesso. Proseguire fino al",
+				"logoutHeader": "Disconnesso"
+			},
+			"passwordPlaceholder": "password",
+			"register": {
+				"registerHeader": "Creare un account"
+			}
+		},
+		"base": {
+			"documentSignedMessage": "Documento firmato",
+			"logoutButton": "Logout",
+			"signatureRequestCreatedMessage": "Richiesta di firma creata"
+		},
+		"document": {
+			"components": {
+				"documentViewTab": {
+					"documents": "Documento",
+					"signatures": "Firme"
+				},
+				"from": "da",
+				"searchTextPlaceholder": "Cerca",
+				"till": "da"
+			},
+			"documentList": {
+				"actionLabel": "Azione",
+				"addDocument": "Aggiungi documento",
+				"createdLabel": "Creato il",
+				"documentAddedSuccessfullyMessage": "Documento aggiunto con successo",
+				"fileNameLabel": "Nome del file",
+				"header": "Documenti",
+				"importFromEmail": "Importazione da Mailbox",
+				"notYetSignedText": "Non ancora firmato",
+				"signedByPopupText": "Firmato su ${signedAt} da ${signature.signedByKey?.ownerAddress?.name1}",
+				"statusLabel": "Stato"
+			},
+			"documentPreviewList": {
+				"documentAddButton": "Aggiungi documento",
+				"documentList": "Elenco documenti",
+				"documentSuccessfullyAddedMessage": "Documento aggiunto con successo",
+				"importFromMailboxButton": "Importazione da Mailbox",
+				"notYetSignedMessage": "Non ancora firmato",
+				"signedOnMessage": "Firmato su ${signedAt} da ${signature.signedByKey?.ownerAddress?.name1}"
+			},
+			"documentView": {
+				"actions": "Azioni",
+				"address": "Indirizzo",
+				"anonymousSignaturesNotPossibleInfoMessage": "Le firme senza autenticazione non sono possibili in questo documento.",
+				"createDoctagInstanceLink": "Ottenere il proprio login",
+				"creationDate": "Data di Creazione",
+				"deleteButton": "",
+				"documentAddress": "Indirizzo del documento",
+				"documentUrl": "Indirizzo del documento",
+				"downloadButton": "Scaricare",
+				"fileName": "Nome del file",
+				"info": "Info",
+				"infosLabel": "Info",
+				"keyOwner": "Portachiavi",
+				"name": "Nome",
+				"noSignaturePresentYetInfoText": "Nessuna firma ancora",
+				"noSignaturesAvailable": "Nessuna firma disponibile",
+				"noWorkflowsFoundInfoText": "Non sono disponibili input per il flusso di lavoro",
+				"noneText": "nessuno",
+				"notAvailableText": "n.d.",
+				"operator": "Operatore di sistema",
+				"role": "Ruolo",
+				"signButton": "Segno",
+				"signNow": "Firma ora",
+				"signatureNotValid": "Firme non valide",
+				"signatureValid": "Firme valide",
+				"signatures": "Firme",
+				"signingDoctagInstance": "Firma dell'istanza Doctag",
+				"status": "Stato",
+				"tags": "Tags",
+				"timestamp": "Data",
+				"title": "Documento",
+				"validationRunning": "Convalida in corso",
+				"value": "Valore",
+				"verifyDeleteModal": {
+					"document": "",
+					"the": ""
+				},
+				"viewDoctagButton": "Mostra Doctag"
+			},
+			"menu": {
+				"document": "Documenti",
+				"requests": "Richieste"
+			},
+			"signRequestView": {
+				"actions": "Azioni",
+				"alreadySigned": "Già firmato",
+				"documentSignedInfoMessage": "Documento firmato",
+				"documentWasAlreadySignedInfoMessage": "Questa richiesta di firma è già stata elaborata. È possibile visualizzare la firma nel documento.",
+				"linkToDocument1": "Al documento",
+				"linkToDocument2": "Al documento",
+				"preview": "Anteprima",
+				"rejectButton": "Declino",
+				"rejectedLabel": "Rifiutato",
+				"requestRejectedLabel": "Richiesta respinta",
+				"signButton": "Segno",
+				"signRequestRejectedInfoText": "Questa richiesta di firma è già stata respinta.",
+				"title": "Visualizza la richiesta di firma"
+			},
+			"signRequests": {
+				"actions": "Azione",
+				"addSignatureRequestButton": "Creare una richiesta di firma",
+				"addedSignatureRequestSuccessMessage": "Richiesta di firma acquisita",
+				"createdBy": "Catturato da",
+				"creationDate": "Creato il",
+				"documentUrl": "Doctag",
+				"rejectedStatus": "Rifiutato",
+				"requestedRole": "Ruolo",
+				"requestedStatus": "Richiesto",
+				"signedStatus": "Firmato",
+				"status": "Stato",
+				"title": "Richieste di firma"
+			}
+		},
+		"formExtensions": {
+			"colorPicker": {
+				"black": "Nero",
+				"blue": "Blu",
+				"brown": "Marrone",
+				"gray": "Grigio",
+				"green": "Verde",
+				"magenta": "Magenta",
+				"none": "Nessuno",
+				"olive": "Verde oliva",
+				"orange": "Arancione",
+				"purple": "Viola",
+				"red": "Rosso",
+				"teal": "Turchese",
+				"yellow": "Giallo"
+			},
+			"dropdownLabel": "Selezione",
+			"pleaseConfirmInput": "Si prega di controllare le iscrizioni.",
+			"submitButtonDefaultLabel": "Salva"
+		},
+		"forms": {
+			"documentForms": {
+				"documentAddForm": {
+					"file": "File",
+					"foundDoctag": "Doctag riconosciuto",
+					"foundDoctagDescription": "Il documento caricato ha il Doctag ${document.value.url}. Premere Salva per completare l'importazione.",
+					"insertDoctagButton": "Inserire il Doctag",
+					"placeDoctagMessage": "Posizionare il Doctag con il mouse nella posizione desiderata.",
+					"saveButton": "Salva",
+					"selectTagsLabel": "Seleziona i tag",
+					"selectWorkflowLabel": "Selezionare il flusso di lavoro",
+					"upload": "Caricare"
+				},
+				"drawDoctagForm": {
+					"confirm": "Confermare"
+				}
+			},
+			"keyAddForm": {
+				"cityPlaceholder": "Posizione",
+				"countryCityZipLabel": "Paese / Codice postale / Città",
+				"countryPlaceholder": "Paese",
+				"displayNameHeader": "Nome del display",
+				"displayNameLabel": "Nome del display",
+				"displayNamePlaceholder": "Nome",
+				"name2Label": "Nome 2",
+				"name2Placeholder": "Nome 2",
+				"organizationNameHeader": "Per l'organizzazione",
+				"organizationNameLabel": "Nome",
+				"organizationNamePlaceholder": "Nome",
+				"pleaseProvideStreetErrorMessage": "Indicare la via dell'organizzazione associata",
+				"provideCityError": "Specificare la posizione",
+				"provideCountryCodeError": "Inserire un codice paese valido",
+				"provideDisplayNameError": "Inserire un nome visualizzato per la chiave",
+				"provideOrganizationNameErrorMessage": "Inserire il nome dell'organizzazione associata",
+				"provideZipCodeErrorMessage": "Inserire il codice postale",
+				"streetLabel": "Via",
+				"streetPlaceholder": "Via",
+				"zipCodePlaceholder": "Cap"
+			},
+			"system": {
+				"designForm": {
+					"formDescription": "Colore della testa laterale",
+					"inputMissingErrorMessage": "Inserire la riga del titolo da visualizzare nell'intestazione della pagina",
+					"title": "Design",
+					"titleInputLabel": "Titolo"
+				},
+				"hostnameEditForm": {
+					"attentionBoxTitle": "Attenzione",
+					"attentionBoxtext": "Si noti che il sistema potrebbe non essere più accessibile se si inseriscono informazioni errate in questo campo.",
+					"hostnameLabel": "Nome host",
+					"hostnameMissingErrorMessage": "Inserire il nome di dominio con cui è possibile raggiungere questo sistema.",
+					"title": "Nome host"
+				},
+				"mailSettingsEditForm": {
+					"fetchMailActive": "Ricezione di documenti per posta attiva",
+					"fetchMailFailedErrorDescription": "Recupero dell'e-mail non riuscito. Controllare le impostazioni",
+					"fetchMailFailedErrorTitle": "Errore",
+					"fetchMailHeader": "Ricezione della posta",
+					"fetchMailPassword": "Password",
+					"fetchMailProtocol": "Protocollo",
+					"fetchMailRemoteHost": "Server IMAP/POP",
+					"fetchMailSuccess": {
+						"description": "Recupero e-mail riuscito ${messages.size} Messaggi ricevuti",
+						"title": "Successo"
+					},
+					"fetchMailTest": {
+						"button": "Recupero del test"
+					},
+					"fetchMailUsername": "Nome utente",
+					"sendMailFromAddress": "Mittente",
+					"sendMailPassword": "password",
+					"sendMailProtocol": "Protocollo",
+					"sendMailRemoteHost": "server SMTP",
+					"sendMailTest": {
+						"buttonText": "Inviare una mail di prova",
+						"errorDescription": "Impossibile inviare l'e-mail",
+						"errorTitle": "Fallito",
+						"successDescription": "E-mail inviata con successo",
+						"successTitle": "Successo"
+					},
+					"sendMailTitle": "Spedizione della posta",
+					"sendMailUsername": "Nome utente",
+					"testMail": {
+						"byeText": "Tanti saluti",
+						"greeting": "Ciao",
+						"subject": "Posta di prova",
+						"text": "Questo è un messaggio di prova inviato tramite la console web"
+					}
+				},
+				"notificationForm": {
+					"action": "Azione",
+					"addButton": "Nuova notifica",
+					"description": "Descrizione",
+					"noRuleAvailableMessage": "Non sono disponibili regole di notifica",
+					"receiver": "Destinatario",
+					"savedMessage": "Notifica aggiunta con successo",
+					"title": "Notifiche"
+				},
+				"searchForm": {
+					"reindexButton": "Ricostruire l'indice",
+					"title": "Ricerca"
+				},
+				"securitySettingsForm": {
+					"acceptSignaturesFromUnverifiedKeysCheckbox": "Accettare firme da chiavi non verificate.",
+					"attentionText": "Il sistema accetta firme da chiavi che non sono ancora state verificate. \n                        \n                        Questa impostazione non garantisce più che le informazioni utilizzate nella chiave siano sempre state impostate in modo corretto e completo. \n                        \n                        Dovete aspettarvi che il vostro sistema riceva firme da partner che hanno inserito informazioni errate nella chiave.\n                        \n                        Si consiglia di attivare questa impostazione solo per i sistemi di prova.",
+					"attentionTitle": "Attenzione",
+					"defaultKey": "Chiave standard per le azioni di firma anonima",
+					"title": "Sicurezza"
+				},
+				"tagForm": {
+					"alwaysAttachTitle": "Aggiungi automaticamente",
+					"autoAttachWhenTextContainsLabel": "Se il documento contiene il testo",
+					"colorLabel": "Tag colore",
+					"descriptionRequiredMessage": "Si prega di fornire una descrizione per il tag",
+					"nameLabel": "Nome",
+					"nameRequiredMessage": "Si prega di fornire una descrizione per il tag",
+					"tagDescription": "Descrizione",
+					"tagDescriptionInputPlaceholderText": "Descrizione"
+				},
+				"tagListEdit": {
+					"action": "Azione",
+					"addTagButton": "Nuova tag",
+					"deleteTagText": "Elimina il tag",
+					"desciption": "Descrizione",
+					"editTagText": "Modifica del tag",
+					"name": "Nome",
+					"objectKindForDeleteModal": "Tag",
+					"tagAddedMessage": "Tag aggiunto con successo",
+					"tagEditedToastMessage": "Tag modificato",
+					"title": "Tags"
+				},
+				"workflowForm": {
+					"addActionButton": "Aggiungi",
+					"advancedOptions": "Opzioni superiori",
+					"allowAnonymousSignatureCheckbox": "Consentire il riempimento senza registrazione",
+					"backgroundImage": "Carta da parati",
+					"backgroundImageInputLabel": "Carta da parati",
+					"deleteBackgroundImage": "Cancellare",
+					"description": "Descrizione",
+					"descriptionInputPlaceholder": "Descrizione",
+					"fieldName": "Nome del campo",
+					"fieldNamePlaceholder": "Nome",
+					"inputKIndEmail": "Indirizzo e-mail",
+					"inputKind": "Tipo di ingresso",
+					"inputKindAttachFile": "Allegare il file",
+					"inputKindCheckbox": "casella di controllo",
+					"inputKindSignature": "Segno",
+					"inputKindText": "Immissione di testo",
+					"multilineCheckbox": "Multilinea?",
+					"nameLabel": "Nome",
+					"namePlaceholder": "Nome",
+					"nameRequiredErrorMessage": "Inserire un nome per il flusso di lavoro",
+					"roles": "Ruoli",
+					"unnamed": "senza titolo"
+				},
+				"workflowListEditForm": {
+					"actions": "Azione",
+					"addWorkflowButton": "Nuovo flusso di lavoro",
+					"deleteModalObjectKind": "Flusso di lavoro",
+					"deleteWorkflow": "Eliminare il flusso di lavoro",
+					"editWorkflow": "Modifica del flusso di lavoro",
+					"markAsDefaultWorkflow": "Flusso di lavoro standard",
+					"name": "Nome",
+					"roles": "Ruoli",
+					"setAsDefaultWorkflow": "Impostare come flusso di lavoro standard",
+					"successfullyAddedMessage": "Flusso di lavoro aggiunto con successo",
+					"successfullyEdited": "Flusso di lavoro modificato",
+					"successfullySetAsDefaultWorkflow": "Set di flusso di lavoro standard",
+					"title": "Flussi di lavoro"
+				}
+			},
+			"userForms": {
+				"sendAppLoginMail": {
+					"byteText": "Tanti saluti",
+					"greeting": "Ciao",
+					"mailBody": "In allegato riceverete i dati di accesso all'App Doctag. \n                    Aprite l'app Doctag e scansionate il codice QR qui sotto per accedere.\n                     \n                    <img src=",
+					"subject": "Accesso ai dati per l'App Doctag"
+				},
+				"userAddForm": {
+					"emailAddressTakenErrorMessage": "L'indirizzo e-mail è già occupato",
+					"emailInvalidErrorMessage": "Inserire un indirizzo e-mail valido",
+					"emailLabel": "E-mail",
+					"emailPlaceholder": "E-mail",
+					"firstNamePlaceholder": "Nome",
+					"lastNamePlaceholder": "Cognome",
+					"nameLabel": "Nome",
+					"passwordConfirmLabel": "Confermare la password",
+					"passwordConfirmPlaceholder": "Confermare la password",
+					"passwordDoNotMatchError": "Entrambi i campi password non corrispondono",
+					"passwordLabel": "Password",
+					"passwordPlaceholder": "Password",
+					"provideFirstNameError": "Inserire il proprio nome",
+					"provideLastNameError": "Inserire il proprio cognome"
+				},
+				"userAppForm": {
+					"addButton": "Aggiungi",
+					"addSessionForAppHeader": "Registrazione app Doctag",
+					"appSessionName": "Registrazione app Doctag",
+					"scanImmediately": "Scansione diretta",
+					"sendViaEmail": "Inviare per e-mail",
+					"successMessageBody": "I dati di accesso sono stati inviati con successo a ${mailAddress}.",
+					"successMessageTitle": "Posta inviata"
+				},
+				"userDeleteForm": {
+					"deleteButton": "Cancellare",
+					"deleteConfirmMessage": "Cancellare finalmente l'utente ${userObj.firstName} ${userObj.lastName}?",
+					"emailLabel": "Indirizzo e-mail",
+					"emailPlaceholder": "E-mail",
+					"pleaseTypeEmailMessage": "Inserire l'indirizzo e-mail dell'utente ${userObj.emailAdress} per confermare la cancellazione.",
+					"usernamesDoNotMatchError": "Entrambi i campi devono corrispondere"
+				},
+				"userEditForm": {
+					"emailAddressAlreadyTakenErrorMessage": "L'indirizzo e-mail è già occupato",
+					"emailLabel": "E-mail",
+					"emailPlaceholder": "E-mail",
+					"firstNameLabel": "Nome",
+					"firstNamePlaceholder": "Nome",
+					"lastNameLabel": "Cognome",
+					"lastNamePlaceholder": "Cognome",
+					"provideEmailerrorMessage": "Inserire un indirizzo e-mail valido",
+					"provideFirstnameErrorMessage": "Inserire il proprio nome.",
+					"provideLastNameError": "Indicare il proprio cognome."
+				},
+				"userPasswordEditForm": {
+					"confirmPasswordLabel": "Confermare la nuova password",
+					"confirmPasswordPlaceholder": "Confermare la password",
+					"newPasswordLabel": "Nuova password",
+					"newPasswordPlaceholder": "Password",
+					"passwordsDoNotMatchError": "Entrambi i campi della password devono corrispondere"
+				},
+				"userSessionForm": {
+					"confirmChangesButton": "Applicare le modifiche",
+					"noLoginAvailableMessage": "Nessuna applicazione disponibile",
+					"onDevice": "Su dispositivo",
+					"validTill": "Valido fino a"
+				}
+			}
+		},
+		"modals": {
+			"addDocumentModal": {
+				"modalTitle": "Aggiungi documento"
+			},
+			"addKeyModal": {
+				"keyAddFailed": "Errore durante la creazione",
+				"title": "Aggiungere un certificato di partecipazione"
+			},
+			"addUserModal": {
+				"title": "Aggiungi utente"
+			},
+			"createSignRequest": {
+				"confirmButton": "Confermare",
+				"creationDate": "Creato il ${doc.created?.formatDateTime()}",
+				"detectedUrl": "URL rilevato",
+				"fileName": "Nome del file: ${doc.originalFileName}",
+				"foundDocumentMessage": "Documento riconosciuto",
+				"openButton": "Aperto",
+				"reScanButton": "Scansione di nuovo",
+				"selectRoleLabel": "Scegli il ruolo",
+				"signatureNotValid": "Firma non valida",
+				"signatureRequestCreatedMessage": "Creare una richiesta di firma",
+				"signatureValidMessage": "Firma valida",
+				"source": "Origine: ${doc.url}",
+				"title": "Creare una richiesta di firma"
+			},
+			"deleteVerifyModal": {
+				"abortButton": "Annullare",
+				"confirmText": "Confermare che si vuole veramente cancellare l'elemento ${objectKind} '$elementToDelete'.",
+				"deleteButton": "Cancellare",
+				"errorMessage": "Errore durante la cancellazione",
+				"title": "Confermare la cancellazione"
+			},
+			"editUserModal": {
+				"changePasswordTitle": "Modifica password",
+				"deleteTitle": "Cancellare",
+				"doctagAppTitle": "Doctag App",
+				"loginsTitle": "Sessioni",
+				"profileTitle": "Profilo",
+				"title": "Modifica utente ${user.firstName} ${user.lastName}"
+			},
+			"filePreviewModal": {
+				"downloadButton": "Scaricare",
+				"noPreviewAvailable": "Nessuna anteprima disponibile",
+				"title": "Anteprima"
+			},
+			"scanDoctagModal": {
+				"createdDate": "Creato il ${doc.created?.formatDateTime()}",
+				"documentDetectedMessage": "Documento riconosciuto",
+				"fileName": "Nome del file: ${doc.originalFileName}",
+				"openButton": "Aperto",
+				"rescanButton": "Scansione di nuovo",
+				"signButton": "Segno",
+				"signRequestButton": "Richiesta di firma",
+				"source": "Origine: ${doc.url}",
+				"title": "Inserire lo stato",
+				"urlDetectedMessage": "URL rilevato"
+			},
+			"showSignatureModal": {
+				"addressValid": "Indirizzo valido",
+				"countryCode": "Paese",
+				"doctagHostValid": "Doctag Host valido:",
+				"doctagSource": "Sistema Doctag",
+				"fromUser": "Dall'utente",
+				"keyHeader": "Certificato",
+				"name1": "Nome 1",
+				"name2": "Nome 2",
+				"notVerified": "Non verificato",
+				"selectedPublicKey": "Con chiave pubblica",
+				"signatureOfKey": "Firma della chiave",
+				"signatureValidMessage": "Firma valida",
+				"street": "Via",
+				"title": "Mostra il certificato ${\n    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)}",
+				"validTill": "Valido fino a",
+				"verification": "Verifica",
+				"zipAndCity": "CAP - Città"
+			},
+			"signDocumentModal": {
+				"additionalData": "Dati supplementari",
+				"generalInformation": "Informazioni generali",
+				"inputValidEmailMessage": "Inserire un indirizzo e-mail valido",
+				"noAuthenticationMessage": "Senza autenticazione",
+				"selectKey": "Selezionare il timbro",
+				"selectKeyMessage": "Selezionare un timbro",
+				"selectRole": "Scegli il ruolo",
+				"selectRoleMessage": "Selezionare il ruolo",
+				"signDocumentButton": "Firma il documento",
+				"title": "Firma il documento"
+			},
+			"system": {
+				"tagModal": {
+					"addTagModal": {
+						"title": "Aggiungi un tag"
+					},
+					"modifyTagModal": {
+						"title": "Modifica del tag"
+					}
+				},
+				"workflowModal": {
+					"addWorkflowModal": {
+						"title": "Aggiungi flusso di lavoro"
+					},
+					"modifyWorkflowModal": {
+						"title": "Modifica del flusso di lavoro"
+					}
+				}
+			}
+		},
+		"settings": {
+			"keys": {
+				"action": "Azione",
+				"addedKeySuccessMessage": "Certificato aggiunto",
+				"createdAt": "Creato il",
+				"createdBy": "da",
+				"deleteKeyObjectName": "Certificato",
+				"designSettingsChanged": "Modifica delle impostazioni di design",
+				"displayName": "Nome del display",
+				"hostnameChangedMessage": "Nome host cambiato",
+				"keyUpdateFailedError": "Pubblicazione fallita",
+				"keyUpdatedInfo": "Certificato aggiornato",
+				"keyValidTill": "Valido fino a",
+				"mailSettingsChanged": "Impostazioni e-mail modificate",
+				"menu": {
+					"design": "Design",
+					"hostname": "Nome host",
+					"mail": "E-mail",
+					"notifications": "Notifiche",
+					"search": "Ricerca",
+					"tags": "Tags",
+					"workflows": "Workflows"
+				},
+				"newKey": "Nuovo certificato",
+				"notYetConfirmed": "non completato",
+				"pageTitle": "Certificati di partecipazione",
+				"security": "Sicurezza",
+				"verification": "Verifica",
+				"verificationInfoMessage": "Indica se la chiave è già stata verificata dal provider.",
+				"yes": "sì"
+			},
+			"system": {
+				"pageTitle": "Impostazioni"
+			},
+			"users": {
+				"actions": "Azione",
+				"created": "Creato il",
+				"email": "E-mail",
+				"firstName": "Nome",
+				"lastName": "Cognome",
+				"newUser": "Nuovo utente",
+				"pageTitle": "Impostazioni",
+				"passwordChangedMessage": "Password modificata",
+				"userAddedSuccessMessage": "Utente aggiunto",
+				"userDeletedMessage": "Utente rimosso",
+				"userModifiedMessage": "Utente modificato"
+			},
+			"utils": {
+				"menu": {
+					"certificates": "Certificati di partecipazione",
+					"system": "Sistema",
+					"user": "Utente"
+				}
+			}
+		}
+	}
+}

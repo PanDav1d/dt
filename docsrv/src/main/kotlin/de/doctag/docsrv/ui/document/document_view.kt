@@ -73,7 +73,7 @@ fun ElementCreator<*>.signButton(rFile: Document){
     }
 
     if(browser.authenticatedUser != null || rFile.workflow?.actions?.any { it.permissions?.allowAnonymousSubmissions == true } == true) {
-        if((rFile.getAvailableWorkflowActions(browser.authenticatedUser != null)?.size ?: 0) > 0) {
+        if((rFile.getAvailableWorkflowActions(browser.authenticatedUser != null, db().currentConfig.hostname)?.size ?: 0) > 0) {
             button(fomantic.ui.button.primary).i18nText(
                 "ui.document.documentView.signNow",
                 "Jetzt Signieren"

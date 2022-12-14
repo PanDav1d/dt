@@ -162,6 +162,21 @@ fun ElementCreator<*>.workflowForm(wf: Workflow, onSaveClick: (wf:Workflow)->Uni
                         formInput(i18n("ui.forms.system.workflowForm.maxNumberOfSignatures","Maximale Anzahl an Signaturen"), "", false, kvarMaxSubmissions)
                             .with(formCtrl)
 
+
+                        val currentValue = KVar<String?>(workflow.value.actions?.get(activeActionIdx.value)?.permissions?.instancesThatAreAllowedToSign?.joinToString(","))
+                        val options: Map<String?,String> = mapOf(db().currentConfig.hostname to "${db().currentConfig.hostname} (${i18n("ui.forms.system.workflowForm.allowedInstances.thisInstance", "Diese Instanz")})")
+                        div(fomantic.ui.field).new {
+                            label().i18nText("ui.forms.system.workflowForm.instancesThatAreAllowedToSign", "Signatur nur erlauben von")
+                            val selectHostDropdown = dropdownWithUserAddition(options, currentValue, container = div(fomantic.ui.fluid.multiple.search.selection.dropdown.withStyle("width: 100%")))
+                            selectHostDropdown.onSelect {
+                                if(it.isNullOrEmpty()){
+                                    workflow.value.actions?.get(activeActionIdx.value)?.permissions?.instancesThatAreAllowedToSign = null
+                                } else {
+                                    workflow.value.actions?.get(activeActionIdx.value)?.permissions?.instancesThatAreAllowedToSign =
+                                        it.split(",")
+                                }
+                            }
+                        }
                     }
                 }
             }

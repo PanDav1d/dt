@@ -186,12 +186,58 @@ class DropdownElement {
     }
 }
 
+fun ElementCreator<*>.dropdownWithUserAddition(
+    options: Map<String?, String>,
+    currentValue: KVar<String?> = KVar(null),
+    container: DivElement = div(fomantic.ui.selection.dropdown),
+    itemRenderer:ElementCreator<DivElement>.(key:String?, displayText:String?)->Unit = { k,v-> span().text(v?:"") },
+): DropdownElement {
+
+    val result = DropdownElement()
+
+    container.new {
+        input(type=InputType.hidden, name="dropdown", initialValue = currentValue.value)
+        i(fomantic.icon.dropdown)
+        div(fomantic.text.default).i18nText("ui.formExtensions.dropdownLabel","Auswahl")
+        div(fomantic.menu).new{
+            options.forEach { (key, displayText) ->
+                div(fomantic.item).apply { this.setAttributeRaw("data-value", key) }.new {
+                    itemRenderer(key, displayText)
+                }
+            }
+        }
+    }
+
+
+    val callbackId = abs(random.nextInt())
+    browser.executeWithCallback("""
+        $('#${container.id}').dropdown({
+            action: 'activate',
+            allowAdditions: true,
+            hideAdditions: false,
+            onChange: function(value, text) {
+              // custom action
+              console.log("changed")
+              callbackWs($callbackId,{selectedValue: value, selectedText: text});
+            }
+        });
+        """.trimIndent(), callbackId) {inputData->
+        val selectedData : DropdownValueSelectEvent = gson.fromJson(inputData.toString())
+        if(currentValue != null) {
+            currentValue.value = selectedData.selectedValue ?: ""
+        }
+        result.callbacks.forEach{cb->cb.invoke(selectedData.selectedValue)}
+    }
+
+    return result
+}
+
 fun ElementCreator<*>.dropdown(
     options: Map<String?, String>,
     currentValue: KVar<String?> = KVar(null),
     container: DivElement = div(fomantic.ui.selection.dropdown),
     itemRenderer:ElementCreator<DivElement>.(key:String?, displayText:String?)->Unit = { k,v-> span().text(v?:"") },
-):DropdownElement {
+): DropdownElement {
 
     val result = DropdownElement()
 
@@ -337,6 +383,8 @@ fun ElementCreator<*>.formInput(label: String?=null, placeholder:String?=null, r
 private fun  <V> MutableMap<String, V>.plusElementIdValue(id: V?): Map<String, V> {
     return id?.let{this.plus("id" to id)} ?: this
 }
+
+
 
 fun ElementCreator<*>.checkBoxInput(label:String, bindTo: KVar<Boolean>) {
     val bindToStr = KVar(bindTo.toString())

@@ -25,6 +25,8 @@ val supportedLocales = listOf(
     SupportedLocale("de", Locale.GERMANY, fomantic.ui.langDe),
     SupportedLocale("en", Locale.ENGLISH, fomantic.ui.langGb),
     SupportedLocale("es", Locale("ES"), fomantic.ui.langEs),
+    SupportedLocale("it", Locale.ITALIAN, fomantic.ui.langIt),
+    SupportedLocale("fr", Locale.FRENCH, fomantic.ui.langFr)
 )
 
 

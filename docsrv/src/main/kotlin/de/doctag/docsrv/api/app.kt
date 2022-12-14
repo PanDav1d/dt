@@ -110,7 +110,7 @@ fun Routing.appRoutes(){
         call.respond(
             PreparedSignature(
                 doc?.document?.workflow?.copy(
-                    actions = doc.document.getAvailableWorkflowActions(true)
+                    actions = doc.document.getAvailableWorkflowActions(true, db().currentConfig.hostname)
                         ?.map {
                             // Don't give a <null> description to the app as it may crash then
                             it.copy(

@@ -162,13 +162,15 @@ data class Document(
         return EmbeddedDocument(files, this.copy(tags = null))
     }
 
-    fun getAvailableWorkflowActions(isAuthenticated: Boolean) : List<WorkflowAction>?{
+    fun getAvailableWorkflowActions(isAuthenticated: Boolean, thisInstanceAddress: String) : List<WorkflowAction>?{
         return workflow?.actions?.filter { a->
             a.dependencies == null || a.dependencies?.all { dependency -> dependency.isFulfilled(signatures)}==true
         }?.filter{
              it.permissions?.allowAnonymousSubmissions == true || isAuthenticated
         }?.filter {
             it.permissions?.maxSubmissions == null || it.permissions?.maxSubmissions!! > (this.signatures?.count { s->s.role == it.role }?: 0)
+        }?.filter {
+            it.permissions?.instancesThatAreAllowedToSign.let{it == null || it.contains(thisInstanceAddress)}
         }
     }
 }
@@ -253,7 +255,8 @@ data class WorkflowActionDependency(
 
 data class WorkflowActionPermissions(
     var allowAnonymousSubmissions: Boolean? = null,
-    var maxSubmissions: Int? = null
+    var maxSubmissions: Int? = null,
+    var instancesThatAreAllowedToSign: List<String>? = null
 )
 
 data class WorkflowInput(
