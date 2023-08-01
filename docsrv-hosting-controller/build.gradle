@@ -40,6 +40,15 @@ dependencies {
     testCompile "io.ktor:ktor-server-test-host:$ktor_version"
 }
 
+sourceSets.all {
+    configurations.getByName(runtimeClasspathConfigurationName) {
+        attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
+    }
+    configurations.getByName(compileClasspathConfigurationName) {
+        attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
+    }
+}
+
 test {
     useJUnitPlatform()
 }
