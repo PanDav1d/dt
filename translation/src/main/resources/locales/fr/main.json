@@ -113,7 +113,7 @@
 				"anonymousSignaturesNotPossibleInfoMessage": "Les signatures sans authentification ne sont pas possibles dans ce document.",
 				"createDoctagInstanceLink": "Obtenir son propre login",
 				"creationDate": "Date de création",
-				"deleteButton": "",
+				"deleteButton": "Supprimer",
 				"documentAddress": "Adresse du document",
 				"documentUrl": "Adresse du document",
 				"downloadButton": "Télécharger",
@@ -142,8 +142,8 @@
 				"validationRunning": "Validation en cours",
 				"value": "Valeur",
 				"verifyDeleteModal": {
-					"document": "",
-					"the": ""
+					"document": "document",
+					"the": "Le"
 				},
 				"viewDoctagButton": "Afficher Doctag"
 			},
@@ -330,7 +330,7 @@
 					"objectKindForDeleteModal": "Vignette",
 					"tagAddedMessage": "Ajouté la vignette avec succès",
 					"tagEditedToastMessage": "Vignette traité",
-					"title": "tags"
+					"title": "Tags"
 				},
 				"workflowForm": {
 					"addActionButton": "Ajouter",
@@ -358,10 +358,10 @@
 				},
 				"workflowListEditForm": {
 					"actions": "Action",
-					"addWorkflowButton": "Nouveau flux de travail (Workflow)",
+					"addWorkflowButton": "Nouveau flux de travail",
 					"deleteModalObjectKind": "Flux de travail (Workflow)",
-					"deleteWorkflow": "Supprimer le workflow",
-					"editWorkflow": "Modifier le flux de travail (Workflow)",
+					"deleteWorkflow": "Supprimer le flux de travail",
+					"editWorkflow": "Modifier le flux de travail",
 					"markAsDefaultWorkflow": "Flux de travail standard",
 					"name": "Nom",
 					"roles": "Rôles",
@@ -425,7 +425,7 @@
 					"provideLastNameError": "Veuillez indiquer votre nom de famille."
 				},
 				"userPasswordEditForm": {
-					"confirmPasswordLabel": "Confirmer le nouveau mot de passe",
+					"confirmPasswordLabel": "Confirmer le nouveau mot de passe.",
 					"confirmPasswordPlaceholder": "Confirmer le mot de passe",
 					"newPasswordLabel": "Nouveau mot de passe",
 					"newPasswordPlaceholder": "Mot de passe",
@@ -539,10 +539,10 @@
 				},
 				"workflowModal": {
 					"addWorkflowModal": {
-						"title": "Ajouter un flux de travail (Workflow)"
+						"title": "Ajouter un flux de travail"
 					},
 					"modifyWorkflowModal": {
-						"title": "Modifier le flux de travail (Workflow)"
+						"title": "Modifier le flux de travail"
 					}
 				}
 			}
@@ -568,7 +568,7 @@
 					"notifications": "Notifications",
 					"search": "Recherche",
 					"tags": "Vignettes",
-					"workflows": "Workflows"
+					"workflows": "Flux de travail (Workflows)"
 				},
 				"newKey": "Nouveau certificat",
 				"notYetConfirmed": "non clôturé",
