@@ -36,7 +36,7 @@
 				"createAdminUser": "Crear usuario administrador",
 				"domainNameHeder": "Configurar el sistema",
 				"doneHeader": "Instalación completada",
-				"doneText": "La configuración de su sistema ya se ha llevado a cabo. Ahora puede utilizar el programa Docsrv.",
+				"doneText": "La configuración de su sistema ya se ha llevado a cabo. Ahora puede utilizar el programa DocServer.",
 				"loginLinkText": "Registro",
 				"personalDataHeader": "Configurar el sistema",
 				"pinCheckHeader": "Configurar el sistema",
@@ -59,7 +59,7 @@
 				"loginFailedErrorMessage": "El inicio de sesión ha fallado. Por favor, compruebe su nombre de usuario y contraseña.",
 				"usernamePlaceholder": "Nombre de usuario"
 			},
-			"loginButtonText": "Entra.",
+			"loginButtonText": "Entra",
 			"loginHeader": "Es necesario registrarse",
 			"logout": {
 				"forwardInFiveSecMessage": "Será redirigido automáticamente en 5 segundos.",
@@ -80,12 +80,12 @@
 		"document": {
 			"components": {
 				"documentViewTab": {
-					"documents": "documento",
-					"signatures": "firmas"
+					"documents": "Documento",
+					"signatures": "Firmas"
 				},
 				"from": "de",
 				"searchTextPlaceholder": "Buscar en",
-				"till": "Por"
+				"till": "hasta"
 			},
 			"documentList": {
 				"actionLabel": "Acción",
@@ -94,7 +94,7 @@
 				"documentAddedSuccessfullyMessage": "Documento añadido con éxito",
 				"fileNameLabel": "Nombre del archivo",
 				"header": "documentos",
-				"importFromEmail": "Importar desde el buzón",
+				"importFromEmail": "Importar documentos del correo electrónico",
 				"notYetSignedText": "Todavía no se ha firmado",
 				"signedByPopupText": "Firmado en ${signedAt} por ${signature.signedByKey?.ownerAddress?.name1}",
 				"statusLabel": "Estado"
@@ -103,14 +103,14 @@
 				"documentAddButton": "Añadir documento",
 				"documentList": "Lista de documentos",
 				"documentSuccessfullyAddedMessage": "Documento añadido con éxito",
-				"importFromMailboxButton": "Importar desde el buzón",
-				"notYetSignedMessage": "Todavía no se ha firmado",
+				"importFromMailboxButton": "Importar documentos del correo electrónico",
+				"notYetSignedMessage": "Todavía no firmado",
 				"signedOnMessage": "Firmado en ${signedAt} por ${signature.signedByKey?.ownerAddress?.name1}"
 			},
 			"documentView": {
-				"actions": "acciones",
+				"actions": "Acciones",
 				"address": "Dirección",
-				"anonymousSignaturesNotPossibleInfoMessage": "En este documento no son posibles las firmas sin autenticación.",
+				"anonymousSignaturesNotPossibleInfoMessage": "Las firmas sin autenticación no son posibles en este documento.",
 				"createDoctagInstanceLink": "Obtenga su propio inicio de sesión",
 				"creationDate": "Fecha de creacion",
 				"deleteButton": "Eliminar",
@@ -118,47 +118,47 @@
 				"documentUrl": "Dirección del documento",
 				"downloadButton": "Descargar",
 				"fileName": "Nombre del archivo",
-				"info": "información",
-				"infosLabel": "información",
-				"keyOwner": "Llavero",
+				"info": "Info",
+				"infosLabel": "Info",
+				"keyOwner": "Propietario de la llave",
 				"name": "Nombre",
-				"noSignaturePresentYetInfoText": "Todavía no hay firma disponible",
-				"noSignaturesAvailable": "No hay firmas disponibles",
+				"noSignaturePresentYetInfoText": "Todavía no hay firma",
+				"noSignaturesAvailable": "No hay firma disponible",
 				"noWorkflowsFoundInfoText": "No hay entradas de flujo de trabajo disponibles",
-				"noneText": "Ninguno",
-				"notAvailableText": "N.d.",
+				"noneText": "ninguno",
+				"notAvailableText": "n.d.",
 				"operator": "Operador del sistema",
-				"role": "rollo",
+				"role": "Rollo",
 				"signButton": "Firma",
 				"signNow": "Firmar ahora",
 				"signatureNotValid": "Firmas no válidas",
 				"signatureValid": "Firmas válidas",
-				"signatures": "firmas",
+				"signatures": "Firmas",
 				"signingDoctagInstance": "Firma de la instancia Doctag",
 				"status": "Estado",
-				"tags": "Etiquetas:",
+				"tags": "Etiquetas",
 				"timestamp": "Fecha",
-				"title": "documento",
+				"title": "Documento",
 				"validationRunning": "Validación en curso",
 				"value": "Valor",
 				"verifyDeleteModal": {
 					"document": "documento",
 					"the": "El"
 				},
-				"viewDoctagButton": "Mostrar etiqueta"
+				"viewDoctagButton": "Mostrar Doctag"
 			},
 			"menu": {
-				"document": "documentos",
-				"requests": "Consultas"
+				"document": "Documentos",
+				"requests": "Solicitudes"
 			},
 			"signRequestView": {
-				"actions": "acciones",
+				"actions": "Acciones",
 				"alreadySigned": "Ya firmado",
 				"documentSignedInfoMessage": "Documento firmado",
 				"documentWasAlreadySignedInfoMessage": "Esta solicitud de firma ya ha sido procesada. Puede ver la firma en el documento.",
 				"linkToDocument1": "Al documento",
 				"linkToDocument2": "Al documento",
-				"preview": "Vista previa",
+				"preview": "Previsualizar",
 				"rejectButton": "Declinación",
 				"rejectedLabel": "Rechazado",
 				"requestRejectedLabel": "Solicitud rechazada",
@@ -169,12 +169,12 @@
 			"signRequests": {
 				"actions": "Acción",
 				"addSignatureRequestButton": "Crear una solicitud de firma",
-				"addedSignatureRequestSuccessMessage": "Solicitud de firma capturada",
-				"createdBy": "Capturado de",
+				"addedSignatureRequestSuccessMessage": "Solicitud de firma creada",
+				"createdBy": "Creado por",
 				"creationDate": "Creado el",
 				"documentUrl": "Doctag",
 				"rejectedStatus": "Rechazado",
-				"requestedRole": "rollo",
+				"requestedRole": "Función",
 				"requestedStatus": "Solicitado",
 				"signedStatus": "Firmado",
 				"status": "Estado",
@@ -183,19 +183,19 @@
 		},
 		"formExtensions": {
 			"colorPicker": {
-				"black": "negro",
+				"black": "Negro",
 				"blue": "Azul",
-				"brown": "marrón",
+				"brown": "Marrón",
 				"gray": "Gris",
-				"green": "verde",
-				"magenta": "magenta",
+				"green": "Verde",
+				"magenta": "Magenta",
 				"none": "Ninguno",
 				"olive": "Verde oliva",
-				"orange": "naranja",
-				"purple": "púrpura",
-				"red": "rojo",
-				"teal": "turquesa",
-				"yellow": "amarillo"
+				"orange": "Naranja",
+				"purple": "Púrpura",
+				"red": "Rojo",
+				"teal": "Turquesa",
+				"yellow": "Amarillo"
 			},
 			"dropdownLabel": "Selección",
 			"pleaseConfirmInput": "Por favor, compruebe sus entradas.",
@@ -204,18 +204,18 @@
 		"forms": {
 			"documentForms": {
 				"documentAddForm": {
-					"file": "archivo",
-					"foundDoctag": "DocTag reconocido",
-					"foundDoctagDescription": "El documento cargado tiene el DocTag ${document.value.url}. Pulse Guardar para completar la importación.",
-					"insertDoctagButton": "Insertar doctag",
-					"placeDoctagMessage": "Sitúe el DocTag con el ratón en la posición deseada",
+					"file": "Archivo",
+					"foundDoctag": "Doctag reconocido",
+					"foundDoctagDescription": "El documento cargado tiene el Doctag ${document.value.url}. Pulse Guardar para completar la importación.",
+					"insertDoctagButton": "Insertar Doctag",
+					"placeDoctagMessage": "Sitúe el Doctag con el ratón en la posición deseada",
 					"saveButton": "Guardar",
 					"selectTagsLabel": "Seleccione las etiquetas",
 					"selectWorkflowLabel": "Seleccione el flujo de trabajo",
-					"upload": "Subir a"
+					"upload": "Subir"
 				},
 				"drawDoctagForm": {
-					"confirm": "Toma el control..."
+					"confirm": "Confirma"
 				}
 			},
 			"keyAddForm": {
@@ -231,43 +231,43 @@
 				"organizationNameLabel": "Nombre",
 				"organizationNamePlaceholder": "Nombre",
 				"pleaseProvideStreetErrorMessage": "Indique la calle de la organización asociada",
-				"provideCityError": "Por favor, especifique la ubicación",
+				"provideCityError": "Introduzca la ciudad",
 				"provideCountryCodeError": "Introduzca un código de país válido",
-				"provideDisplayNameError": "Por favor, introduzca un nombre para la llave",
+				"provideDisplayNameError": "Introduzca un nombre para la llave",
 				"provideOrganizationNameErrorMessage": "Introduzca el nombre de la organización asociada",
 				"provideZipCodeErrorMessage": "Introduzca el código postal",
-				"streetLabel": "calle",
-				"streetPlaceholder": "calle",
+				"streetLabel": "Calle",
+				"streetPlaceholder": "Calle",
 				"zipCodePlaceholder": "Zip"
 			},
 			"system": {
 				"designForm": {
-					"formDescription": "Color de la cabeza lateral",
-					"inputMissingErrorMessage": "Introduzca la línea de título que se mostrará en la cabecera de la página",
-					"title": "Mostrar",
+					"formDescription": "Color de cabecera",
+					"inputMissingErrorMessage": "Introduzca el título de la página que aparece en la cabecera",
+					"title": "Diseño",
 					"titleInputLabel": "Título"
 				},
 				"hostnameEditForm": {
-					"attentionBoxTitle": "atención",
+					"attentionBoxTitle": "Atención",
 					"attentionBoxtext": "Tenga en cuenta que su sistema puede dejar de ser accesible si introduce información incorrecta en este campo.",
 					"hostnameLabel": "Nombre de host",
-					"hostnameMissingErrorMessage": "Por favor, introduzca el nombre de dominio con el que se puede acceder a este sistema.",
+					"hostnameMissingErrorMessage": "Introduzca el nombre de dominio con el que se puede acceder a este sistema.",
 					"title": "Nombre de host"
 				},
 				"mailSettingsEditForm": {
 					"fetchMailActive": "Recepción de documentos por correo activo",
-					"fetchMailFailedErrorDescription": "La recuperación del correo electrónico ha fallado. Por favor, compruebe los ajustes",
+					"fetchMailFailedErrorDescription": "La recuperación del correo electrónico ha fallado. Por favor, compruebe los ajustes.",
 					"fetchMailFailedErrorTitle": "Error",
 					"fetchMailHeader": "Recepción de correo",
 					"fetchMailPassword": "Contraseña",
 					"fetchMailProtocol": "Protocolo",
 					"fetchMailRemoteHost": "Servidor IMAP / POP",
 					"fetchMailSuccess": {
-						"description": "Recuperación del correo electrónico con éxito ${messages.size} Mensajes recibidos",
+						"description": "Importación de correo electrónico correcta. Recibidos ${messages.size} mensajes.",
 						"title": "Éxito"
 					},
 					"fetchMailTest": {
-						"button": "Recuperación de la prueba"
+						"button": "Comprobar importación"
 					},
 					"fetchMailUsername": "Nombre de usuario",
 					"sendMailFromAddress": "Remitente",
@@ -295,7 +295,7 @@
 					"addButton": "Nueva notificación",
 					"description": "Descripción",
 					"noRuleAvailableMessage": "No hay normas de notificación disponibles",
-					"receiver": "receptor",
+					"receiver": "Destinatario",
 					"savedMessage": "Notificación añadida con éxito",
 					"title": "Notificaciones"
 				},
@@ -306,17 +306,17 @@
 				"securitySettingsForm": {
 					"acceptSignaturesFromUnverifiedKeysCheckbox": "Aceptar firmas de claves no verificadas.",
 					"attentionText": "Su sistema acepta firmas de claves que aún no han sido verificadas.\n                        \n                        Con esta configuración, ya no se garantiza que los detalles utilizados en la clave sean siempre\n                        utilizados en la clave siempre se ajustan de forma correcta y completa.\n                        \n                        Debe contar con que su sistema reciba las firmas de los socios\n                        que han introducido información incorrecta en la clave.\n                        \n                        Se recomienda activar esta configuración sólo para los sistemas de prueba.",
-					"attentionTitle": "atención",
+					"attentionTitle": "Atención",
 					"defaultKey": "Clave estándar para acciones de firma anónima",
-					"title": "SEGURIDAD"
+					"title": "Seguridad"
 				},
 				"tagForm": {
 					"alwaysAttachTitle": "Añadir automáticamente",
 					"autoAttachWhenTextContainsLabel": "Si el documento contiene el texto",
 					"colorLabel": "Etiqueta color",
-					"descriptionRequiredMessage": "Por favor, proporcione una descripción para la etiqueta",
+					"descriptionRequiredMessage": "Describa la etiqueta",
 					"nameLabel": "Nombre",
-					"nameRequiredMessage": "Por favor, introduzca un nombre para la etiqueta",
+					"nameRequiredMessage": "Especifique un nombre para la etiqueta",
 					"tagDescription": "Descripción",
 					"tagDescriptionInputPlaceholderText": "Descripción"
 				},
@@ -330,14 +330,14 @@
 					"objectKindForDeleteModal": "Día",
 					"tagAddedMessage": "Etiqueta añadida con éxito",
 					"tagEditedToastMessage": "Etiqueta editada",
-					"title": "Etiquetas:"
+					"title": "Etiquetas"
 				},
 				"workflowForm": {
 					"addActionButton": "Añadir",
 					"advancedOptions": "Opciones avanzadas",
-					"allowAnonymousSignatureCheckbox": "Permitir rellenar sin registrarse",
-					"backgroundImage": "Papel pintado",
-					"backgroundImageInputLabel": "Papel pintado",
+					"allowAnonymousSignatureCheckbox": "Permitir firmar sin iniciar sesión",
+					"backgroundImage": "Imagen de fondo",
+					"backgroundImageInputLabel": "Imagen de fondo",
 					"deleteBackgroundImage": "Eliminar",
 					"description": "Descripción",
 					"descriptionInputPlaceholder": "Descripción",
@@ -349,34 +349,34 @@
 					"inputKindCheckbox": "Casilla de verificación",
 					"inputKindSignature": "Firma",
 					"inputKindText": "Entrada de texto",
-					"multilineCheckbox": "¿Multilínea?",
+					"multilineCheckbox": "¿Entrada multilínea?",
 					"nameLabel": "Nombre",
 					"namePlaceholder": "Nombre",
-					"nameRequiredErrorMessage": "Introduzca un nombre para el flujo de trabajo",
-					"roles": "Rodillos",
-					"unnamed": "Sin titulo"
+					"nameRequiredErrorMessage": "Especifique el nombre del flujo de trabajo",
+					"roles": "Funciones",
+					"unnamed": "sin titulo"
 				},
 				"workflowListEditForm": {
 					"actions": "Acción",
 					"addWorkflowButton": "Nuevo flujo de trabajo",
-					"deleteModalObjectKind": "flujo de trabajo",
+					"deleteModalObjectKind": "Flujo de trabajo (Workflow)",
 					"deleteWorkflow": "Eliminar el flujo de trabajo",
 					"editWorkflow": "editar el flujo de trabajo",
 					"markAsDefaultWorkflow": "Flujo de trabajo estándar",
 					"name": "Nombre",
-					"roles": "Rodillos",
+					"roles": "Funciones",
 					"setAsDefaultWorkflow": "Establecer como flujo de trabajo estándar",
 					"successfullyAddedMessage": "Flujo de trabajo añadido con éxito",
 					"successfullyEdited": "Flujo de trabajo editado",
 					"successfullySetAsDefaultWorkflow": "Conjunto de flujos de trabajo estándar",
-					"title": "Flujos de trabajo"
+					"title": "Flujos de trabajo (Workflows)"
 				}
 			},
 			"userForms": {
 				"sendAppLoginMail": {
 					"byteText": "Muchos saludos",
 					"greeting": "Hola",
-					"mailBody": "Adjunto recibirá sus datos de acceso a la aplicación Doctag.\nAbra la aplicación Doctag y escanee lo siguiente\nCódigo QR abajo para iniciar sesión.",
+					"mailBody": "Adjunto recibirá sus datos de acceso a la aplicación Doctag. \n                    Por favor, abra la Doctag App y escanee el código QR de abajo para iniciar sesión.\n                     \n                    <img src=",
 					"subject": "Datos de acceso a la aplicación Doctag"
 				},
 				"userAddForm": {
@@ -389,7 +389,7 @@
 					"nameLabel": "Nombre",
 					"passwordConfirmLabel": "Confirmar la contraseña",
 					"passwordConfirmPlaceholder": "Confirmar la contraseña",
-					"passwordDoNotMatchError": "Ambos campos de la contraseña deben coincidir",
+					"passwordDoNotMatchError": "Los campos de la contraseña no coinciden",
 					"passwordLabel": "Contraseña",
 					"passwordPlaceholder": "Contraseña",
 					"provideFirstNameError": "Por favor, introduzca su nombre.",
@@ -401,7 +401,7 @@
 					"appSessionName": "Registro de la aplicación Doctag",
 					"scanImmediately": "Escanear directamente",
 					"sendViaEmail": "Enviar por correo electrónico",
-					"successMessageBody": "Los datos de acceso fueron enviados con éxito a ${mailAddress} .",
+					"successMessageBody": "Las credenciales se han enviado correctamente a ${mailAddress}.",
 					"successMessageTitle": "Correo enviado"
 				},
 				"userDeleteForm": {
@@ -425,7 +425,7 @@
 					"provideLastNameError": "Por favor, indique su apellido."
 				},
 				"userPasswordEditForm": {
-					"confirmPasswordLabel": "Confirmar la nueva contraseña ",
+					"confirmPasswordLabel": "Confirmar la nueva contraseña.",
 					"confirmPasswordPlaceholder": "Confirmar la contraseña",
 					"newPasswordLabel": "Nueva contraseña",
 					"newPasswordPlaceholder": "Contraseña",
@@ -434,7 +434,7 @@
 				"userSessionForm": {
 					"confirmChangesButton": "Aplicar los cambios",
 					"noLoginAvailableMessage": "No hay aplicaciones disponibles",
-					"onDevice": "en el dispositivo",
+					"onDevice": "En aparato",
 					"validTill": "Válido hasta"
 				}
 			}
@@ -445,20 +445,20 @@
 			},
 			"addKeyModal": {
 				"keyAddFailed": "Error durante la creación",
-				"title": "Añadir clave"
+				"title": "Añadir certificado de participante"
 			},
 			"addUserModal": {
 				"title": "Añadir usuario"
 			},
 			"createSignRequest": {
-				"confirmButton": "Toma el control...",
-				"creationDate": "Creado el: ${doc.created?.formatDateTime()}",
+				"confirmButton": "Confirmar",
+				"creationDate": "Creado el ${doc.created?.formatDateTime()}",
 				"detectedUrl": "URL detectada",
 				"fileName": "Nombre del archivo: ${doc.originalFileName}",
 				"foundDocumentMessage": "Documento reconocido",
-				"openButton": "abrir",
+				"openButton": "Abrir",
 				"reScanButton": "Volver a escanear",
-				"selectRoleLabel": "Elija el papel",
+				"selectRoleLabel": "Seleccionar función",
 				"signatureNotValid": "Firma no válida",
 				"signatureRequestCreatedMessage": "Crear una solicitud de firma",
 				"signatureValidMessage": "Firma válida",
@@ -476,9 +476,9 @@
 				"changePasswordTitle": "Cambiar la contraseña",
 				"deleteTitle": "Eliminar",
 				"doctagAppTitle": "Aplicación Doctag",
-				"loginsTitle": "registros",
+				"loginsTitle": "Sesiones",
 				"profileTitle": "Perfil",
-				"title": "${user.firstName} ${user.lastName} editar"
+				"title": "Editar usuario ${user.firstName} ${user.lastName}"
 			},
 			"filePreviewModal": {
 				"downloadButton": "Descargar",
@@ -486,10 +486,10 @@
 				"title": "Vista previa"
 			},
 			"scanDoctagModal": {
-				"createdDate": "Creado el: ${doc.created?.formatDateTime()}",
+				"createdDate": "Creado el ${doc.created?.formatDateTime()}",
 				"documentDetectedMessage": "Documento reconocido",
 				"fileName": "Nombre del archivo: ${doc.originalFileName}",
-				"openButton": "abrir",
+				"openButton": "Abrir",
 				"rescanButton": "Volver a escanear",
 				"signButton": "Firma",
 				"signRequestButton": "Solicitud de firma",
@@ -498,19 +498,19 @@
 				"urlDetectedMessage": "URL detectada"
 			},
 			"showSignatureModal": {
-				"addressValid": "Dirección válida:",
+				"addressValid": "Dirección válida",
 				"countryCode": "País",
-				"doctagHostValid": "DocTag Host válido:",
+				"doctagHostValid": "Doctag Host válido:",
 				"doctagSource": "Sistema Doctag",
 				"fromUser": "Del usuario",
-				"keyHeader": "Clave",
+				"keyHeader": "Certificado",
 				"name1": "Nombre 1",
 				"name2": "Nombre 2",
 				"notVerified": "No verificado",
 				"selectedPublicKey": "Con clave pública",
-				"signatureOfKey": "Firma de esta llave",
+				"signatureOfKey": "Firma de la llave",
 				"signatureValidMessage": "Firma válida",
-				"street": "calle",
+				"street": "Calle",
 				"title": "Muestra la llave ${\n    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)} ",
 				"validTill": "Válido hasta:",
 				"verification": "Verificación",
@@ -521,10 +521,10 @@
 				"generalInformation": "Información general",
 				"inputValidEmailMessage": "Por favor, introduzca una dirección de correo válida",
 				"noAuthenticationMessage": "Sin autenticación",
-				"selectKey": "Seleccione la tecla",
-				"selectKeyMessage": "Seleccione una llave",
-				"selectRole": "Elija el papel",
-				"selectRoleMessage": "Seleccione un rollo",
+				"selectKey": "Seleccionar el sello",
+				"selectKeyMessage": "Seleccione un sello",
+				"selectRole": "Seleccionar función",
+				"selectRoleMessage": "Seleccione una función",
 				"signDocumentButton": "Firme el documento",
 				"title": "Firme el documento"
 			},
@@ -539,7 +539,7 @@
 				},
 				"workflowModal": {
 					"addWorkflowModal": {
-						"title": "añadir flujo de trabajo"
+						"title": "Añadir flujo de trabajo"
 					},
 					"modifyWorkflowModal": {
 						"title": "editar el flujo de trabajo"
@@ -550,36 +550,36 @@
 		"settings": {
 			"keys": {
 				"action": "Acción",
-				"addedKeySuccessMessage": "Par de cuencos añadidos",
+				"addedKeySuccessMessage": "Certificado añadido",
 				"createdAt": "Creado el",
 				"createdBy": "de",
-				"deleteKeyObjectName": "Clave",
-				"designSettingsChanged": "Cambios en la configuración del diseño",
+				"deleteKeyObjectName": "Certificado",
+				"designSettingsChanged": "Modificación de los ajustes de diseño",
 				"displayName": "Nombre de pantalla",
-				"hostnameChangedMessage": "Cambio de nombre del anfitrión",
-				"keyUpdateFailedError": "Publicación fallida.",
-				"keyUpdatedInfo": "Clave actualizada",
+				"hostnameChangedMessage": "Nombre de host modificado",
+				"keyUpdateFailedError": "Publicación fallida",
+				"keyUpdatedInfo": "Certificado actualizado",
 				"keyValidTill": "Válido hasta",
-				"mailSettingsChanged": "Cambio de la configuración del correo electrónico",
+				"mailSettingsChanged": "Configuración de correo electrónico modificada",
 				"menu": {
-					"design": "diseño",
+					"design": "Diseño",
 					"hostname": "Nombre de host",
 					"mail": "Correo Electrónico",
 					"notifications": "Notificaciones",
 					"search": "Buscar en",
-					"tags": "Etiquetas:",
-					"workflows": "Flujos de trabajo"
+					"tags": "Etiquetas",
+					"workflows": "Flujos de trabajo (Workflows)"
 				},
-				"newKey": "nueva llave",
-				"notYetConfirmed": "No se ha completado",
+				"newKey": "Nuevo certificado",
+				"notYetConfirmed": "no completado",
 				"pageTitle": "Certificado de participante",
-				"security": "SEGURIDAD",
+				"security": "Seguridad",
 				"verification": "Verificación",
-				"verificationInfoMessage": "Indica si la clave ya ha sido verificada por DocTag",
-				"yes": "Sí"
+				"verificationInfoMessage": "Indica si la clave ya ha sido verificada por el proveedor",
+				"yes": "sí"
 			},
 			"system": {
-				"pageTitle": "Ajustes"
+				"pageTitle": "Configuración"
 			},
 			"users": {
 				"actions": "Acción",
@@ -588,7 +588,7 @@
 				"firstName": "Nombre de pila",
 				"lastName": "Apellido",
 				"newUser": "Nuevo usuario",
-				"pageTitle": "Ajustes",
+				"pageTitle": "Configuración",
 				"passwordChangedMessage": "Contraseña cambiada",
 				"userAddedSuccessMessage": "Usuario añadido",
 				"userDeletedMessage": "Usuario eliminado",
