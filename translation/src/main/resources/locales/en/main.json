@@ -21,7 +21,7 @@
 		"noSignaturesAvailableMessage": "No signatures available",
 		"operator": "Operator",
 		"publicKey": "Public key:",
-		"responsibleSystem": "responsible DocTag Server",
+		"responsibleSystem": "responsible Doctag Server",
 		"signatureIdxOfN": "Signature ${idx+1} of ${doc.signatures?.size}",
 		"signatureInfos": "Signature details",
 		"technicalInfos": "Technical details",
@@ -45,13 +45,13 @@
 			"installForms": {
 				"domainNameInputLabel": "Domain name",
 				"domainNameInvalidError": "Please enter a valid domain name",
-				"requestDomainNameText": "Please enter the domain name that point to this DocTag instance.",
-				"requestServerPinText": "Please enter the server pin to continue with the installation. You can get the server pin by executing the following command on the terminal of your server: ",
+				"requestDomainNameText": "Please enter the domain name under which this system can be reached.",
+				"requestServerPinText": "Please enter the server PIN to proceed with the installation. You can obtain the server PIN by running the following command in the terminal of your server:",
 				"serverPin": "Enter server PIN",
 				"serverPinIncorrectError": "Please specify the correct server PIN",
 				"serverPinInputLabel": "Server PIN",
 				"serverPinPlaceholder": "please specify",
-				"setupDomainNameHeadline": "Setup Domain Name"
+				"setupDomainNameHeadline": "Set domain name"
 			}
 		},
 		"auth": {
@@ -83,9 +83,9 @@
 					"documents": "Document",
 					"signatures": "Signatures"
 				},
-				"from": "From",
+				"from": "from",
 				"searchTextPlaceholder": "search",
-				"till": "Till"
+				"till": "until"
 			},
 			"documentList": {
 				"actionLabel": "Action",
@@ -103,30 +103,30 @@
 				"documentAddButton": "Add document",
 				"documentList": "Documents",
 				"documentSuccessfullyAddedMessage": "Document added successfully",
-				"importFromMailboxButton": "Import from mail postbox",
+				"importFromMailboxButton": "Import documents from e-mail",
 				"notYetSignedMessage": "Not yet signed",
 				"signedOnMessage": "Signed on ${signedAt} by ${signature.signedByKey?.ownerAddress?.name1}"
 			},
 			"documentView": {
 				"actions": "Action",
 				"address": "Address",
-				"anonymousSignaturesNotPossibleInfoMessage": "Anonymous signatures are not possible in this document.",
-				"createDoctagInstanceLink": "Get a DocTag Login",
+				"anonymousSignaturesNotPossibleInfoMessage": "Signatures without authentication are not possible in this document.",
+				"createDoctagInstanceLink": "Get your own login",
 				"creationDate": "Creation date",
 				"deleteButton": "Delete",
 				"documentAddress": "Document address",
 				"documentUrl": "Document address",
-				"downloadButton": "download",
+				"downloadButton": "Download",
 				"fileName": "File name",
 				"info": "Info",
-				"infosLabel": "Infos",
+				"infosLabel": "Info",
 				"keyOwner": "Key owner",
 				"name": "Name",
-				"noSignaturePresentYetInfoText": "No signatures present yet",
-				"noSignaturesAvailable": "No signatures",
+				"noSignaturePresentYetInfoText": "No signature yet",
+				"noSignaturesAvailable": "No signature available",
 				"noWorkflowsFoundInfoText": "No workflow inputs available",
 				"noneText": "none",
-				"notAvailableText": "n.a.",
+				"notAvailableText": "n/a",
 				"operator": "System operator",
 				"role": "Role",
 				"signButton": "Sign",
@@ -134,18 +134,18 @@
 				"signatureNotValid": "Signatures invalid",
 				"signatureValid": "Signatures valid",
 				"signatures": "Signatures",
-				"signingDoctagInstance": "Signing DocTag Instance",
+				"signingDoctagInstance": "Signing Doctag Instance",
 				"status": "Status",
 				"tags": "Tags",
 				"timestamp": "Date",
 				"title": "Document",
-				"validationRunning": "Validating...",
+				"validationRunning": "Validation in progress",
 				"value": "Value",
 				"verifyDeleteModal": {
-					"document": "Document",
-					"the": "the"
+					"document": "document",
+					"the": "The"
 				},
-				"viewDoctagButton": "Show DocTag"
+				"viewDoctagButton": "Show Doctag"
 			},
 			"menu": {
 				"document": "Documents",
@@ -155,7 +155,7 @@
 				"actions": "Actions",
 				"alreadySigned": "Already signed",
 				"documentSignedInfoMessage": "Document signed",
-				"documentWasAlreadySignedInfoMessage": "This signature request was already confirmed or rejected. You can view the signature in the document.",
+				"documentWasAlreadySignedInfoMessage": "This signature request has already been processed. You can view the signature in the document.",
 				"linkToDocument1": "Go to document",
 				"linkToDocument2": "Go to document",
 				"preview": "Preview",
@@ -163,16 +163,16 @@
 				"rejectedLabel": "Reject",
 				"requestRejectedLabel": "Request rejected",
 				"signButton": "Sign",
-				"signRequestRejectedInfoText": "The signature request was already rejected.",
+				"signRequestRejectedInfoText": "This signature request was already rejected.",
 				"title": "View signature request"
 			},
 			"signRequests": {
 				"actions": "Action",
-				"addSignatureRequestButton": "New Signature request",
+				"addSignatureRequestButton": "Create a signature request",
 				"addedSignatureRequestSuccessMessage": "Signature request created",
 				"createdBy": "Created by",
 				"creationDate": "Created on",
-				"documentUrl": "DocTag",
+				"documentUrl": "Doctag",
 				"rejectedStatus": "Rejected",
 				"requestedRole": "Role",
 				"requestedStatus": "Requested",
@@ -194,25 +194,25 @@
 				"orange": "Orange",
 				"purple": "Purple",
 				"red": "Red",
-				"teal": "turquoise",
-				"yellow": "yellow"
+				"teal": "Turquoise",
+				"yellow": "Yellow"
 			},
 			"dropdownLabel": "Selection",
-			"pleaseConfirmInput": "Please confirm your input",
-			"submitButtonDefaultLabel": "save"
+			"pleaseConfirmInput": "Please check your input.",
+			"submitButtonDefaultLabel": "Save"
 		},
 		"forms": {
 			"documentForms": {
 				"documentAddForm": {
 					"file": "File",
-					"foundDoctag": "DocTag detected",
-					"foundDoctagDescription": "The uploaded document has the DocTag ${document.value.url}. Please press save to complete the import",
-					"insertDoctagButton": "Insert DocTag",
-					"placeDoctagMessage": "Please place the DocTag on the desired position using drag and drop.",
+					"foundDoctag": "Doctag detected",
+					"foundDoctagDescription": "The uploaded document has the Doctag ${document.value.url}. Please press save to complete the import",
+					"insertDoctagButton": "Insert Doctag",
+					"placeDoctagMessage": "Please place the Doctag on the desired position using drag and drop.",
 					"saveButton": "Save",
 					"selectTagsLabel": "Select tags",
 					"selectWorkflowLabel": "Select workflow",
-					"upload": "Uplaod"
+					"upload": "Upload"
 				},
 				"drawDoctagForm": {
 					"confirm": "Confirm"
@@ -227,15 +227,15 @@
 				"displayNamePlaceholder": "First name",
 				"name2Label": "Name 2",
 				"name2Placeholder": "Name 2",
-				"organizationNameHeader": "Organization",
+				"organizationNameHeader": "For organization",
 				"organizationNameLabel": "Name",
 				"organizationNamePlaceholder": "Name",
-				"pleaseProvideStreetErrorMessage": "Please enter the street of the specified organization",
+				"pleaseProvideStreetErrorMessage": "Please enter the name of the corresponding organization.",
 				"provideCityError": "Please enter the city",
-				"provideCountryCodeError": "Please enter a valid country code.",
-				"provideDisplayNameError": "Please enter a verbose name for the signing key.",
-				"provideOrganizationNameErrorMessage": "Please enter the name of the corresponding organization.",
-				"provideZipCodeErrorMessage": "Please enter the zip code.",
+				"provideCountryCodeError": "Please enter a valid country code",
+				"provideDisplayNameError": "Please specify a display name for the key",
+				"provideOrganizationNameErrorMessage": "Please enter the name of the corresponding organization",
+				"provideZipCodeErrorMessage": "Please enter the zip code",
 				"streetLabel": "Street",
 				"streetPlaceholder": "Street",
 				"zipCodePlaceholder": "ZIP"
@@ -243,22 +243,22 @@
 			"system": {
 				"designForm": {
 					"formDescription": "Header color",
-					"inputMissingErrorMessage": "Please enter the page title shown on the page header.",
-					"title": "Desing",
+					"inputMissingErrorMessage": "Please enter the page title shown on the page header",
+					"title": "Design",
 					"titleInputLabel": "Title"
 				},
 				"hostnameEditForm": {
 					"attentionBoxTitle": "Attention",
-					"attentionBoxtext": "Please mind that your DocTag instance may no longer be reachable if you enter invalid inputs in this field.",
+					"attentionBoxtext": "Please note that your system may become unavailable if you enter incorrect information in this field.",
 					"hostnameLabel": "Host name",
-					"hostnameMissingErrorMessage": "Please specify the domain name pointing to this DocTag instance.",
+					"hostnameMissingErrorMessage": "Please enter the domain name under which this system can be reached.",
 					"title": "Host name"
 				},
 				"mailSettingsEditForm": {
-					"fetchMailActive": "Receiving documents via E-Mail",
-					"fetchMailFailedErrorDescription": "Fetching E-Mails failed. Please check the mail server settings.",
+					"fetchMailActive": "Receiving documents by mail active",
+					"fetchMailFailedErrorDescription": "Fetching e-mails failed. Please check the mail server settings.",
 					"fetchMailFailedErrorTitle": "Error",
-					"fetchMailHeader": "Mail import",
+					"fetchMailHeader": "Receiving mail",
 					"fetchMailPassword": "Password",
 					"fetchMailProtocol": "Protocol",
 					"fetchMailRemoteHost": "IMAP / POP Server",
@@ -270,24 +270,24 @@
 						"button": "Check import"
 					},
 					"fetchMailUsername": "User name",
-					"sendMailFromAddress": "Send from address",
+					"sendMailFromAddress": "Sender",
 					"sendMailPassword": "Password",
 					"sendMailProtocol": "Protocol",
 					"sendMailRemoteHost": "SMTP server",
 					"sendMailTest": {
 						"buttonText": "Send test mail",
-						"errorDescription": "Sending of E-Mail failed.",
+						"errorDescription": "Email could not be sent",
 						"errorTitle": "Failure",
 						"successDescription": "E-Mail successfully sent",
 						"successTitle": "Success"
 					},
-					"sendMailTitle": "Outbound Mail",
+					"sendMailTitle": "Mail delivery",
 					"sendMailUsername": "User name",
 					"testMail": {
 						"byeText": "Best regards",
 						"greeting": "Hello",
 						"subject": "Test-Mail",
-						"text": "This is a test message sent by the web console."
+						"text": "This is a test message sent via the web console."
 					}
 				},
 				"notificationForm": {
@@ -295,7 +295,7 @@
 					"addButton": "New notification",
 					"description": "Description",
 					"noRuleAvailableMessage": "No notification rules available",
-					"receiver": "Receiver",
+					"receiver": "Recipient",
 					"savedMessage": "Notification added successfully",
 					"title": "Notifications"
 				},
@@ -305,16 +305,16 @@
 				},
 				"securitySettingsForm": {
 					"acceptSignaturesFromUnverifiedKeysCheckbox": "Accept signatures from unverified signature keys. ",
-					"attentionText": "Your system accepts signatures from unverified keys. If this option is enabled, you have no guarantee that the data supplied with the signing key is correctly specified. You have to consider that any address or name specified in the key is incorrect. We recommend to disable this option.",
+					"attentionText": "Your system accepts signatures from keys that have not yet been verified. \n                        \n                        This setting no longer ensures that the information used in the key was always set correctly and completely. \n                        \n                        You must expect that your system will receive signatures from partners who have entered incorrect information in the key.\n                        \n                        We recommend activating this setting only for test systems.",
 					"attentionTitle": "Attention",
-					"defaultKey": "Default key for anonymous signatures",
+					"defaultKey": "Default key for anonymous signature actions",
 					"title": "Security"
 				},
 				"tagForm": {
 					"alwaysAttachTitle": "Attach automatically",
 					"autoAttachWhenTextContainsLabel": "If the document contains the text",
 					"colorLabel": "Color of the tag",
-					"descriptionRequiredMessage": "Please provide a description of the tag",
+					"descriptionRequiredMessage": "Please provide a description for the tag",
 					"nameLabel": "Name",
 					"nameRequiredMessage": "Please specify a name for the Tag",
 					"tagDescription": "Description",
@@ -335,7 +335,7 @@
 				"workflowForm": {
 					"addActionButton": "Add",
 					"advancedOptions": "Advanced Options",
-					"allowAnonymousSignatureCheckbox": "Allow signing without prior authentication",
+					"allowAnonymousSignatureCheckbox": "Allow signing without login",
 					"backgroundImage": "Background image",
 					"backgroundImageInputLabel": "Background image",
 					"deleteBackgroundImage": "Delete",
@@ -343,7 +343,7 @@
 					"descriptionInputPlaceholder": "Description",
 					"fieldName": "Field name",
 					"fieldNamePlaceholder": "Name",
-					"inputKIndEmail": "E-Mail address",
+					"inputKIndEmail": "E-mail address",
 					"inputKind": "Input Type",
 					"inputKindAttachFile": "Attach file",
 					"inputKindCheckbox": "Check box",
@@ -352,7 +352,7 @@
 					"multilineCheckbox": "Multi line input?",
 					"nameLabel": "Name",
 					"namePlaceholder": "Name",
-					"nameRequiredErrorMessage": "Please specify a name of the workflow.",
+					"nameRequiredErrorMessage": "Please specify a name of the workflow",
 					"roles": "Roles",
 					"unnamed": "unknown"
 				},
@@ -376,14 +376,14 @@
 				"sendAppLoginMail": {
 					"byteText": "Best regards",
 					"greeting": "Hello",
-					"mailBody": "In this e-mail you find your login information for the DocTag App. Please open the DocTag app and scan the following QR-Code to authenticate. ",
-					"subject": "Login information for your Doctag App"
+					"mailBody": "Enclosed you will receive your login data for the Doctag App. \n                    Please open the Doctag App and scan the QR code below to log in.\n                     \n                    <img src=",
+					"subject": "Login data for the Doctag App"
 				},
 				"userAddForm": {
-					"emailAddressTakenErrorMessage": "E-Mail address already used. ",
-					"emailInvalidErrorMessage": "Please enter a valid E-Mail address",
-					"emailLabel": "E-Mail",
-					"emailPlaceholder": "E-Mail",
+					"emailAddressTakenErrorMessage": "The e-mail address is already taken",
+					"emailInvalidErrorMessage": "Please enter a valid e-mail address",
+					"emailLabel": "E-mail",
+					"emailPlaceholder": "E-mail",
 					"firstNamePlaceholder": "First name",
 					"lastNamePlaceholder": "Last name",
 					"nameLabel": "Name",
@@ -397,45 +397,45 @@
 				},
 				"userAppForm": {
 					"addButton": "Add",
-					"addSessionForAppHeader": "DocTag App Login",
+					"addSessionForAppHeader": "Doctag App Login",
 					"appSessionName": "Doctag App Login",
 					"scanImmediately": "Scan directly",
 					"sendViaEmail": "Send via E-Mail",
-					"successMessageBody": "The login data successfully sent to ${mailAddress} ",
+					"successMessageBody": "The credentials were successfully sent to ${mailAddress}.",
 					"successMessageTitle": "Mail sent"
 				},
 				"userDeleteForm": {
 					"deleteButton": "Delete",
 					"deleteConfirmMessage": "Do you really want to delete the user${userObj.firstName} ${userObj.lastName}?",
-					"emailLabel": "E-Mail address",
-					"emailPlaceholder": "E-Mail",
-					"pleaseTypeEmailMessage": "Please enter the E-Mail address of user ${userObj.emailAdress} to confirm the deletion.",
+					"emailLabel": "E-mail address",
+					"emailPlaceholder": "E-mail",
+					"pleaseTypeEmailMessage": "Please enter the user's email address ${userObj.emailAdress} to confirm the deletion.",
 					"usernamesDoNotMatchError": "Both fields must match"
 				},
 				"userEditForm": {
-					"emailAddressAlreadyTakenErrorMessage": "E-Mail address is already in use",
-					"emailLabel": "E-Mail",
-					"emailPlaceholder": "E-Mail",
+					"emailAddressAlreadyTakenErrorMessage": "E-mail address is already in use",
+					"emailLabel": "E-mail",
+					"emailPlaceholder": "E-mail",
 					"firstNameLabel": "First name",
 					"firstNamePlaceholder": "First name",
 					"lastNameLabel": "Last name",
 					"lastNamePlaceholder": "Last name",
-					"provideEmailerrorMessage": "Please enter a valid E-Mail address",
-					"provideFirstnameErrorMessage": "Please specify your fist name",
-					"provideLastNameError": "Please specify your last name"
+					"provideEmailerrorMessage": "Please enter a valid e-mail address",
+					"provideFirstnameErrorMessage": "Please specify your fist name.",
+					"provideLastNameError": "Please specify your last name."
 				},
 				"userPasswordEditForm": {
 					"confirmPasswordLabel": "Confirm new password.",
-					"confirmPasswordPlaceholder": "Confirm password.",
+					"confirmPasswordPlaceholder": "Confirm password",
 					"newPasswordLabel": "New password",
 					"newPasswordPlaceholder": "Password",
-					"passwordsDoNotMatchError": "Both password fields must match."
+					"passwordsDoNotMatchError": "Both password fields must match"
 				},
 				"userSessionForm": {
 					"confirmChangesButton": "Confirm changes",
-					"noLoginAvailableMessage": "No authentication available.",
+					"noLoginAvailableMessage": "No registrations available",
 					"onDevice": "On device",
-					"validTill": "Valid till"
+					"validTill": "Valid until"
 				}
 			}
 		},
@@ -444,8 +444,8 @@
 				"modalTitle": "Add document"
 			},
 			"addKeyModal": {
-				"keyAddFailed": "Error on adding document",
-				"title": "Add signing key"
+				"keyAddFailed": "Error when creating",
+				"title": "Add participant certificate"
 			},
 			"addUserModal": {
 				"title": "Add user"
@@ -453,7 +453,7 @@
 			"createSignRequest": {
 				"confirmButton": "Confirm",
 				"creationDate": "Created on ${doc.created?.formatDateTime()}",
-				"detectedUrl": "Detected URL",
+				"detectedUrl": "URL detected",
 				"fileName": "File name: ${doc.originalFileName}",
 				"foundDocumentMessage": "Document detected",
 				"openButton": "Open",
@@ -463,19 +463,19 @@
 				"signatureRequestCreatedMessage": "Create signature request",
 				"signatureValidMessage": "Signature valid",
 				"source": "Source: ${doc.url}",
-				"title": "Signature request created"
+				"title": "Create signature request"
 			},
 			"deleteVerifyModal": {
-				"abortButton": "Abort",
+				"abortButton": "Cancel",
 				"confirmText": "Please confirm the deletion of ${objectKind} '$elementToDelete'.",
 				"deleteButton": "Delete",
-				"errorMessage": "Error on deleting",
+				"errorMessage": "Error while deleting",
 				"title": "Confirm deletion"
 			},
 			"editUserModal": {
 				"changePasswordTitle": "Change password",
 				"deleteTitle": "Delete",
-				"doctagAppTitle": "DocTag App",
+				"doctagAppTitle": "Doctag App",
 				"loginsTitle": "Sessions",
 				"profileTitle": "Profile",
 				"title": "Edit user ${user.firstName} ${user.lastName}"
@@ -500,29 +500,29 @@
 			"showSignatureModal": {
 				"addressValid": "Address valid",
 				"countryCode": "Country",
-				"doctagHostValid": "DocTag Host valid:",
-				"doctagSource": "DocTag System",
+				"doctagHostValid": "Doctag Host valid:",
+				"doctagSource": "Doctag system",
 				"fromUser": "From user",
-				"keyHeader": "Signing Key",
+				"keyHeader": "Certificate",
 				"name1": "Name 1",
 				"name2": "Name 2",
 				"notVerified": "Not verified",
-				"selectedPublicKey": "Selected public key",
-				"signatureOfKey": "Signature of the key",
+				"selectedPublicKey": "With public key",
+				"signatureOfKey": "Key signature",
 				"signatureValidMessage": "Signature valid",
 				"street": "Street",
-				"title": "Show key ${\n    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)}",
+				"title": "Show certificate ${\n    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)}",
 				"validTill": "Valid till: ",
 				"verification": "Verification",
 				"zipAndCity": "Zip Code - City"
 			},
 			"signDocumentModal": {
-				"additionalData": "Additional Information",
-				"generalInformation": "General Information",
-				"inputValidEmailMessage": "Please provide a valid E-Mail address",
+				"additionalData": "Additional data",
+				"generalInformation": "General information",
+				"inputValidEmailMessage": "Please enter a valid e-mail address",
 				"noAuthenticationMessage": "Without authentication",
-				"selectKey": "Select key",
-				"selectKeyMessage": "Please select a key.",
+				"selectKey": "Select stamp",
+				"selectKeyMessage": "Please select a stamp",
 				"selectRole": "Select role",
 				"selectRoleMessage": "Please select a role",
 				"signDocumentButton": "Sign document",
@@ -550,32 +550,32 @@
 		"settings": {
 			"keys": {
 				"action": "Action",
-				"addedKeySuccessMessage": "Add key pair",
+				"addedKeySuccessMessage": "Added certificate",
 				"createdAt": "Created at",
 				"createdBy": "from",
-				"deleteKeyObjectName": "Signing Key",
+				"deleteKeyObjectName": "Certificate",
 				"designSettingsChanged": "Design settings changed",
 				"displayName": "Display name",
-				"hostnameChangedMessage": "Host name changed",
-				"keyUpdateFailedError": "Publication of key failed.",
-				"keyUpdatedInfo": "Key updated",
-				"keyValidTill": "Key valid till",
-				"mailSettingsChanged": "E-Mail settings changed.",
+				"hostnameChangedMessage": "Hostname changed",
+				"keyUpdateFailedError": "Publishing failed",
+				"keyUpdatedInfo": "Certificate updated",
+				"keyValidTill": "Valid until",
+				"mailSettingsChanged": "E-Mail settings changed",
 				"menu": {
 					"design": "Design",
 					"hostname": "Host name",
-					"mail": "E-Mail",
+					"mail": "E-mail",
 					"notifications": "Notifications",
 					"search": "Search",
 					"tags": "Tags",
 					"workflows": "Workflows"
 				},
-				"newKey": "New signing key",
+				"newKey": "New certificate",
 				"notYetConfirmed": "not completed",
-				"pageTitle": "Signing Certificate",
+				"pageTitle": "Participant certificates",
 				"security": "Security",
 				"verification": "Verification",
-				"verificationInfoMessage": "Specifies whether the signing key and its meta data was already verified",
+				"verificationInfoMessage": "Indicates whether the key has already been verified by the provider",
 				"yes": "yes"
 			},
 			"system": {
@@ -584,7 +584,7 @@
 			"users": {
 				"actions": "Action",
 				"created": "Created at",
-				"email": "E-Mail",
+				"email": "E-mail",
 				"firstName": "First name",
 				"lastName": "Last name",
 				"newUser": "New user",
@@ -596,7 +596,7 @@
 			},
 			"utils": {
 				"menu": {
-					"certificates": "Signing certificates",
+					"certificates": "Participant certificates",
 					"system": "System",
 					"user": "User"
 				}
