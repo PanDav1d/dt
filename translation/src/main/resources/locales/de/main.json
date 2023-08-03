@@ -36,7 +36,7 @@
 				"createAdminUser": "Admin-Benutzer anlegen",
 				"domainNameHeder": "System einrichten",
 				"doneHeader": "Einrichtung abgeschlossen",
-				"doneText": "Die Einrichtung Ihres Systems wurde bereits durchgeführt. Sie können den Docsrv jetzt verwenden.",
+				"doneText": "Die Einrichtung Ihres Systems wurde bereits durchgeführt. Sie können den DocServer jetzt verwenden.",
 				"loginLinkText": "Anmeldung",
 				"personalDataHeader": "System einrichten",
 				"pinCheckHeader": "System einrichten",
@@ -46,8 +46,8 @@
 				"domainNameInputLabel": "Domain-Name",
 				"domainNameInvalidError": "Bitte geben Sie einen korrekten Domain-Namen an",
 				"requestDomainNameText": "Bitte geben Sie den Domain-Namen ein, unter dem dieses System erreichbar ist.",
-				"requestServerPinText": "Bitte geben Sie den Server-Pin an, um mit der Installation fortzufahren. Die Server-Pin erhalten Sie indem Sie den folgenden Befehl im Terminal Ihres Servers ausführen:",
-				"serverPin": "Server-Pin angeben",
+				"requestServerPinText": "Bitte geben Sie die Server-PIN an, um mit der Installation fortzufahren. Die Server-PIN erhalten Sie indem Sie den folgenden Befehl im Terminal Ihres Servers ausführen:",
+				"serverPin": "Server-PIN angeben",
 				"serverPinIncorrectError": "Bitte geben Sie die korrekte PIN an",
 				"serverPinInputLabel": "Server-PIN",
 				"serverPinPlaceholder": "bitte angeben",
@@ -83,9 +83,9 @@
 					"documents": "Dokument",
 					"signatures": "Signaturen"
 				},
-				"from": "Von",
-				"searchTextPlaceholder": "suche",
-				"till": "Bis"
+				"from": "von",
+				"searchTextPlaceholder": "suchen",
+				"till": "bis"
 			},
 			"documentList": {
 				"actionLabel": "Aktion",
@@ -94,7 +94,7 @@
 				"documentAddedSuccessfullyMessage": "Dokument erfolgreich hinzugefügt",
 				"fileNameLabel": "Dateiname",
 				"header": "Dokumente",
-				"importFromEmail": "Aus Mail Postfach importieren",
+				"importFromEmail": "Aus Mail-Postfach importieren",
 				"notYetSignedText": "Noch nicht signiert",
 				"signedByPopupText": "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}",
 				"statusLabel": "Status"
@@ -103,19 +103,19 @@
 				"documentAddButton": "Dokument hinzufügen",
 				"documentList": "Dokumentenliste",
 				"documentSuccessfullyAddedMessage": "Dokument erfolgreich hinzugefügt",
-				"importFromMailboxButton": "Aus Mail Postfach importieren",
+				"importFromMailboxButton": "Aus Mail-Postfach importieren",
 				"notYetSignedMessage": "Noch nicht signiert",
 				"signedOnMessage": "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}"
 			},
 			"documentView": {
 				"actions": "Aktionen",
-				"address": "Addresse",
-				"anonymousSignaturesNotPossibleInfoMessage": "Signaturen ohne Authentifikation sind in diesem Dokument nicht möglich.",
+				"address": "Adresse",
+				"anonymousSignaturesNotPossibleInfoMessage": "Signaturen ohne Authentifizierung sind in diesem Dokument nicht möglich.",
 				"createDoctagInstanceLink": "Eigenen Login erhalten",
 				"creationDate": "Erstellungsdatum",
 				"deleteButton": "Löschen",
-				"documentAddress": "Dokumentenaddresse",
-				"documentUrl": "Dokumentenaddresse",
+				"documentAddress": "Dokumentenadresse",
+				"documentUrl": "Dokumentenadresse",
 				"downloadButton": "Herunterladen",
 				"fileName": "Dateiname",
 				"info": "Info",
@@ -143,7 +143,7 @@
 				"value": "Wert",
 				"verifyDeleteModal": {
 					"document": "Dokument",
-					"the": "das"
+					"the": "Das"
 				},
 				"viewDoctagButton": "Doctag anzeigen"
 			},
@@ -205,10 +205,10 @@
 			"documentForms": {
 				"documentAddForm": {
 					"file": "Datei",
-					"foundDoctag": "DocTag erkannt",
-					"foundDoctagDescription": "Das hochgeladene Dokument hat das DocTag ${document.value.url}. Drücken Sie auf Speichern um den Import abzuschließen.",
+					"foundDoctag": "Doctag erkannt",
+					"foundDoctagDescription": "Das hochgeladene Dokument trägt das Doctag ${document.value.url}. Drücken Sie Speichern um den Import abzuschließen.",
 					"insertDoctagButton": "Doctag einfügen",
-					"placeDoctagMessage": "Positionieren Sie das DocTag mit der Maus an der gewünschten Position",
+					"placeDoctagMessage": "Positionieren Sie das Doctag mit der Maus an der gewünschten Position",
 					"saveButton": "Speichern",
 					"selectTagsLabel": "Tags wählen",
 					"selectWorkflowLabel": "Workflow wählen",
@@ -256,14 +256,14 @@
 				},
 				"mailSettingsEditForm": {
 					"fetchMailActive": "Dokumenten-Empfang per Mail aktiv",
-					"fetchMailFailedErrorDescription": "E-Mail Abruf fehlgeschlagen. Bitte prüfen Sie die Einstellungen",
+					"fetchMailFailedErrorDescription": "E-Mail Abruf fehlgeschlagen. Bitte prüfen Sie die Einstellungen.",
 					"fetchMailFailedErrorTitle": "Fehler",
-					"fetchMailHeader": "Mail Empfang",
+					"fetchMailHeader": "Mail-Empfang",
 					"fetchMailPassword": "Passwort",
 					"fetchMailProtocol": "Protokoll",
 					"fetchMailRemoteHost": "IMAP / POP Server",
 					"fetchMailSuccess": {
-						"description": "E-Mail Abruf erfolgreich. ${messages.size} Nachrichten empfangen",
+						"description": "E-Mail-Abruf erfolgreich. ${messages.size} Nachrichten empfangen",
 						"title": "Erfolg"
 					},
 					"fetchMailTest": {
@@ -287,7 +287,7 @@
 						"byeText": "Viele Grüße",
 						"greeting": "Hallo",
 						"subject": "Test-Mail",
-						"text": "Dies ist eine Test-Nachricht welche über die Web-Konsole versendet wurde"
+						"text": "Dies ist eine über die Web-Konsole versendete Test-Nachricht."
 					}
 				},
 				"notificationForm": {
@@ -307,7 +307,7 @@
 					"acceptSignaturesFromUnverifiedKeysCheckbox": "Signaturen von unverifizierten Schlüsseln akzeptieren.",
 					"attentionText": "Ihr System akzeptiert Signaturen von noch nicht verzifizierten Schlüsseln. \n                        \n                        Mit dieser Einstellung ist nicht mehr sichergestellt, dass die im Schlüssel \n                        verwendeten Angaben immer korrekt und vollständig gesetzt wurden. \n                        \n                        Sie müssen damit rechnen, dass Ihr System Signaturen von Partnern empfängt,\n                        die falsche Angaben im Schlüssel gemacht haben.\n                        \n                        Wir empfehlen die Aktivierung dieser Einstellung nur für Testsysteme.",
 					"attentionTitle": "Achtung",
-					"defaultKey": "Standart Schlüssel für anonyme Signaturaktionen",
+					"defaultKey": "Standart-Schlüssel für anonyme Signaturaktionen",
 					"title": "Sicherheit"
 				},
 				"tagForm": {
@@ -343,7 +343,7 @@
 					"descriptionInputPlaceholder": "Beschreibung",
 					"fieldName": "Feldname",
 					"fieldNamePlaceholder": "Name",
-					"inputKIndEmail": "E-Mailaddresse",
+					"inputKIndEmail": "E-Mail-Adresse",
 					"inputKind": "Eingabe Typ",
 					"inputKindAttachFile": "Datei anfügen",
 					"inputKindCheckbox": "Checkbox",
@@ -376,12 +376,12 @@
 				"sendAppLoginMail": {
 					"byteText": "Viele Grüße",
 					"greeting": "Hallo",
-					"mailBody": "Anbei erhalten Sie Ihre Zugangsdaten für die Doctag App. \n                    Bitte öffnen Sie die Doctag App und scannen den \n                    nachfolgenden QR-Code um sich anzumelden.\n                    ",
+					"mailBody": "Anbei erhalten Sie Ihre Zugangsdaten für die Doctag App. \n                    Bitte öffnen Sie die Doctag App und scannen den \n                    nachfolgenden QR-Code um sich anzumelden.\n                     \n                    <img src=",
 					"subject": "Zugangsdaten für die Doctag App"
 				},
 				"userAddForm": {
-					"emailAddressTakenErrorMessage": "Die E-Mail Addresse ist bereits vergeben",
-					"emailInvalidErrorMessage": "Bitte geben Sie eine gültige E-Mail Addresse an",
+					"emailAddressTakenErrorMessage": "Die E-Mail-Adresse ist bereits vergeben",
+					"emailInvalidErrorMessage": "Bitte geben Sie eine gültige E-Mail-Adresse an",
 					"emailLabel": "E-Mail",
 					"emailPlaceholder": "E-Mail",
 					"firstNamePlaceholder": "Vorname",
@@ -392,7 +392,7 @@
 					"passwordDoNotMatchError": "Beide Passwort-Felder müssen übereinstimmen",
 					"passwordLabel": "Passwort",
 					"passwordPlaceholder": "Passwort",
-					"provideFirstNameError": "Bitte geben Sie Ihren Vornamen an.",
+					"provideFirstNameError": "Bitte geben Sie Ihren Vornamen an",
 					"provideLastNameError": "Bitte geben Sie Ihren Nachnamen an."
 				},
 				"userAppForm": {
@@ -407,20 +407,20 @@
 				"userDeleteForm": {
 					"deleteButton": "Löschen",
 					"deleteConfirmMessage": "Den Benutzer ${userObj.firstName} ${userObj.lastName} wirklich löschen?",
-					"emailLabel": "E-Mail Addresse",
+					"emailLabel": "E-Mail-Adresse",
 					"emailPlaceholder": "E-Mail",
-					"pleaseTypeEmailMessage": "Bitte geben Sie die E-Mail Addresse ${userObj.emailAdress} des Nutzers ein um die Löschung zu bestätigen.",
+					"pleaseTypeEmailMessage": "Bitte geben Sie die E-Mail-Adresse ${userObj.emailAdress} des Nutzers ein um die Löschung zu bestätigen.",
 					"usernamesDoNotMatchError": "Beide Felder müssen übereinstimmen"
 				},
 				"userEditForm": {
-					"emailAddressAlreadyTakenErrorMessage": "Die E-Mail Addresse ist bereits vergeben",
+					"emailAddressAlreadyTakenErrorMessage": "Die E-Mail-Adresse ist bereits vergeben",
 					"emailLabel": "E-Mail",
 					"emailPlaceholder": "E-Mail",
 					"firstNameLabel": "Vorname",
 					"firstNamePlaceholder": "Vorname",
 					"lastNameLabel": "Nachname",
 					"lastNamePlaceholder": "Nachname",
-					"provideEmailerrorMessage": "Bitte geben Sie eine gültige E-Mail Addresse an",
+					"provideEmailerrorMessage": "Bitte geben Sie eine gültige E-Mail-Adresse an",
 					"provideFirstnameErrorMessage": "Bitte geben Sie Ihren Vornamen an.",
 					"provideLastNameError": "Bitte geben Sie Ihren Nachnamen an."
 				},
@@ -445,14 +445,14 @@
 			},
 			"addKeyModal": {
 				"keyAddFailed": "Fehler beim Anlegen",
-				"title": "Schlüssel hinzufügen"
+				"title": "Teilnehmerzertifikat hinzufügen"
 			},
 			"addUserModal": {
 				"title": "Benutzer hinzufügen"
 			},
 			"createSignRequest": {
 				"confirmButton": "Übernehmen",
-				"creationDate": "Erstellt am: ${doc.created?.formatDateTime()}",
+				"creationDate": "Erstellt am ${doc.created?.formatDateTime()}",
 				"detectedUrl": "URL erkannt",
 				"fileName": "Dateiname: ${doc.originalFileName}",
 				"foundDocumentMessage": "Dokument erkannt",
@@ -467,7 +467,7 @@
 			},
 			"deleteVerifyModal": {
 				"abortButton": "Abbrechen",
-				"confirmText": "Bitte bestätigen Sie dass Sie ${article} / ${objectKind} '$elementToDelete' wirklich löschen möchten",
+				"confirmText": "Bitte bestätigen Sie dass Sie den ${objectKind} '$elementToDelete' wirklich löschen möchten",
 				"deleteButton": "Löschen",
 				"errorMessage": "Fehler beim Löschen",
 				"title": "Löschen bestätigen"
@@ -486,7 +486,7 @@
 				"title": "Vorschau"
 			},
 			"scanDoctagModal": {
-				"createdDate": "Erstellt am: ${doc.created?.formatDateTime()}",
+				"createdDate": "Erstellt am ${doc.created?.formatDateTime()}",
 				"documentDetectedMessage": "Dokument erkannt",
 				"fileName": "Dateiname: ${doc.originalFileName}",
 				"openButton": "Öffnen",
@@ -498,20 +498,20 @@
 				"urlDetectedMessage": "URL erkannt"
 			},
 			"showSignatureModal": {
-				"addressValid": "Addresse gültig:",
+				"addressValid": "Adresse gültig",
 				"countryCode": "Land",
-				"doctagHostValid": "DocTag Host gültig:",
-				"doctagSource": "Doctag System",
+				"doctagHostValid": "Doctag Host gültig:",
+				"doctagSource": "Doctag-System",
 				"fromUser": "Von Nutzer",
-				"keyHeader": "Schlüssel",
+				"keyHeader": "Zertifikat",
 				"name1": "Name 1",
 				"name2": "Name 2",
 				"notVerified": "Nicht verifiziert",
 				"selectedPublicKey": "Mit öffentlichem Schlüssel",
-				"signatureOfKey": "Signatur dieses Schlüssels",
+				"signatureOfKey": "Signatur des Schlüssels",
 				"signatureValidMessage": "Signatur gültig",
 				"street": "Straße",
-				"title": "Schlüssel ${\n    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)} anzeigen",
+				"title": "Zertifikat ${\n    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)} anzeigen",
 				"validTill": "Gültig bis:",
 				"verification": "Verifikation",
 				"zipAndCity": "PLZ - Ort"
@@ -519,10 +519,10 @@
 			"signDocumentModal": {
 				"additionalData": "Zusatzdaten",
 				"generalInformation": "Allgemeine Angaben",
-				"inputValidEmailMessage": "Bitte geben Sie eine gültige Mail-Adresse an",
+				"inputValidEmailMessage": "Bitte geben Sie eine gültige E-Mail-Adresse an",
 				"noAuthenticationMessage": "Ohne Authentifizierung",
-				"selectKey": "Schlüssel wählen",
-				"selectKeyMessage": "Bitte wählen Sie einen Schlüssel aus",
+				"selectKey": "Stempel wählen",
+				"selectKeyMessage": "Bitte wählen Sie einen Stempel aus",
 				"selectRole": "Rolle wählen",
 				"selectRoleMessage": "Bitte wählen Sie eine Rolle aus",
 				"signDocumentButton": "Dokument signieren",
@@ -550,17 +550,17 @@
 		"settings": {
 			"keys": {
 				"action": "Aktion",
-				"addedKeySuccessMessage": "Schüsselpaar hinzugefügt",
+				"addedKeySuccessMessage": "Zertifikat hinzugefügt",
 				"createdAt": "Erstellt am",
 				"createdBy": "von",
-				"deleteKeyObjectName": "Schlüssel",
-				"designSettingsChanged": "Design Einstellungen geändert",
+				"deleteKeyObjectName": "Zertifikat",
+				"designSettingsChanged": "Design-Einstellungen geändert",
 				"displayName": "Anzeigename",
 				"hostnameChangedMessage": "Hostname geändert",
-				"keyUpdateFailedError": "Veröffentlichen fehlgeschlagen.",
-				"keyUpdatedInfo": "Schlüssel aktualisiert",
+				"keyUpdateFailedError": "Veröffentlichung fehlgeschlagen",
+				"keyUpdatedInfo": "Zertifikat aktualisiert",
 				"keyValidTill": "Gültig bis",
-				"mailSettingsChanged": "E-Mail Einstellungen geändert",
+				"mailSettingsChanged": "E-Mail-Einstellungen geändert",
 				"menu": {
 					"design": "Design",
 					"hostname": "Hostname",
@@ -570,12 +570,12 @@
 					"tags": "Tags",
 					"workflows": "Workflows"
 				},
-				"newKey": "Neuer Schlüssel",
+				"newKey": "Neues Zertifikat",
 				"notYetConfirmed": "nicht abgeschlossen",
-				"pageTitle": "Teilnehmerzertifikat",
+				"pageTitle": "Teilnehmerzertifikate",
 				"security": "Sicherheit",
 				"verification": "Verifizierung",
-				"verificationInfoMessage": "Gibt an, ob der Schlüssel bereits von DocTag verifiziert wurde",
+				"verificationInfoMessage": "Gibt an, ob der Schlüssel bereits vom Anbieter verifiziert wurde",
 				"yes": "ja"
 			},
 			"system": {
