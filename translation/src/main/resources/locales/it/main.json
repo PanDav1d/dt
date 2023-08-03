@@ -113,7 +113,7 @@
 				"anonymousSignaturesNotPossibleInfoMessage": "Le firme senza autenticazione non sono possibili in questo documento.",
 				"createDoctagInstanceLink": "Ottenere il proprio login",
 				"creationDate": "Data di Creazione",
-				"deleteButton": "",
+				"deleteButton": "Eliminare",
 				"documentAddress": "Indirizzo del documento",
 				"documentUrl": "Indirizzo del documento",
 				"downloadButton": "Scaricare",
@@ -142,8 +142,8 @@
 				"validationRunning": "Convalida in corso",
 				"value": "Valore",
 				"verifyDeleteModal": {
-					"document": "",
-					"the": ""
+					"document": "documento",
+					"the": "Il"
 				},
 				"viewDoctagButton": "Mostra Doctag"
 			},
@@ -359,7 +359,7 @@
 				"workflowListEditForm": {
 					"actions": "Azione",
 					"addWorkflowButton": "Nuovo flusso di lavoro",
-					"deleteModalObjectKind": "Flusso di lavoro",
+					"deleteModalObjectKind": "Flusso di lavoro (Workflow)",
 					"deleteWorkflow": "Eliminare il flusso di lavoro",
 					"editWorkflow": "Modifica del flusso di lavoro",
 					"markAsDefaultWorkflow": "Flusso di lavoro standard",
@@ -369,7 +369,7 @@
 					"successfullyAddedMessage": "Flusso di lavoro aggiunto con successo",
 					"successfullyEdited": "Flusso di lavoro modificato",
 					"successfullySetAsDefaultWorkflow": "Set di flusso di lavoro standard",
-					"title": "Flussi di lavoro"
+					"title": "Flussi di lavoro (Workflows)"
 				}
 			},
 			"userForms": {
@@ -425,7 +425,7 @@
 					"provideLastNameError": "Indicare il proprio cognome."
 				},
 				"userPasswordEditForm": {
-					"confirmPasswordLabel": "Confermare la nuova password",
+					"confirmPasswordLabel": "Confermare la nuova password.",
 					"confirmPasswordPlaceholder": "Confermare la password",
 					"newPasswordLabel": "Nuova password",
 					"newPasswordPlaceholder": "Password",
@@ -568,14 +568,14 @@
 					"notifications": "Notifiche",
 					"search": "Ricerca",
 					"tags": "Tags",
-					"workflows": "Workflows"
+					"workflows": "Flussi di lavoro (Workflows)"
 				},
 				"newKey": "Nuovo certificato",
 				"notYetConfirmed": "non completato",
 				"pageTitle": "Certificati di partecipazione",
 				"security": "Sicurezza",
 				"verification": "Verifica",
-				"verificationInfoMessage": "Indica se la chiave è già stata verificata dal provider.",
+				"verificationInfoMessage": "Indica se la chiave è già stata verificata dal provider",
 				"yes": "sì"
 			},
 			"system": {
