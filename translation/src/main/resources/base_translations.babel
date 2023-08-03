@@ -12961,7 +12961,7 @@
 		</copy_templates>
 		<custom_languages/>
 	</editor_configuration>
-	<primary_language>de-DE</primary_language>
+	<primary_language/>
 	<configuration>
 		<indent>tab</indent>
 		<format>namespaced-json</format>
