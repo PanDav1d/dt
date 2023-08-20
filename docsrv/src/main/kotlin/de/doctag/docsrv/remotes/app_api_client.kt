@@ -9,6 +9,7 @@ import de.doctag.docsrv.api.PreparedSignature
 import kweb.logger
 import de.doctag.docsrv.model.DocumentId
 import de.doctag.docsrv.model.EmbeddedSignature
+import de.doctag.docsrv.sanitizeUrl
 import de.doctag.lib.*
 import java.lang.Exception
 import java.net.URI
@@ -23,21 +24,20 @@ object AppApiClient {
     }
 
     fun checkAuthentication(remote: String, sessionId: String) : Boolean {
-        val remoteUrl = remote.removePrefix("http://").removePrefix("https://").removeSuffix("/")
-        try {
+        val remoteUrl = sanitizeUrl(remote)
+        return try {
             val request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://${remoteUrl}/app/auth_info".fixHttps()))
-                    .header("Accept", "application/json")
-                    .header("Cookie", "SESSION=$sessionId")
-                    .timeout(Duration.ofMinutes(1))
-                    .build()
+                .uri(URI.create("https://${remoteUrl}/app/auth_info".fixHttps()))
+                .header("Accept", "application/json")
+                .header("Cookie", "SESSION=$sessionId")
+                .timeout(Duration.ofMinutes(1))
+                .build()
             logger.info("Sending request to ${request.uri()}")
             val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-            return response.statusCode() == 200
-        }
-        catch(ex: Exception){
+            response.statusCode() == 200
+        } catch(ex: Exception){
             logger.info("Health check failed: ${ex.message}")
-            return false
+            false
         }
     }
 

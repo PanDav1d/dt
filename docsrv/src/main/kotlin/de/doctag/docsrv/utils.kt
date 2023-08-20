@@ -165,3 +165,15 @@ fun String?.isPdf():Boolean {
 }
 
 fun Boolean.toYesNoString(): String = if(this) "ja" else "nein"
+
+/**
+ *
+ * @param remote URL
+ * @return URL ohne Protokoll und abschliessenden Slash
+ */
+fun sanitizeUrl(remote: String): String {
+   return remote
+        .removePrefix("http://")
+        .removePrefix("https://")
+        .removeSuffix("/")
+}

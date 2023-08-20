@@ -87,7 +87,7 @@ fun WebBrowser.handleInstall(content: ElementCreator<*>) {
                         SetupSteps.RESULT_PAGE -> {
                             h2().i18nText("ui.admin.install.completedHeader","Einrichtung abgeschlossen")
                             span().i18nText("ui.admin.install.completedText","Das System wurde erfolgreich eingerichtet. Weiter zur ")
-                            a(href = "/login").i18nText("ui.admin.install.loginLinkText", "Anmeldung")
+                            a(href = "/login").i18nText("ui.admin.install.loginLinkText", " Anmeldung")
 
                             p().i18nText("ui.admin.install.redirectText", "Sie werden automatisch in 5 Sekunden weitergeleitet.")
                             GlobalScope.launch {

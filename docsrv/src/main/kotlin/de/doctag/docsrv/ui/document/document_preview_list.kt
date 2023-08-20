@@ -1,5 +1,6 @@
 package de.doctag.docsrv.ui.document
 
+import de.doctag.docsrv.i18n
 import SearchFilter
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
@@ -13,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
+import kweb.state.KVal
 import kweb.state.KVar
 import kweb.state.render
 import org.bson.conversions.Bson
@@ -67,7 +69,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
 
         val pageArea = pageHeader()
 
-        searchQuery.addListener{old, new ->
+        searchQuery.addListener{ old, new ->
             documents.value = db().handleSearchQueryChange(new)
         }
 
@@ -206,9 +208,9 @@ fun ElementCreator<*>.renderDocumentPreview(rFile: Document?, showLinkToDocument
                         h1().text(file?.name ?: "Keine Vorschau verfügbar")
                     }
                 }
-                div(fomantic.ui.column.four.wide).new {
+                div(fomantic.ui.column.four.wide.right.aligned).new {
                     if (showLinkToDocumentButton) {
-                        button(fomantic.ui.button.tertiary.blue).apply {
+                        button(fomantic.ui.button.tertiary.blue).setAttribute("title", KVal(i18n("ui.document.documentPreviewList.show", "Anzeigen")) ).apply {
                             this.on.click {
                                 val docIdPart = rFile?.url!!.split("/d/")[1]
                                 val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")

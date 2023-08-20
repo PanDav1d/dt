@@ -7,6 +7,7 @@ import kweb.logger
 import de.doctag.docsrv.model.DocumentId
 import de.doctag.docsrv.model.EmbeddedSignature
 import de.doctag.lib.*
+import de.doctag.docsrv.sanitizeUrl
 import kweb.util.toJson
 import java.lang.Exception
 import java.net.URI
@@ -20,21 +21,26 @@ object DocServerClient {
         HttpClient.newBuilder().build()
     }
 
+    /**
+     * Überprüft den Gesundheitsstatus eines Remote-Servers durch den Aufruf eines 'health'-Endpunkts.
+     *
+     * @param remote Die URL des Remote-Servers.
+     * @return Ein Boolean-Wert, der angibt, ob der Remote-Server erfolgreich erreicht wurde.
+     */
     fun checkHealth(remote: String) : Boolean {
-        val remoteUrl = remote.removePrefix("http://").removePrefix("https://").removeSuffix("/")
-        try {
+        val remoteUrl = sanitizeUrl(remote)
+        return try {
             val request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://${remoteUrl}/health".fixHttps()))
-                    .header("Accept", "application/json")
-                    .timeout(Duration.ofMinutes(1))
-                    .build()
+                .uri(URI.create("https://${remoteUrl}/health".fixHttps()))
+                .header("Accept", "application/json")
+                .timeout(Duration.ofMinutes(1))
+                .build()
             logger.info("Sending request to ${request.uri()}")
             val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-            return response.statusCode() == 200
-        }
-        catch(ex: Exception){
+            response.statusCode() == 200
+        } catch(ex: Exception){
             logger.info("Health check failed: ${ex.message}")
-            return false
+            false
         }
     }
 

@@ -549,6 +549,7 @@
 		},
 		"settings": {
 			"keys": {
+				"show": "Schlüssel anzeigen",
 				"action": "Aktion",
 				"addedKeySuccessMessage": "Schüsselpaar hinzugefügt",
 				"createdAt": "Erstellt am",

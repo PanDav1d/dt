@@ -14,6 +14,7 @@ import de.doctag.lib.loadPublicKey
 import de.doctag.lib.publicKeyFingerprint
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
+import kweb.state.KVal
 import kweb.state.KVar
 import kweb.state.render
 import org.litote.kmongo.deleteOneById
@@ -75,7 +76,7 @@ fun ElementCreator<*>.handleKeySettings(){
                                     td().text(key.verification?.signatureValidUntil ?: "---")
                                     td().new {
 
-                                        i(fomantic.ui.paw.icon).on.click{
+                                        i(fomantic.ui.paw.icon).setAttribute("title", KVal(i18n("ui.settings.keys.show", "Anzeigen"))).on.click{
                                             val signatureModal = showSignatureInfoModal(key)
                                             signatureModal.open()
                                         }
