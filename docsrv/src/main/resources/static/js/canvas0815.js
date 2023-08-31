@@ -33,6 +33,7 @@ class Canvas0815 {
       backgroundFitToCanvas: true,
       borderColor: '#cccccc',
       debug: false,
+      dpi: 72,
       canvasElementId: "canvas",
       maxStartSizeX: 50,
       maxStartSizeY: 50,
@@ -64,7 +65,7 @@ class Canvas0815 {
     this.backgroundSizeY=this.backgroundImage.height;
     if(this.objValues.backgroundFitToCanvas) {
       this.debug('backgroundFitToCanvas: true, canvasSizeX: ' + this.canvasSizeX);
-      // fit propertional
+      // Proportional zu x, also erst y bestimmen
       this.backgroundSizeY=(this.backgroundSizeY * (this.canvasSizeX/this.backgroundSizeX)).toFixed(0);
       this.backgroundSizeX=this.canvasSizeX;
     }
@@ -88,10 +89,13 @@ class Canvas0815 {
     this.draw();
   }
 
+  // Handler... alles für die Maus
   mouseDoubleClick(e) {
-    this.info('QR-Code (x, y) = (' + this.qrCodePosX + ', ' + this.qrCodePosY + '), ' +
-                    'Size (x, y) = (' + this.qrCodeSizeX + ', ' + this.qrCodeSizeY + '), ' +
-                    'Scaling-Factor = ' + this.qrCodeScaling);
+    let pdfObj=this.getQrCodePosition();
+    this.info('QR-Code (x, y) = (' + this.qrCodePosX + ', ' + this.qrCodePosY +
+                    '), Size (x, y) = (' + this.qrCodeSizeX + ', ' + this.qrCodeSizeY +
+                    '), Scaling-Factor = ' + this.qrCodeScaling +
+                    ', Point-Koords = (' + pdfObj.x + ', ' + pdfObj.y + ')');
 
   }
   mouseDown(e) {
@@ -122,6 +126,7 @@ class Canvas0815 {
     this.setMouseToDefault();
     this.notify();
   }
+
   mouseMove = function(e) {
     this.debug('mouseMove');
     const x = e.clientX - this.canvas.getBoundingClientRect().left;
@@ -132,22 +137,17 @@ class Canvas0815 {
     if (this.isResizing) {
       const deltaX = x - this.lastMouseX;
       const deltaY = y - this.lastMouseY;
-
-      // Den größeren der beiden Änderungswerte finden
+      // find the biggest...
       const maxDelta = Math.max(deltaX, deltaY);
-
       // Die Größe proportional ändern
       const newSizeX = this.qrCodeSizeX + maxDelta;
       const newSizeY = this.qrCodeSizeX / this.aspectRatio + maxDelta / this.aspectRatio;
-
       // Skalierung in die rechte, untere Richtung und Maximale Skalierung beschränken
       this.qrCodeSizeX = Math.min(newSizeX, this.objValues.maxStartSizeX * this.objValues.maxScalingFactor);
       this.qrCodeSizeY = Math.min(newSizeY, this.objValues.maxStartSizeY * this.objValues.maxScalingFactor);
-
       // Sicherstellen, dass newSizeX und newSizeY nicht die Minimume Skalierung unterschreiten
       this.qrCodeSizeX = Math.max(this.qrCodeSizeX, this.objValues.maxStartSizeX / this.objValues.maxScalingFactor);
       this.qrCodeSizeY = Math.max(this.qrCodeSizeY, this.objValues.maxStartSizeY / this.objValues.maxScalingFactor);
-
       // Skalierungsfaktor bestimmen und setzen, da proportional, gibt es nur ein Wert, nehmen wir einfach mal X
       this.qrCodeScaling = (this.qrCodeSizeX / this.qrCodeOriginalSizeX).toFixed(2);
 
@@ -179,6 +179,7 @@ class Canvas0815 {
     this.debug('addValueListener');
     this.valueListener.push(callback);
   }
+
   notify() {
     for (let i = 0; i < this.valueListener.length; i++) {
       this.debug('notify listener ' + i);
@@ -222,6 +223,7 @@ class Canvas0815 {
     });
   }
 
+  // validity checks
   isInsideQrCode(x, y) {
     var result = (x >= this.qrCodePosX && x <= this.qrCodePosX + this.qrCodeSizeX &&
            y >= this.qrCodePosY && y <= this.qrCodePosY + this.qrCodeSizeY);
@@ -272,8 +274,8 @@ class Canvas0815 {
   }
 
   drawQrCode() {
-    this.context2d.drawImage(this.qrCodeImage, 
-      this.qrCodePosX, this.qrCodePosY, 
+    this.context2d.drawImage(this.qrCodeImage,
+      this.qrCodePosX, this.qrCodePosY,
       this.qrCodeSizeX, this.qrCodeSizeY);
   }
 
@@ -290,37 +292,39 @@ class Canvas0815 {
     this.context2d.fillStyle = this.objValues.resizeSquareColor;
     if(this.objValues.resizeStyle == 'circle') {
       this.context2d.beginPath();
-      this.context2d.arc(this.qrCodePosX + this.qrCodeSizeX - this.objValues.resizeSquareSize/2, 
-        this.qrCodePosY + this.qrCodeSizeY - this.objValues.resizeSquareSize/2, 
-        this.objValues.resizeSquareSize/2, 
+      this.context2d.arc(this.qrCodePosX + this.qrCodeSizeX - this.objValues.resizeSquareSize/2,
+        this.qrCodePosY + this.qrCodeSizeY - this.objValues.resizeSquareSize/2,
+        this.objValues.resizeSquareSize/2,
         0, 2 * Math.PI);
       this.context2d.fill();
         this.context2d.stroke();
     } else {
     this.context2d.fillRect(
-      this.qrCodePosX + this.qrCodeSizeX - this.objValues.resizeSquareSize, 
-      this.qrCodePosY + this.qrCodeSizeY - this.objValues.resizeSquareSize, 
+      this.qrCodePosX + this.qrCodeSizeX - this.objValues.resizeSquareSize,
+      this.qrCodePosY + this.qrCodeSizeY - this.objValues.resizeSquareSize,
       this.objValues.resizeSquareSize, this.objValues.resizeSquareSize);
     }
   }
 
-  setMouseToMove() {
-    this.canvas.style.cursor = 'move';
-  }
-  setMouseToDefault() {
-    this.canvas.style.cursor = 'auto';
-  }
-  setMouseToResize() {
-    this.canvas.style.cursor = 'se-resize';
+  // cursor styles
+  setMouseToMove() { this.canvas.style.cursor = 'move'; }
+  setMouseToDefault() { this.canvas.style.cursor = 'auto'; }
+  setMouseToResize() { this.canvas.style.cursor = 'se-resize'; }
+
+  // value getter
+  getQrCodePosition() {
+    let pdfObj=this.canvasToPdf(this.backgroundSizeY, this.qrCodePosX, this.qrCodePosY);
+    return {
+      x: this.pixelsToPoints(pdfObj.x, this.objValues.dpi),
+      y: this.pixelsToPoints(pdfObj.y, this.objValues.dpi),
+    }
   }
 
-  // static methods
-  // debugging
-  debug(msg) {
-    if (this.objValues.debug) 
-      console.log(msg);
-  }
-  info(msg) {
-    console.log(msg);
-  }
+  // helper
+  debug(msg) { if (this.objValues.debug) console.log(msg); }
+  info(msg) { console.log(msg); }
+  canvasToPdf(height, x, y) { return { x: x, y: height - y }; }
+  pdfToCanvas(height, x, y) { return { x: x, y: height - y }; }
+  pixelsToPoints(pixelValue, dpi = 72) { return (pixelValue * 72) / dpi; }
+  pointsToPixels(pointValue, dpi = 72) { return (pointValue * dpi) / 72; }
 }
