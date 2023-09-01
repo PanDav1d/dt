@@ -92,10 +92,12 @@ class Canvas0815 {
   // Handler... alles für die Maus
   mouseDoubleClick(e) {
     let pdfObj=this.getQrCodePosition();
+    let pdfSize=this.getQrCodeSize();
+    this.info('Canvas-Size (x, y) = (' + this.canvasSizeX + ', ' + this.canvasSizeY + '), Background-Size (x, y) = (' + this.backgroundSizeX + ', ' + this.backgroundSizeY + ')')
     this.info('QR-Code (x, y) = (' + this.qrCodePosX + ', ' + this.qrCodePosY +
                     '), Size (x, y) = (' + this.qrCodeSizeX + ', ' + this.qrCodeSizeY +
                     '), Scaling-Factor = ' + this.qrCodeScaling +
-                    ', Point-Koords = (' + pdfObj.x + ', ' + pdfObj.y + ')');
+                    ', Point-Coords = (' + pdfObj.x + ', ' + pdfObj.y + '), Point-Size: (' + pdfSize.x + ', ' + pdfSize.y + ')');
 
   }
   mouseDown(e) {
@@ -314,9 +316,16 @@ class Canvas0815 {
   // value getter
   getQrCodePosition() {
     let pdfObj=this.canvasToPdf(this.backgroundSizeY, this.qrCodePosX, this.qrCodePosY);
+    let sizeObj=this.getQrCodeSize();
     return {
       x: this.pixelsToPoints(pdfObj.x, this.objValues.dpi),
-      y: this.pixelsToPoints(pdfObj.y, this.objValues.dpi),
+      y: this.pixelsToPoints(pdfObj.y, this.objValues.dpi) - sizeObj.y, // Höhe des QR Codes berücksichtigen
+    }
+  }
+  getQrCodeSize() {
+    return {
+      x: this.pixelsToPoints(this.qrCodeSizeX),
+      y: this.pixelsToPoints(this.qrCodeSizeY),
     }
   }
 
