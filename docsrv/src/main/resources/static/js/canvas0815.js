@@ -13,6 +13,10 @@ class Canvas0815 {
   isResizing = false;
   lastMouseX = 0;
   lastMouseY = 0;
+  listenerMouseUp = null;
+  listenerMouseDown = null;
+  listenerMouseMove = null;
+  listenerDblclick = null;
   objValues = {};
   qrCodeOriginalSizeX = 0;
   qrCodeOriginalSizeY = 0;
@@ -29,6 +33,7 @@ class Canvas0815 {
   constructor(parameter = {}) {
     // Standardwerte
     let defaultValues = {
+      attachListenersToCanvas: false,
       backgroundImageSrc: 'background.png',
       backgroundFitToCanvas: true,
       borderColor: '#cccccc',
@@ -78,15 +83,44 @@ class Canvas0815 {
     this.debug(this);
 
     // register event handlers
-    var ths=this;
-    this.canvas.onmousedown = function(e) { ths.mouseDown(e); };
-    this.canvas.onmouseup = function(e) { ths.mouseUp(e); };
-    this.canvas.onmousemove = function(e) { ths.mouseMove(e); };
-    this.canvas.ondblclick = function(e) { ths.mouseDoubleClick(e); };
+    this.attachListeners();
 
     // Zeichnen
     this.drawBackground();
     this.draw();
+  }
+
+  getListenerBaseElement() {
+    var el;
+    if(this.objValues.attachListenersToCanvas) {
+      this.debug("attachListeners(canvas)");
+      el=this.canvas;
+    } else {
+      this.debug("attachListeners(window)");
+      el=window;
+    }
+    return el;
+  }
+  attachListeners() {
+     var ths=this;
+     if(!this.listenerMouseDown) this.listenerMouseDown=function(e) { ths.mouseDown(e); };
+     if(!this.listenerMouseUp) this.listenerMouseUp=function(e) { ths.mouseUp(e); };
+     if(!this.listenerMouseMove) this.listenerMouseMove=function(e) { ths.mouseMove(e); };
+     if(!this.listenerDblclick) this.listenerDblclick=function(e) { ths.mouseDoubleClick(e); };
+     var el=this.getListenerBaseElement();
+     if(this.listenerMouseDown) el.addEventListener('mousedown', this.listenerMouseDown);
+     if(this.listenerMouseUp) el.addEventListener('mouseup', this.listenerMouseUp);
+     if(this.listenerMouseMove) el.addEventListener('mousemove', this.listenerMouseMove);
+     if(this.listenerDblclick) el.addEventListener('dbclick', this.listenerDblclick);
+  }
+  detachListeners() {
+    this.debug("detachListeners(window)");
+    console.log(this.listenerMouseDown);
+    var el=this.getListenerBaseElement();
+    el.removeEventListener('mousedown', this.listenerMouseDown);
+    el.removeEventListener('mouseup', this.listenerMouseUp);
+    el.removeEventListener('mousemove', this.listenerMouseMove);
+    el.removeEventListener('dbclick', this.listenerDblclick);
   }
 
   // Handler... alles für die Maus
@@ -106,13 +140,14 @@ class Canvas0815 {
     const y = e.clientY - this.canvas.getBoundingClientRect().top;
 
     this.setMouseToMove();
+    let isInsideCanvas=this.isInsideCanvas(e);
 
-    if (this.isInsideResizeSquare(x, y)) {
+    if (isInsideCanvas && this.isInsideResizeSquare(x, y)) {
         this.isDragging = false;
         this.isResizing = true;
         this.lastMouseX = x;
         this.lastMouseY = y;
-    } else if (this.isInsideQrCode(x, y)) {
+    } else if (isInsideCanvas && this.isInsideQrCode(x, y)) {
         this.isDragging = true;
         this.isResizing = false;
         this.lastMouseX = x;
@@ -157,13 +192,23 @@ class Canvas0815 {
       this.lastMouseX = x;
       this.lastMouseY = y;
   } else if (this.isDragging && this.isValidDraggingArea(x, y)) {
-      const deltaX = x - this.lastMouseX;
-      const deltaY = y - this.lastMouseY;
-      this.qrCodePosX += deltaX;
-      this.qrCodePosY += deltaY;
-      this.redraw();
-      this.lastMouseX = x;
-      this.lastMouseY = y;
+      let validPos=this.getValidPosition();
+      const deltaX = x - validPos.x;
+      const deltaY = y - validPos.y;
+      var changed=false;
+      if(this.isValidDraggingAreaX(x)) {
+        this.qrCodePosX += deltaX;
+        changed=true;
+      }
+      if(this.isValidDraggingAreaY(y)) {
+        this.qrCodePosY += deltaY;
+        changed=true;
+      }
+      if(changed) {
+          this.redraw();
+          this.lastMouseX = x;
+          this.lastMouseY = y;
+      }
     } else if (this.isInsideResizeSquare(x, y)) {
       this.setMouseToResize();
       this.redraw();
@@ -174,6 +219,10 @@ class Canvas0815 {
       this.showBorder = this.showResize = false;
       this.redraw();
     }
+  }
+
+  getValidPosition() {
+    return {x: this.lastMouseX, y: this.lastMouseY};
   }
 
   // obtionale Listener
@@ -245,16 +294,35 @@ class Canvas0815 {
   }
 
   isValidDraggingArea(x, y) {
+    return this.isValidDraggingAreaX(x) || this.isValidDraggingAreaY(y);
+  }
+  isValidDraggingAreaX(x) {
     const newImagePosX = this.qrCodePosX + (x - this.lastMouseX);
-    const newImagePosY = this.qrCodePosY + (y - this.lastMouseY);
 
-    if (newImagePosX > 0 && newImagePosX + this.qrCodeSizeX < this.canvasSizeX &&
-        newImagePosY > 0 && newImagePosY + this.qrCodeSizeY < this.canvasSizeY) {
-        this.debug('isValidDraggingArea('+x+', '+y+'): true');
+    if (newImagePosX > 0 && newImagePosX + this.qrCodeSizeX < this.canvasSizeX) {
+        this.debug('isValidDraggingAreaX('+x+'): true');
         return true;
     }
-    this.debug('isValidDraggingArea('+x+', '+y+'): false');
+    this.debug('isValidDraggingAreaX('+x+'): false');
     return false;
+  }
+  isValidDraggingAreaY(y) {
+      const newImagePosY = this.qrCodePosY + (y - this.lastMouseY);
+
+      if (newImagePosY > 0 && newImagePosY + this.qrCodeSizeY < this.canvasSizeY) {
+          this.debug('isValidDraggingAreaY('+y+'): true');
+          return true;
+      }
+      this.debug('isValidDraggingAreaY('+y+'): false');
+      return false;
+    }
+
+  isInsideCanvas(event) {
+    let rect = this.canvas.getBoundingClientRect();
+    return event.clientX >= rect.left &&
+           event.clientX <= rect.right &&
+           event.clientY >= rect.top &&
+           event.clientY <= rect.bottom;
   }
 
   // drawing methods
