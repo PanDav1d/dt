@@ -2,9 +2,12 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 
 
+
+
 interface KeySrvConfig{
     val dbConnection: String
     val dbName: String
+
 }
 
 class KeySrvArgs(parser: ArgParser) : KeySrvConfig{
@@ -22,4 +25,9 @@ object Config {
     lateinit var _instance: KeySrvConfig
     val instance: KeySrvConfig
         get()=this._instance
+
+    val smtpServer:String = System.getenv("smtpServer") ?:"localhost"
+    val smtpUser:String = System.getenv("smtpUser")
+    val smtpPassword:String = System.getenv("smtpPassword")
+    val fromAddress:String = System.getenv("fromAddress") ?: "root@localhost"
 }

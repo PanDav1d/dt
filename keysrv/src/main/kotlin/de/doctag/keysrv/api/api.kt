@@ -5,10 +5,7 @@ import com.github.salomonbrys.kotson.fromJson
 import de.doctag.keysrv.BadRequest
 import de.doctag.keysrv.model.DbContext
 import de.doctag.keysrv.model.PublicKeyEntry
-import de.doctag.lib.getJackson
-import de.doctag.lib.loadPublicKey
-import de.doctag.lib.publicKeyFingerprint
-import de.doctag.lib.verifySignature
+import de.doctag.lib.*
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.header
@@ -23,6 +20,7 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.concurrent.thread
 
 
 class HealthCheckResponse(val healthy:Boolean)
@@ -83,6 +81,32 @@ fun Routing.publicKeys(){
         )
         if(dbEntry == null){
             DbContext.publicKeys.insertOne(rawEntry)
+        }
+
+        thread(start=true){
+            try {
+                val email = EmailContent(
+                    greeting = "Hallo",
+                    text = """Ein neuer Key wurde angelegt. Bitte auf Keyserver einloggen und prüfen""".trimMargin(),
+                    actionText = "Keyserver",
+                    actionUrl = "https://keyserver.doctag.de",
+                    byeText = "Viele Grüße "
+                )
+                MailSender(
+                    listOf("hello@doctag.io", "f.englert@gmail.com"),
+                    "Key muss signiert werden",
+                    email,
+                    Config.smtpServer,
+                    Config.smtpUser,
+                    Config.smtpPassword,
+                    Config.fromAddress,
+                    ZonedDateTime.now(),
+                    SendMailProtocol.SMTP
+                )
+            }catch(ex:Exception){
+                logger.error("Failed to send mail!")
+                logger.error(ex.message)
+            }
         }
 
         call.respond(HttpStatusCode.OK, rawEntry.copy(verification = dbEntry?.verification))

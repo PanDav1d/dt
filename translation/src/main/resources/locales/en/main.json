@@ -75,6 +75,18 @@
 		"base": {
 			"documentSignedMessage": "Document signed",
 			"logoutButton": "Log out",
+			"scanIcon": {
+				"popup": {
+					"text": "",
+					"title": ""
+				}
+			},
+			"settingsIcon": {
+				"popup": {
+					"text": "",
+					"title": ""
+				}
+			},
 			"signatureRequestCreatedMessage": "Signature request created"
 		},
 		"document": {
@@ -105,6 +117,7 @@
 				"documentSuccessfullyAddedMessage": "Document added successfully",
 				"importFromMailboxButton": "Import documents from e-mail",
 				"notYetSignedMessage": "Not yet signed",
+				"show": "",
 				"signedOnMessage": "Signed on ${signedAt} by ${signature.signedByKey?.ownerAddress?.name1}"
 			},
 			"documentView": {
@@ -135,6 +148,7 @@
 				"signatureValid": "Signatures valid",
 				"signatures": "Signatures",
 				"signingDoctagInstance": "Signing Doctag Instance",
+				"signingNoLongerPossible": "",
 				"status": "Status",
 				"tags": "Tags",
 				"timestamp": "Date",
@@ -244,6 +258,7 @@
 				"designForm": {
 					"formDescription": "Header color",
 					"inputMissingErrorMessage": "Please enter the page title shown on the page header",
+					"signatureBackgroundInput": "",
 					"title": "Design",
 					"titleInputLabel": "Title"
 				},
@@ -332,10 +347,26 @@
 					"tagEditedToastMessage": "Edit Tag",
 					"title": "Tags"
 				},
+				"workflowDependencyForm": {
+					"header": {
+						"action": "",
+						"dependencyKind": "",
+						"ofRole": "",
+						"roleName": ""
+					},
+					"kind": {
+						"after": "",
+						"before": ""
+					},
+					"noDependencies": ""
+				},
 				"workflowForm": {
 					"addActionButton": "Add",
 					"advancedOptions": "Advanced Options",
 					"allowAnonymousSignatureCheckbox": "Allow signing without login",
+					"allowedInstances": {
+						"thisInstance": ""
+					},
 					"backgroundImage": "Background image",
 					"backgroundImageInputLabel": "Background image",
 					"deleteBackgroundImage": "Delete",
@@ -349,6 +380,8 @@
 					"inputKindCheckbox": "Check box",
 					"inputKindSignature": "Sign",
 					"inputKindText": "Text input",
+					"instancesThatAreAllowedToSign": "",
+					"maxNumberOfSignatures": "",
 					"multilineCheckbox": "Multi line input?",
 					"nameLabel": "Name",
 					"namePlaceholder": "Name",
@@ -541,6 +574,10 @@
 					"addWorkflowModal": {
 						"title": "Add Workflow"
 					},
+					"menu": {
+						"dependencies": "",
+						"main": ""
+					},
 					"modifyWorkflowModal": {
 						"title": "Edit Workflow"
 					}
@@ -574,6 +611,7 @@
 				"notYetConfirmed": "not completed",
 				"pageTitle": "Participant certificates",
 				"security": "Security",
+				"show": "",
 				"verification": "Verification",
 				"verificationInfoMessage": "Indicates whether the key has already been verified by the provider",
 				"yes": "yes"

@@ -261,6 +261,12 @@ val FomanticUIClasses.langPl: FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.langCz: FomanticUIClasses
+    get(){
+        classes("cz")
+        return this
+    }
+
 val FomanticUIClasses.langRu: FomanticUIClasses
     get(){
         classes("ru")
@@ -415,13 +421,13 @@ enum class DisplayMessageKind{
 data class UserMessage(val kind:DisplayMessageKind, val header:String, val text:String)
 
 
-fun Element.withPopup(title:String?, content:String?, distanceAway: Int = 60){
-    setAttributeRaw("data-position", "top left")
+fun Element.withPopup(title:String?, content:String?, distanceAway: Int = 60, position: String = "top left"){
+    setAttributeRaw("data-position", "$position")
 
     browser.execute("""
         $('#${this@withPopup.id}')
           .popup({
-            position : 'top left',
+            position : '$position',
             title    : '${title?:""}',
             content  : '${content?:""}',
             forcePosition : true,

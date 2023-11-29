@@ -75,6 +75,18 @@
 		"base": {
 			"documentSignedMessage": "Documento firmato",
 			"logoutButton": "Logout",
+			"scanIcon": {
+				"popup": {
+					"text": "",
+					"title": ""
+				}
+			},
+			"settingsIcon": {
+				"popup": {
+					"text": "",
+					"title": ""
+				}
+			},
 			"signatureRequestCreatedMessage": "Richiesta di firma creata"
 		},
 		"document": {
@@ -105,6 +117,7 @@
 				"documentSuccessfullyAddedMessage": "Documento aggiunto con successo",
 				"importFromMailboxButton": "Importazione da Mailbox",
 				"notYetSignedMessage": "Non ancora firmato",
+				"show": "",
 				"signedOnMessage": "Firmato su ${signedAt} da ${signature.signedByKey?.ownerAddress?.name1}"
 			},
 			"documentView": {
@@ -135,6 +148,7 @@
 				"signatureValid": "Firme valide",
 				"signatures": "Firme",
 				"signingDoctagInstance": "Firma dell'istanza Doctag",
+				"signingNoLongerPossible": "",
 				"status": "Stato",
 				"tags": "Tags",
 				"timestamp": "Data",
@@ -244,6 +258,7 @@
 				"designForm": {
 					"formDescription": "Colore della testa laterale",
 					"inputMissingErrorMessage": "Inserire la riga del titolo da visualizzare nell'intestazione della pagina",
+					"signatureBackgroundInput": "",
 					"title": "Design",
 					"titleInputLabel": "Titolo"
 				},
@@ -332,10 +347,26 @@
 					"tagEditedToastMessage": "Tag modificato",
 					"title": "Tags"
 				},
+				"workflowDependencyForm": {
+					"header": {
+						"action": "",
+						"dependencyKind": "",
+						"ofRole": "",
+						"roleName": ""
+					},
+					"kind": {
+						"after": "",
+						"before": ""
+					},
+					"noDependencies": ""
+				},
 				"workflowForm": {
 					"addActionButton": "Aggiungi",
 					"advancedOptions": "Opzioni superiori",
 					"allowAnonymousSignatureCheckbox": "Consentire il riempimento senza registrazione",
+					"allowedInstances": {
+						"thisInstance": ""
+					},
 					"backgroundImage": "Carta da parati",
 					"backgroundImageInputLabel": "Carta da parati",
 					"deleteBackgroundImage": "Cancellare",
@@ -349,6 +380,8 @@
 					"inputKindCheckbox": "casella di controllo",
 					"inputKindSignature": "Segno",
 					"inputKindText": "Immissione di testo",
+					"instancesThatAreAllowedToSign": "",
+					"maxNumberOfSignatures": "",
 					"multilineCheckbox": "Multilinea?",
 					"nameLabel": "Nome",
 					"namePlaceholder": "Nome",
@@ -541,6 +574,10 @@
 					"addWorkflowModal": {
 						"title": "Aggiungi flusso di lavoro"
 					},
+					"menu": {
+						"dependencies": "",
+						"main": ""
+					},
 					"modifyWorkflowModal": {
 						"title": "Modifica del flusso di lavoro"
 					}
@@ -574,6 +611,7 @@
 				"notYetConfirmed": "non completato",
 				"pageTitle": "Certificati di partecipazione",
 				"security": "Sicurezza",
+				"show": "",
 				"verification": "Verifica",
 				"verificationInfoMessage": "Indica se la chiave è già stata verificata dal provider",
 				"yes": "sì"

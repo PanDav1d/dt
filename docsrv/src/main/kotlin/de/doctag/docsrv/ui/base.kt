@@ -182,11 +182,16 @@ fun ElementCreator<*>.pageHeader() : PageArea {
 
 
             if(browser.authenticatedUser != null) {
-                a(fomantic.item, href = "#").apply { on.click { scanModal.open() } }.new {
-                    i(fomantic.ui.key.icon)
+                a(fomantic.item.withColor("white"), href = "#").apply {
+                    on.click { scanModal.open() }
+                }.new {
+                    val iconSrc = if(design?.headerColor.isNullOrBlank()) "/ressources/icon_scan.svg" else "/ressources/icon_scan_white.svg"
+                    img(iconSrc).withPopup(
+                        I18n.t("ui.base.scanIcon.popup.title", "DocTag Scannen", language = browser.sessionLanguage ),
+                        I18n.t("ui.base.scanIcon.popup.text","Öffnet die Kamera um einen QR Code zu scannen", language = browser.sessionLanguage), position="bottom right", distanceAway = 0)
                 }
                 a(fomantic.item, href = "/settings/users").new {
-                    i(fomantic.ui.cog.icon)
+                    i(fomantic.ui.cog.icon).withPopup(I18n.t("ui.base.settingsIcon.popup.title", "Einstellungen", language = browser.sessionLanguage), I18n.t("ui.base.settingsIcon.popup.text","Die Einstellungen des DocTag Systems bearbeiten", language = browser.sessionLanguage), position="bottom right", distanceAway = 0)
                 }
                 a(fomantic.item, href = "/logout").i18nText("ui.base.logoutButton","Abmelden")
             }

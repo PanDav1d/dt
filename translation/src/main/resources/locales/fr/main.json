@@ -75,6 +75,18 @@
 		"base": {
 			"documentSignedMessage": "Document signé",
 			"logoutButton": "Déconnexion",
+			"scanIcon": {
+				"popup": {
+					"text": "",
+					"title": ""
+				}
+			},
+			"settingsIcon": {
+				"popup": {
+					"text": "",
+					"title": ""
+				}
+			},
 			"signatureRequestCreatedMessage": "Demande de signature créée"
 		},
 		"document": {
@@ -105,6 +117,7 @@
 				"documentSuccessfullyAddedMessage": "Document ajouté avec succès",
 				"importFromMailboxButton": "Importer depuis la boîte e-mail",
 				"notYetSignedMessage": "Pas encore signé",
+				"show": "",
 				"signedOnMessage": "Signé le ${signedAt} par ${signature.signedByKey?.ownerAddress?.name1}"
 			},
 			"documentView": {
@@ -135,6 +148,7 @@
 				"signatureValid": "Signatures valables",
 				"signatures": "Signatures",
 				"signingDoctagInstance": "Instance Doctag signataire",
+				"signingNoLongerPossible": "",
 				"status": "Statut",
 				"tags": "Tags",
 				"timestamp": "Date",
@@ -244,6 +258,7 @@
 				"designForm": {
 					"formDescription": "Couleur de la tête de page",
 					"inputMissingErrorMessage": "Veuillez indiquer la ligne de titre qui doit être affichée dans l'en-tête de la page",
+					"signatureBackgroundInput": "",
 					"title": "Design",
 					"titleInputLabel": "Titre"
 				},
@@ -332,10 +347,26 @@
 					"tagEditedToastMessage": "Vignette traité",
 					"title": "Tags"
 				},
+				"workflowDependencyForm": {
+					"header": {
+						"action": "",
+						"dependencyKind": "",
+						"ofRole": "",
+						"roleName": ""
+					},
+					"kind": {
+						"after": "",
+						"before": ""
+					},
+					"noDependencies": ""
+				},
 				"workflowForm": {
 					"addActionButton": "Ajouter",
 					"advancedOptions": "Options supplémentaires",
 					"allowAnonymousSignatureCheckbox": "Autoriser le remplissage sans inscription",
+					"allowedInstances": {
+						"thisInstance": ""
+					},
 					"backgroundImage": "Papier peint",
 					"backgroundImageInputLabel": "Papier peint",
 					"deleteBackgroundImage": "Supprimer",
@@ -349,6 +380,8 @@
 					"inputKindCheckbox": "Case à cocher",
 					"inputKindSignature": "Signer",
 					"inputKindText": "Saisie de texte",
+					"instancesThatAreAllowedToSign": "",
+					"maxNumberOfSignatures": "",
 					"multilineCheckbox": "Plusieurs lignes ?",
 					"nameLabel": "Nom",
 					"namePlaceholder": "Nom",
@@ -541,6 +574,10 @@
 					"addWorkflowModal": {
 						"title": "Ajouter un flux de travail"
 					},
+					"menu": {
+						"dependencies": "",
+						"main": ""
+					},
 					"modifyWorkflowModal": {
 						"title": "Modifier le flux de travail"
 					}
@@ -574,6 +611,7 @@
 				"notYetConfirmed": "non clôturé",
 				"pageTitle": "Certificats de participation",
 				"security": "Sécurité",
+				"show": "",
 				"verification": "Vérification",
 				"verificationInfoMessage": "Indique si la clé a déjà été vérifiée par le fournisseur",
 				"yes": "oui"
