@@ -179,7 +179,8 @@ fun Routing.docServerApi(){
         }.let {
             if(it == null){
                 val randomDoctag = "https://${db().currentConfig.hostname}/d/${generateRandomString(16)}"
-                fd.base64Content = insertDoctagIntoPDF(postData.data, randomDoctag, postData.doctagPosX ?: 0.885f, postData.doctagPosY ?: 0.08f, postData.doctagSize ?: 10.0f)
+                // TODO: Canvas0815 liefert andere Koordinaten (schon fertig für das PDF), deswegen wurde die Methode unten ebenfalls angepasst...
+                fd.base64Content = insertDoctagIntoPDF(postData.data, randomDoctag, postData.doctagPosX ?: 0.885f, postData.doctagPosY ?: 0.08f, postData.doctagSize ?: 10.0f, postData.doctagSize ?: 10.0f)
                 DocumentId.parse(randomDoctag)
             } else {
                 it

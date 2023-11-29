@@ -77,32 +77,23 @@ fun extractDocumentIdAndSplitDocument(b64:String) = sequence<ExtractAndSplitResu
 }
 
 
-fun makePdfWithDoctag(url: String, xRel: Float, yRel: Float, relativeWidth: Float) : PDDocument {
+fun makePdfWithDoctag(url: String, xPos: Float, yPos: Float, widthX: Float, widthY: Float) : PDDocument {
     val pdf = PDDocument()
     val firstPage = PDPage(PDRectangle.A4)
 
     pdf.addPage(firstPage)
 
-
-    //val firstPage = pdf.getDocumentCatalog().pages.get(0)
-    val imgToAdd = PDImageXObject.createFromByteArray(pdf, getQRCodeImageAsPng(url, 100, 100, margin = 1).toByteArray(), "doctag_img.png")
-
+    val imgToAdd = PDImageXObject.createFromByteArray(pdf, getQRCodeImageAsPng(url, widthX.toInt(), widthY.toInt(), margin = 1).toByteArray(), "doctag_img.png")
     val contentStream = PDPageContentStream(pdf, firstPage, PDPageContentStream.AppendMode.APPEND, true)
 
     //Media box returns Points
     val width = firstPage.cropBox.width
     val height = firstPage.cropBox.height
 
-    logger.info("Media box ${width} / ${height}. ${xRel} ${yRel}")
-    logger.info("DrawingPosition ${width * xRel} / ${height * yRel}")
+    logger.info("Media box ${width} / ${height}")
+    logger.info("DrawingPosition ${xPos} / ${yPos}")
 
-    //contentStream.transform(Matrix(0.0f,1.0f,-1.0f,0.0f, width,0.0f ))
-    val startX = /*15f **/ width
-    val startY = /*12f **/ height
-
-    val boxWidth = firstPage.cropBox.width/relativeWidth
-
-    contentStream.drawImage(imgToAdd, (startX) * xRel - boxWidth / 2 + 0.1f*boxWidth, height - (startY) * yRel - boxWidth / 2+ 0.1f*boxWidth, 0.8f*boxWidth, 0.8f*boxWidth)
+    contentStream.drawImage(imgToAdd, xPos, yPos, widthX, widthY)
     contentStream.close()
 
     return pdf
@@ -164,7 +155,7 @@ fun trimImage(image: BufferedImage): BufferedImage {
     return image.getSubimage(left, top, right - left + 1, bottom - top + 1)
 }
 
-fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, widthInDpi: Float, formData: Map<String, String>? = null):String{
+fun insertDoctagIntoPDF(b64: String, url: String, xPos: Float, yPos: Float, widthX: Float, widthY: Float, formData: Map<String, String>? = null):String{
     val stream = ByteArrayInputStream(Base64.getDecoder().decode(b64))
     val pdf = PDDocument.load(stream)
 
@@ -173,7 +164,7 @@ fun insertDoctagIntoPDF(b64: String, url: String, xRel: Float, yRel: Float, widt
             pdf.setField(fieldName, value)
         }
 
-        val watermark = makePdfWithDoctag(url, xRel, yRel, widthInDpi)
+        val watermark = makePdfWithDoctag(url, xPos, yPos, widthX, widthY)
         val overlay = Overlay()
         overlay.setInputPDF(pdf)
         overlay.setFirstPageOverlayPDF(watermark)

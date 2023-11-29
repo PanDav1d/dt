@@ -24,7 +24,7 @@ enum class DocumentAddState{
 }
 
 
-data class ImagePositionOnCanvas(val x: Float, val y: Float)
+data class ImagePositionOnCanvas(val x: Float, val y: Float, val sizeX: Float, val sizeY: Float)
 fun ElementCreator<*>.drawDoctagElement(file: FileData, size:Float=4.29f, onSubmit:(file:FileData, doctag:String)->Unit) {
     val doctag = "https://${db().currentConfig.hostname}/d/${generateRandomString(16)}"
     val doctagImg = getQRCodeImageAsDataUrl(doctag, (60*2.5f/4.29f).toInt(), (60*2.5f/4.29f).toInt(), 1)
@@ -33,38 +33,23 @@ fun ElementCreator<*>.drawDoctagElement(file: FileData, size:Float=4.29f, onSubm
     val fieldResult = KVar<Map<String, KVar<String>>>(mapOf())
 
     div(fomantic.ui.two.column.grid).new {
-        div(fomantic.ui.column).new {
-            val canvas = canvas(420, 594).apply {
+        div().new {
+            val canvas = canvas(596, 842).apply {
                 this.setAttributeRaw("style", "border: 1px solid black;)")
-            }//.focus()
-
+            }
             element("script").text(
                 """
-        function displayCanvas() {
-            canvas = document.getElementById("${canvas.id}");
-            context = canvas.getContext("2d");
-            
-            
-            currentX = canvas.width/2;
-            currentY = canvas.height/2;
-            
-            star_img.onload = function() {
-                _Go();
-            };
-            
-            background_img.onload = function() {
-                context.drawImage(background_img, 0, 0);
-            }
-            
-            background_img.src='${documentImg}';
-            star_img.src='${doctagImg}';
-            
-            canvas.focus();
+        function displayCanvas() {           
+            window.canvas0815 = new Canvas0815({
+              'canvasElementId': '${canvas.id}', 
+              'backgroundImageSrc': '${documentImg}',
+              'qrCodeImageSrc': '${doctagImg}',
+              'debug': false});           
         }
     """.trimIndent()
             )
 
-            element("script", mapOf("src" to "/ressources/canvas.js", "onload" to "displayCanvas()"))
+            element("script", mapOf("src" to "/ressources/canvas0815.js", "onload" to "displayCanvas()"))
         }
         div(fomantic.ui.column).new {
             renderDocumentInputFields(file)?.let {
@@ -76,14 +61,11 @@ fun ElementCreator<*>.drawDoctagElement(file: FileData, size:Float=4.29f, onSubm
     div(fomantic.divider.hidden)
     buttonWithLoader(i18n("ui.forms.documentForms.drawDoctagForm.confirm","Übernehmen")){
         val callbackId = Random.nextInt()
-        browser.executeWithCallback("callbackWs($callbackId,{x: 1.0*currentX/canvas.width, y: 1.0*currentY/canvas.height});", callbackId){inputData->
-            val pos : ImagePositionOnCanvas = gson.fromJson(inputData.toString())
-            logger.info("QR Code shall be placed at position ${pos.x}/${pos.y}")
-
-
+        browser.executeWithCallback("callbackWs($callbackId, { x: 1.0*window.canvas0815.getQrCodePosition().x, y: 1.0*window.canvas0815.getQrCodePosition().y, sizeX: 1.0*window.canvas0815.getQrCodeSize().x, sizeY: 1.0*window.canvas0815.getQrCodeSize().y });", callbackId){inputData->
+            val qrcode : ImagePositionOnCanvas = gson.fromJson(inputData.toString())
+            logger.info("QR Code shall be placed at position x/y=${qrcode.x}/${qrcode.y}pt with size x/y=${qrcode.sizeX}/${qrcode.sizeY}pt")
             logger.info("Received form data: ${fieldResult.value}")
-
-            file.base64Content = insertDoctagIntoPDF(file.base64Content!!, doctag, pos.x, pos.y, size, fieldResult.value.map { it.key to it.value.value }.toMap())
+            file.base64Content = insertDoctagIntoPDF(file.base64Content!!, doctag, qrcode.x, qrcode.y, qrcode.sizeX, qrcode.sizeY, fieldResult.value.map { it.key to it.value.value }.toMap())
             onSubmit(file, doctag)
         }
     }
@@ -160,13 +142,10 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
 
                     h4(fomantic.ui.header).i18nText("ui.forms.documentForms.documentAddForm.insertDoctagButton","Doctag einfügen")
 
-                    val sizeOptions = mapOf<String, String>("Groß" to "4.29", "Mittel" to "2.5", "Klein" to "1.8")
-                    val sizeSelection = KVar(sizeOptions.values.first())
+                    val sizeSelection = KVar("4.29")
                     p().new {
                         span().i18nText("ui.forms.documentForms.documentAddForm.placeDoctagMessage","Positionieren Sie das DocTag mit der Maus an der gewünschten Position")
-                        //radioInput("Größe",options = sizeOptions, false, true, sizeSelection)
                     }
-
 
                     render(sizeSelection){
                         drawDoctagElement(fileObj, size = sizeSelection.value.toFloatOrNull() ?: 4.29f) { fileWithDoctag, doctag->
@@ -202,7 +181,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                         }
                     }
 
-                    var tags = KVar(document.value.fullText.determineMatchingTags(db().tags.find().toList()))
+                    val tags = KVar(document.value.fullText.determineMatchingTags(db().tags.find().toList()))
                     div(fomantic.ui.field).new {
                         label().i18nText("ui.forms.documentForms.documentAddForm.selectTagsLabel","Tags wählen")
                         render(tags){ value->

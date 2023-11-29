@@ -2,16 +2,11 @@ package de.doctag.docsrv.ui.admin
 
 import de.doctag.docsrv.i18n
 import de.doctag.docsrv.i18nText
-import de.doctag.docsrv.model.User
-import de.doctag.docsrv.model.db
 import de.doctag.docsrv.model.host
-import de.doctag.docsrv.propertyOrDefault
 import de.doctag.docsrv.ui.*
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
-import org.litote.kmongo.findOne
-import org.litote.kmongo.regex
 
 fun ElementCreator<*>.setupPinCheck(expectedPin: String, fileName: String, whenDone: ()->Unit){
 
@@ -24,8 +19,15 @@ fun ElementCreator<*>.setupPinCheck(expectedPin: String, fileName: String, whenD
         p().innerHTML(
                 i18n("ui.admin.installForms.requestServerPinText","""Bitte geben Sie den Server-Pin an, um mit der Installation fortzufahren. Die Server-Pin erhalten Sie indem Sie den folgenden Befehl im Terminal Ihres Servers ausführen:""").trimIndent()
         )
-        div(fomantic.ui.inverted.segment).new{
-            span(fomantic.ui.inverted.purple.text).text("cat ${fileName}")
+        div(fomantic.ui.inverted.segment.left.aligned).new{
+                span(fomantic.ui.inverted.text).text("Linux")
+                br()
+                span(fomantic.ui.inverted.purple.text).text("cat $fileName")
+        }
+        div(fomantic.ui.inverted.segment.left.aligned).new{
+            span(fomantic.ui.inverted.text).text("Windows")
+            br()
+            span(fomantic.ui.inverted.purple.text).text("notepad $fileName")
         }
 
         formInput(i18n("ui.admin.installForms.serverPinInputLabel","Server-PIN"), i18n("ui.admin.installForms.serverPinPlaceholder","bitte angeben"), true, actualPin)

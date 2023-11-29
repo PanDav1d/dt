@@ -549,6 +549,7 @@
 		},
 		"settings": {
 			"keys": {
+				"show": "Schlüssel anzeigen",
 				"action": "Aktion",
 				"addedKeySuccessMessage": "Zertifikat hinzugefügt",
 				"createdAt": "Erstellt am",

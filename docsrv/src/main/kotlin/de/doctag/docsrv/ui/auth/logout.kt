@@ -14,7 +14,7 @@ fun ElementCreator<*>.handleLogout(){
     centeredBox {
         h2().i18nText("ui.auth.logout.logoutHeader","Abgemeldet")
         span().i18nText("ui.auth.logout.logoutDescription","Sie haben sich abgemeldet. Weiter zur ")
-        a(href = "/login").i18nText("ui.auth.logout.forwardToLoginLinkText","Anmeldung")
+        a(href = "/login").i18nText("ui.auth.logout.forwardToLoginLinkText"," Anmeldung")
 
         p().i18nText("ui.auth.logout.forwardInFiveSecMessage", "Sie werden automatisch in 5 Sekunden weitergeleitet.")
         GlobalScope.launch {
