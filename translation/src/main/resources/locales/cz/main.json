@@ -1,0 +1,644 @@
+{
+	"Translation": {
+		"thisMessageWasAutomaticallyGenerated": "Tato zpráva byla vytvořena automaticky TRANSLATOR."
+	},
+	"mails": {
+		"documentWasSignedMail": {
+			"actionLink": "Otevřít dokument",
+			"byeText": "S pozdravem",
+			"greeting": "Dobrý den,",
+			"subject": "Dokument, který jste zaznamenali, byl podepsán",
+			"text": "Dokument, který sledujete, byl podepsán. Otevřete dokument a získejte další informace o podpisu."
+		}
+	},
+	"main": {
+		"metaDescription": "Dokumentový server pro podepsané dokumenty"
+	},
+	"pdfBuilder": {
+		"checksum": "Kontrolní součet",
+		"date": "datum",
+		"file": "Soubor ${attachment?.name}",
+		"noSignaturesAvailableMessage": "Zatím nejsou k dispozici žádné podpisy",
+		"operator": "Provozovatel systému",
+		"publicKey": "Veřejný klíč:",
+		"responsibleSystem": "Zodpovědný server Doctag",
+		"signatureIdxOfN": "Podpis ${idx+1} z ${doc.signatures?.size}",
+		"signatureInfos": "Podrobnosti o podpisu",
+		"technicalInfos": "Technické informace",
+		"user": "Uživatel",
+		"userInput": "Vstup od uživatele"
+	},
+	"ui": {
+		"admin": {
+			"install": {
+				"completedHeader": "Instalace dokončena",
+				"completedText": "Systém byl úspěšně nastaven. Pokračujte na",
+				"createAdminUser": "Vytvoření uživatele správce",
+				"domainNameHeder": "Nastavení systému",
+				"doneHeader": "Instalace dokončena",
+				"doneText": "Váš systém již byl nastaven. Nyní můžete používat Docsrv.",
+				"loginLinkText": "Registrace",
+				"personalDataHeader": "Nastavení systému",
+				"pinCheckHeader": "Nastavení systému",
+				"redirectText": "Za 5 sekund budete automaticky přesměrováni."
+			},
+			"installForms": {
+				"domainNameInputLabel": "Název domény",
+				"domainNameInvalidError": "Zadejte prosím správný název domény",
+				"requestDomainNameText": "Zadejte název domény, pod kterým je tento systém přístupný.",
+				"requestServerPinText": "Pro pokračování v instalaci zadejte pin serveru. PIN serveru získáte zadáním následujícího příkazu v terminálu serveru:",
+				"serverPin": "Zadejte pin serveru",
+				"serverPinIncorrectError": "Zadejte prosím správný kód PIN",
+				"serverPinInputLabel": "Kód PIN serveru",
+				"serverPinPlaceholder": "uveďte prosím",
+				"setupDomainNameHeadline": "Nastavení názvu domény"
+			}
+		},
+		"auth": {
+			"login": {
+				"loginFailedErrorMessage": "Přihlášení se nezdařilo. Zkontrolujte prosím své uživatelské jméno a heslo.",
+				"usernamePlaceholder": "Uživatelské jméno"
+			},
+			"loginButtonText": "Přihlášení",
+			"loginHeader": "Nutná registrace",
+			"logout": {
+				"forwardInFiveSecMessage": "Za 5 sekund budete automaticky přesměrováni.",
+				"forwardToLoginLinkText": "Registrace",
+				"logoutDescription": "Odhlásili jste se. Pokračujte do",
+				"logoutHeader": "Zrušeno"
+			},
+			"passwordPlaceholder": "Heslo",
+			"register": {
+				"registerHeader": "Vytvořit účet"
+			}
+		},
+		"base": {
+			"documentSignedMessage": "Podepsaný dokument",
+			"logoutButton": "Odhlášení",
+			"scanIcon": {
+				"popup": {
+					"text": "Otevře fotoaparát a naskenuje kód QR",
+					"title": "Skenování DocTag"
+				}
+			},
+			"settingsIcon": {
+				"popup": {
+					"text": "Úprava nastavení systému DocTag",
+					"title": "NASTAVENÍ"
+				}
+			},
+			"signatureRequestCreatedMessage": "Vytvořená žádost o podpis"
+		},
+		"document": {
+			"components": {
+				"documentViewTab": {
+					"documents": "dokument",
+					"signatures": "Podpisy"
+				},
+				"from": "z",
+				"searchTextPlaceholder": "Vyhledávání",
+				"till": "na"
+			},
+			"documentList": {
+				"actionLabel": "",
+				"addDocument": "",
+				"createdLabel": "",
+				"documentAddedSuccessfullyMessage": "",
+				"fileNameLabel": "",
+				"header": "",
+				"importFromEmail": "",
+				"notYetSignedText": "",
+				"signedByPopupText": "",
+				"statusLabel": ""
+			},
+			"documentPreviewList": {
+				"documentAddButton": "Přidat dokument",
+				"documentList": "Seznam dokumentů",
+				"documentSuccessfullyAddedMessage": "Dokument byl úspěšně přidán",
+				"importFromMailboxButton": "Import z poštovní schránky",
+				"notYetSignedMessage": "Zatím nepodepsáno",
+				"show": "Zobrazit",
+				"signedOnMessage": "Podepsáno na ${signedAt} pomocí ${signature.signedByKey?.ownerAddress?.name1}"
+			},
+			"documentView": {
+				"actions": "Akce",
+				"address": "Adresa",
+				"anonymousSignaturesNotPossibleInfoMessage": "Podpisy bez ověření pravosti nejsou v tomto dokumentu možné.",
+				"createDoctagInstanceLink": "Získejte vlastní přihlašovací údaje",
+				"creationDate": "Datum vytvoření",
+				"deleteButton": "Odstranit",
+				"documentAddress": "Adresa dokumentu",
+				"documentUrl": "Adresa dokumentu",
+				"downloadButton": "Stáhnout",
+				"fileName": "Název souboru",
+				"info": "informace",
+				"infosLabel": "informace",
+				"keyOwner": "Držitel klíče",
+				"name": "název",
+				"noSignaturePresentYetInfoText": "Zatím není k dispozici žádný podpis",
+				"noSignaturesAvailable": "Žádné podpisy nejsou k dispozici",
+				"noWorkflowsFoundInfoText": "Nejsou k dispozici žádné vstupy pracovního postupu",
+				"noneText": "žádné",
+				"notAvailableText": "n.a.",
+				"operator": "Provozovatel systému",
+				"role": "Roll",
+				"signButton": "Podepsat",
+				"signNow": "Podepište nyní",
+				"signatureNotValid": "Podpisy neplatné",
+				"signatureValid": "Platné podpisy",
+				"signatures": "Podpisy",
+				"signingDoctagInstance": "Podepisování instance Doctag",
+				"signingNoLongerPossible": "Dokument již nelze podepsat",
+				"status": "Stav",
+				"tags": "Štítky",
+				"timestamp": "datum",
+				"title": "dokument",
+				"validationRunning": "Probíhá ověřování",
+				"value": "Hodnota",
+				"verifyDeleteModal": {
+					"document": "dokument",
+					"the": "na"
+				},
+				"viewDoctagButton": "Zobrazit Doctag"
+			},
+			"menu": {
+				"document": "Dokumenty",
+				"requests": "Dotazy"
+			},
+			"signRequestView": {
+				"actions": "Akce",
+				"alreadySigned": "Již podepsáno",
+				"documentSignedInfoMessage": "Podepsaný dokument",
+				"documentWasAlreadySignedInfoMessage": "Tato žádost o podpis již byla zpracována. Podpis si můžete prohlédnout v dokumentu.",
+				"linkToDocument1": "K dokumentu",
+				"linkToDocument2": "K dokumentu",
+				"preview": "Náhled",
+				"rejectButton": "pokles",
+				"rejectedLabel": "Odmítnuto",
+				"requestRejectedLabel": "Žádost zamítnuta",
+				"signButton": "Podepsat",
+				"signRequestRejectedInfoText": "Tato žádost o podpis již byla zamítnuta.",
+				"title": "Zobrazit žádost o podpis"
+			},
+			"signRequests": {
+				"actions": "Akce",
+				"addSignatureRequestButton": "Vytvoření žádosti o podpis",
+				"addedSignatureRequestSuccessMessage": "Zaznamenaná žádost o podpis",
+				"createdBy": "Zachyceno z",
+				"creationDate": "Vytvořeno dne",
+				"documentUrl": "Doctag",
+				"rejectedStatus": "Odmítnuto",
+				"requestedRole": "Roll",
+				"requestedStatus": "Požadované",
+				"signedStatus": "Podepsáno",
+				"status": "Stav",
+				"title": "Žádosti o podpis"
+			}
+		},
+		"formExtensions": {
+			"colorPicker": {
+				"black": "Černá",
+				"blue": "Modrá",
+				"brown": "Hnědá",
+				"gray": "Grey",
+				"green": "Zelená",
+				"magenta": "Magenta",
+				"none": "žádné",
+				"olive": "olivově zelená",
+				"orange": "Orange",
+				"purple": "Fialová",
+				"red": "Červená",
+				"teal": "Tyrkysová",
+				"yellow": "Žlutý"
+			},
+			"dropdownLabel": "Výběr",
+			"pleaseConfirmInput": "Zkontrolujte prosím své příspěvky.",
+			"submitButtonDefaultLabel": "Uložit"
+		},
+		"forms": {
+			"documentForms": {
+				"documentAddForm": {
+					"file": "Soubor",
+					"foundDoctag": "DocTag rozpoznán",
+					"foundDoctagDescription": "Nahraný dokument má značku DocTag ${document.value.url}. Import dokončíte stisknutím tlačítka Uložit.",
+					"insertDoctagButton": "Vložit doctag",
+					"placeDoctagMessage": "Umístění značky DocTag pomocí myši na požadované místo",
+					"saveButton": "Uložit",
+					"selectTagsLabel": "Vybrat značky",
+					"selectWorkflowLabel": "Výběr pracovního postupu",
+					"upload": "nahrát"
+				},
+				"drawDoctagForm": {
+					"confirm": "převzetí"
+				}
+			},
+			"keyAddForm": {
+				"cityPlaceholder": "Umístění",
+				"countryCityZipLabel": "Země / Poštovní směrovací číslo / Město",
+				"countryPlaceholder": "Země",
+				"displayNameHeader": "Zobrazení názvu",
+				"displayNameLabel": "Zobrazení názvu",
+				"displayNamePlaceholder": "křestní jméno",
+				"name2Label": "Název 2",
+				"name2Placeholder": "Název 2",
+				"organizationNameHeader": "Pro organizaci",
+				"organizationNameLabel": "název",
+				"organizationNamePlaceholder": "název",
+				"pleaseProvideStreetErrorMessage": "Zadejte prosím ulici přidružené organizace",
+				"provideCityError": "Zadejte prosím místo",
+				"provideCountryCodeError": "Zadejte prosím platný kód země",
+				"provideDisplayNameError": "Zadejte prosím zobrazovaný název klíče",
+				"provideOrganizationNameErrorMessage": "Zadejte prosím název přidružené organizace",
+				"provideZipCodeErrorMessage": "Zadejte prosím poštovní směrovací číslo",
+				"streetLabel": "ulice",
+				"streetPlaceholder": "ulice",
+				"zipCodePlaceholder": "POSTCODE"
+			},
+			"system": {
+				"designForm": {
+					"formDescription": "Barva boční hlavy",
+					"inputMissingErrorMessage": "Zadejte prosím řádek s názvem, který se má zobrazit v záhlaví stránky.",
+					"signatureBackgroundInput": "Razítko společnosti",
+					"title": "Zastoupení",
+					"titleInputLabel": "název"
+				},
+				"hostnameEditForm": {
+					"attentionBoxTitle": "Pozor",
+					"attentionBoxtext": "Upozorňujeme, že pokud do tohoto pole zadáte nesprávné údaje, váš systém již nemusí být přístupný.",
+					"hostnameLabel": "Hostitelské jméno",
+					"hostnameMissingErrorMessage": "Zadejte název domény, pod kterým je tento systém přístupný.",
+					"title": "Hostitelské jméno"
+				},
+				"mailSettingsEditForm": {
+					"fetchMailActive": "Příjem dokumentů e-mailem aktivní",
+					"fetchMailFailedErrorDescription": "Vyhledání e-mailu se nezdařilo. Zkontrolujte prosím nastavení",
+					"fetchMailFailedErrorTitle": "Chyba",
+					"fetchMailHeader": "Příjem pošty",
+					"fetchMailPassword": "Heslo",
+					"fetchMailProtocol": "Protokol",
+					"fetchMailRemoteHost": "Server IMAP / POP",
+					"fetchMailSuccess": {
+						"description": "Úspěšné vyhledání e-mailu ${messages.size} Přijaté zprávy",
+						"title": "Úspěch"
+					},
+					"fetchMailTest": {
+						"button": "Odvolání testu"
+					},
+					"fetchMailUsername": "Uživatelské jméno",
+					"sendMailFromAddress": "Odesílatel",
+					"sendMailPassword": "Heslo",
+					"sendMailProtocol": "Protokol",
+					"sendMailRemoteHost": "Server SMTP",
+					"sendMailTest": {
+						"buttonText": "Odeslání testovací pošty",
+						"errorDescription": "E-mail se nepodařilo odeslat",
+						"errorTitle": "neúspěšný",
+						"successDescription": "E-mail byl úspěšně odeslán",
+						"successTitle": "Úspěch"
+					},
+					"sendMailTitle": "Odesílání pošty",
+					"sendMailUsername": "Uživatelské jméno",
+					"testMail": {
+						"byeText": "S pozdravem",
+						"greeting": "Dobrý den,",
+						"subject": "Testovací pošta",
+						"text": "Toto je testovací zpráva odeslaná prostřednictvím webové konzoly."
+					}
+				},
+				"notificationForm": {
+					"action": "Akce",
+					"addButton": "Nové oznámení",
+					"description": "Popis",
+					"noRuleAvailableMessage": "Nejsou k dispozici žádná pravidla pro oznamování",
+					"receiver": "přijímač",
+					"savedMessage": "Oznámení bylo úspěšně přidáno",
+					"title": "Oznámení"
+				},
+				"searchForm": {
+					"reindexButton": "Vytvoření nového indexu",
+					"title": "Vyhledávání"
+				},
+				"securitySettingsForm": {
+					"acceptSignaturesFromUnverifiedKeysCheckbox": "Přijímat podpisy z neověřených klíčů.",
+					"attentionText": "Váš systém přijímá podpisy z klíčů, které ještě nebyly ověřeny.\n                        \n                        S tímto nastavením již není zajištěno, že informace použité v klíči budou ověřeny.\n                        byly vždy správně a úplně nastaveny.\n                        \n                        Musíte počítat s tím, že váš systém bude přijímat podpisy od partnerů.\n                        kteří v klíči uvedli nesprávné údaje.\n                        \n                        Toto nastavení doporučujeme aktivovat pouze u testovacích systémů.",
+					"attentionTitle": "Pozor",
+					"defaultKey": "Standardní klíč pro anonymní podpisové akce",
+					"title": "Zabezpečení"
+				},
+				"tagForm": {
+					"alwaysAttachTitle": "Automatické přidávání",
+					"autoAttachWhenTextContainsLabel": "Pokud dokument obsahuje text",
+					"colorLabel": "Barva štítku",
+					"descriptionRequiredMessage": "Zadejte prosím popis značky",
+					"nameLabel": "název",
+					"nameRequiredMessage": "Zadejte prosím název značky",
+					"tagDescription": "Popis",
+					"tagDescriptionInputPlaceholderText": "Popis"
+				},
+				"tagListEdit": {
+					"action": "Akce",
+					"addTagButton": "Nová značka",
+					"deleteTagText": "Smazat značku",
+					"desciption": "Popis",
+					"editTagText": "Upravit značku",
+					"name": "název",
+					"objectKindForDeleteModal": "den",
+					"tagAddedMessage": "Tag byl úspěšně přidán",
+					"tagEditedToastMessage": "Upravený štítek",
+					"title": "Štítky"
+				},
+				"workflowDependencyForm": {
+					"header": {
+						"action": "Akce",
+						"dependencyKind": "Závislost",
+						"ofRole": "od společnosti Rolle",
+						"roleName": "Roll"
+					},
+					"kind": {
+						"after": "na",
+						"before": "z"
+					},
+					"noDependencies": "Nejsou k dispozici žádné závislosti"
+				},
+				"workflowForm": {
+					"addActionButton": "Přidat",
+					"advancedOptions": "Rozšířené možnosti",
+					"allowAnonymousSignatureCheckbox": "Povolit dokončení bez přihlášení",
+					"allowedInstances": {
+						"thisInstance": "Tento případ"
+					},
+					"backgroundImage": "Obrázek na pozadí",
+					"backgroundImageInputLabel": "Obrázek na pozadí",
+					"deleteBackgroundImage": "Odstranit",
+					"description": "Popis",
+					"descriptionInputPlaceholder": "Popis",
+					"fieldName": "Název pole",
+					"fieldNamePlaceholder": "název",
+					"inputKIndEmail": "E-mailová adresa",
+					"inputKind": "Typ vstupu",
+					"inputKindAttachFile": "Připojte soubor",
+					"inputKindCheckbox": "Zaškrtávací políčko",
+					"inputKindSignature": "Podepsat",
+					"inputKindText": "Zadávání textu",
+					"instancesThatAreAllowedToSign": "Povolit podpis pouze z",
+					"maxNumberOfSignatures": "Maximální počet podpisů",
+					"multilineCheckbox": "Multiline?",
+					"nameLabel": "název",
+					"namePlaceholder": "název",
+					"nameRequiredErrorMessage": "Zadejte prosím název pracovního postupu",
+					"roles": "Válečky",
+					"unnamed": "nejmenovaný"
+				},
+				"workflowListEditForm": {
+					"actions": "Akce",
+					"addWorkflowButton": "Nový pracovní postup",
+					"deleteModalObjectKind": "Pracovní postupy",
+					"deleteWorkflow": "Odstranění pracovního postupu",
+					"editWorkflow": "Upravit pracovní postup",
+					"markAsDefaultWorkflow": "Standardní pracovní postup",
+					"name": "název",
+					"roles": "Válečky",
+					"setAsDefaultWorkflow": "Nastavení standardního pracovního postupu",
+					"successfullyAddedMessage": "Pracovní postup úspěšně přidán",
+					"successfullyEdited": "Upravený pracovní postup",
+					"successfullySetAsDefaultWorkflow": "Definovaný standardní pracovní postup",
+					"title": "Pracovní postupy"
+				}
+			},
+			"userForms": {
+				"sendAppLoginMail": {
+					"byteText": "S pozdravem",
+					"greeting": "Dobrý den,",
+					"mailBody": "V příloze obdržíte přístupové údaje k aplikaci Doctag.\n                    Otevřete prosím aplikaci Doctag a naskenujte následující údaje\n                    QR kód níže pro přihlášení.",
+					"subject": "Přístup k údajům pro aplikaci Doctag"
+				},
+				"userAddForm": {
+					"emailAddressTakenErrorMessage": "E-mailová adresa je již obsazena",
+					"emailInvalidErrorMessage": "Zadejte prosím platnou e-mailovou adresu",
+					"emailLabel": "E-mail",
+					"emailPlaceholder": "E-mail",
+					"firstNamePlaceholder": "křestní jméno",
+					"lastNamePlaceholder": "Příjmení",
+					"nameLabel": "název",
+					"passwordConfirmLabel": "Potvrzení hesla",
+					"passwordConfirmPlaceholder": "Potvrzení hesla",
+					"passwordDoNotMatchError": "Obě pole hesla se musí shodovat",
+					"passwordLabel": "Heslo",
+					"passwordPlaceholder": "Heslo",
+					"provideFirstNameError": "Zadejte prosím své křestní jméno.",
+					"provideLastNameError": "Zadejte prosím své příjmení."
+				},
+				"userAppForm": {
+					"addButton": "Přidat",
+					"addSessionForAppHeader": "Registrace aplikace Doctag",
+					"appSessionName": "Registrace aplikace Doctag",
+					"scanImmediately": "Přímé skenování",
+					"sendViaEmail": "Odeslat e-mailem",
+					"successMessageBody": "Přístupová data byla úspěšně odeslána na adresu ${mailAddress} .",
+					"successMessageTitle": "Odeslaná pošta"
+				},
+				"userDeleteForm": {
+					"deleteButton": "Odstranit",
+					"deleteConfirmMessage": "Opravdu smazat uživatele ${userObj.firstName} ${userObj.lastName} ?",
+					"emailLabel": "E-mailová adresa",
+					"emailPlaceholder": "E-mail",
+					"pleaseTypeEmailMessage": "Zadejte prosím e-mailovou adresu ${userObj.emailAdress} uživatele pro potvrzení zrušení.",
+					"usernamesDoNotMatchError": "Obě pole se musí shodovat"
+				},
+				"userEditForm": {
+					"emailAddressAlreadyTakenErrorMessage": "E-mailová adresa je již obsazena",
+					"emailLabel": "E-mail",
+					"emailPlaceholder": "E-mail",
+					"firstNameLabel": "křestní jméno",
+					"firstNamePlaceholder": "křestní jméno",
+					"lastNameLabel": "Příjmení",
+					"lastNamePlaceholder": "Příjmení",
+					"provideEmailerrorMessage": "Zadejte prosím platnou e-mailovou adresu",
+					"provideFirstnameErrorMessage": "Zadejte prosím své křestní jméno.",
+					"provideLastNameError": "Zadejte prosím své příjmení."
+				},
+				"userPasswordEditForm": {
+					"confirmPasswordLabel": "Potvrzení nového hesla",
+					"confirmPasswordPlaceholder": "Potvrzení hesla",
+					"newPasswordLabel": "Nové heslo",
+					"newPasswordPlaceholder": "Heslo",
+					"passwordsDoNotMatchError": "Obě pole hesla se musí shodovat"
+				},
+				"userSessionForm": {
+					"confirmChangesButton": "Použít změny",
+					"noLoginAvailableMessage": "Žádné registrace nejsou k dispozici",
+					"onDevice": "Na zařízení",
+					"validTill": "Platí do"
+				}
+			}
+		},
+		"modals": {
+			"addDocumentModal": {
+				"modalTitle": "Přidat dokument"
+			},
+			"addKeyModal": {
+				"keyAddFailed": "Chyba při vytváření",
+				"title": "Přidání klíče"
+			},
+			"addUserModal": {
+				"title": "Přidat uživatele"
+			},
+			"createSignRequest": {
+				"confirmButton": "převzetí",
+				"creationDate": "Vytvořeno dne: ${doc.created?.formatDateTime()}",
+				"detectedUrl": "Rozpoznaná adresa URL",
+				"fileName": "Název souboru: ${doc.originalFileName}",
+				"foundDocumentMessage": "Uznané dokumenty",
+				"openButton": "Otevřít",
+				"reScanButton": "Opětovné skenování",
+				"selectRoleLabel": "Zvolte roli",
+				"signatureNotValid": "Podpis není platný",
+				"signatureRequestCreatedMessage": "Vytvoření žádosti o podpis",
+				"signatureValidMessage": "Platný podpis",
+				"source": "Zdroj: ${doc.url}",
+				"title": "Vytvoření žádosti o podpis"
+			},
+			"deleteVerifyModal": {
+				"abortButton": "Zrušit",
+				"confirmText": "Potvrďte prosím, že opravdu chcete odstranit ${article} / ${objectKind} '${elementToDelete}'",
+				"deleteButton": "Odstranit",
+				"errorMessage": "Chyba při mazání",
+				"title": "Potvrzení odstranění"
+			},
+			"editUserModal": {
+				"changePasswordTitle": "Změna hesla",
+				"deleteTitle": "Odstranit",
+				"doctagAppTitle": "Aplikace Doctag",
+				"loginsTitle": "Registrace",
+				"profileTitle": "Profil",
+				"title": "${user.firstName} ${user.lastName} upravit"
+			},
+			"filePreviewModal": {
+				"downloadButton": "Stáhnout",
+				"noPreviewAvailable": "Není k dispozici žádný náhled",
+				"title": "Náhled"
+			},
+			"scanDoctagModal": {
+				"createdDate": "Vytvořeno dne: ${doc.created?.formatDateTime()}",
+				"documentDetectedMessage": "Uznané dokumenty",
+				"fileName": "Název souboru: ${doc.originalFileName}",
+				"openButton": "Otevřít",
+				"rescanButton": "Opětovné skenování",
+				"signButton": "Podepsat",
+				"signRequestButton": "Žádost o podpis",
+				"source": "Zdroj: ${doc.url}",
+				"title": "Zadejte stav",
+				"urlDetectedMessage": "Rozpoznaná adresa URL"
+			},
+			"showSignatureModal": {
+				"addressValid": "Platná adresa:",
+				"countryCode": "Země",
+				"doctagHostValid": "DocTag Host je platný:",
+				"doctagSource": "Systém Doctag",
+				"fromUser": "Od uživatele",
+				"keyHeader": "klíč",
+				"name1": "Název 1",
+				"name2": "Název 2",
+				"notVerified": "Neověřeno",
+				"selectedPublicKey": "S veřejným klíčem",
+				"signatureOfKey": "Podpis tohoto klíče",
+				"signatureValidMessage": "Platný podpis",
+				"street": "ulice",
+				"title": "Zobrazení klíče ${\n    publicKeyFingerprint(loadPublicKey(key.publicKey)!!)} ",
+				"validTill": "Platí do:",
+				"verification": "Ověřování",
+				"zipAndCity": "Poštovní směrovací číslo - Město"
+			},
+			"signDocumentModal": {
+				"additionalData": "Další údaje",
+				"generalInformation": "Obecné informace",
+				"inputValidEmailMessage": "Zadejte prosím platnou e-mailovou adresu",
+				"noAuthenticationMessage": "Bez ověřování",
+				"selectKey": "Vybrat klíč",
+				"selectKeyMessage": "Vyberte klíč",
+				"selectRole": "Zvolte roli",
+				"selectRoleMessage": "Vyberte prosím roli",
+				"signDocumentButton": "Podepsat dokument",
+				"title": "Podepsat dokument"
+			},
+			"system": {
+				"tagModal": {
+					"addTagModal": {
+						"title": "Přidat značku"
+					},
+					"modifyTagModal": {
+						"title": "Upravit značku"
+					}
+				},
+				"workflowModal": {
+					"addWorkflowModal": {
+						"title": "Přidání pracovního postupu"
+					},
+					"menu": {
+						"dependencies": "Závislosti",
+						"main": "Obecné"
+					},
+					"modifyWorkflowModal": {
+						"title": "Upravit pracovní postup"
+					}
+				}
+			}
+		},
+		"settings": {
+			"keys": {
+				"action": "Akce",
+				"addedKeySuccessMessage": "Přidán pár misek",
+				"createdAt": "Vytvořeno dne",
+				"createdBy": "z",
+				"deleteKeyObjectName": "klíč",
+				"designSettingsChanged": "Změna nastavení designu",
+				"displayName": "Zobrazení názvu",
+				"hostnameChangedMessage": "Změna názvu hostitele",
+				"keyUpdateFailedError": "Zveřejnění se nezdařilo.",
+				"keyUpdatedInfo": "Klíč aktualizován",
+				"keyValidTill": "Platí do",
+				"mailSettingsChanged": "Změna nastavení e-mailu",
+				"menu": {
+					"design": "Design",
+					"hostname": "Hostitelské jméno",
+					"mail": "E-mail",
+					"notifications": "Oznámení",
+					"search": "Vyhledávání",
+					"tags": "Štítky",
+					"workflows": "Pracovní postupy"
+				},
+				"newKey": "Nový klíč",
+				"notYetConfirmed": "Není dokončeno",
+				"pageTitle": "Osvědčení o účasti",
+				"security": "Zabezpečení",
+				"show": "Zobrazit",
+				"verification": "Ověřování",
+				"verificationInfoMessage": "Uvádí, zda byl klíč již ověřen pomocí DocTag.",
+				"yes": "Ano"
+			},
+			"system": {
+				"pageTitle": "NASTAVENÍ"
+			},
+			"users": {
+				"actions": "Akce",
+				"created": "Vytvořeno dne",
+				"email": "E-mail",
+				"firstName": "křestní jméno",
+				"lastName": "Příjmení",
+				"newUser": "Nový uživatel",
+				"pageTitle": "NASTAVENÍ",
+				"passwordChangedMessage": "Změna hesla",
+				"userAddedSuccessMessage": "Uživatel přidal",
+				"userDeletedMessage": "Uživatel odstraněn",
+				"userModifiedMessage": "Upraveno uživatelem"
+			},
+			"utils": {
+				"menu": {
+					"certificates": "Certifikáty pro účastníky",
+					"system": "Systém",
+					"user": "Uživatel"
+				}
+			}
+		}
+	}
+}
