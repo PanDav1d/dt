@@ -1,6 +1,7 @@
-package de.doctag.docsrv
+package de.doctag.docsrv.pdf_builder
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
+import de.doctag.docsrv.formatDateTime
 import de.doctag.docsrv.model.*
 import doctag.translation.I18n
 import org.litote.kmongo.findOneById
@@ -8,7 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.util.Locale
 
 
-class PdfBuilder(val doc: Document, val db: DbContext, val language: Locale)  {
+class DocTagSignatureDocument(val doc: Document, val db: DbContext, val language: Locale)  {
 
     private fun interpolateHtmlTemplate() : String{
         return """<html>

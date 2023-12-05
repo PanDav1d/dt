@@ -75,7 +75,7 @@ fun WebBrowser.handleInstall(content: ElementCreator<*>) {
                             h2().text(i18n("ui.admin.install.personalDataHeader", "System einrichten"))
                             h4().text(i18n("ui.admin.install.createAdminUser","Admin-Benutzer anlegen"))
 
-                            userAddForm(User()) { user, passwd ->
+                            userAddForm(User(isAdmin = true)) { user, passwd ->
 
                                 user.passwordHash = generatePasswordHash(passwd)
                                 user.created = ZonedDateTime.now()

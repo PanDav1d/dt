@@ -23,6 +23,16 @@ fun WebBrowser.navigateTo(path:String){
     this.evaluate("window.location = \"${path}\"")
 }
 
+fun WebBrowser.navigateTo(doc:Document){
+    val docIdPart = doc?.url!!.split("/d/")[1]
+    val hostname = doc?.url!!.split("/d/")[0].removePrefix("https://")
+    if (hostname != db(host()).currentConfig.hostname) {
+        navigateTo("/d/${docIdPart}/${hostname}")
+    } else {
+        navigateTo("/d/${docIdPart}")
+    }
+}
+
 fun ElementCreator<*>.centeredBox( contentBlock: ElementCreator<DivElement>.()->Unit){
 
     this.browser.doc.head.new(){
@@ -190,8 +200,23 @@ fun ElementCreator<*>.pageHeader() : PageArea {
                         I18n.t("ui.base.scanIcon.popup.title", "DocTag Scannen", language = browser.sessionLanguage ),
                         I18n.t("ui.base.scanIcon.popup.text","Öffnet die Kamera um einen QR Code zu scannen", language = browser.sessionLanguage), position="bottom right", distanceAway = 0)
                 }
-                a(fomantic.item, href = "/settings/users").new {
-                    i(fomantic.ui.cog.icon).withPopup(I18n.t("ui.base.settingsIcon.popup.title", "Einstellungen", language = browser.sessionLanguage), I18n.t("ui.base.settingsIcon.popup.text","Die Einstellungen des DocTag Systems bearbeiten", language = browser.sessionLanguage), position="bottom right", distanceAway = 0)
+                if(browser.authenticatedUser?.isAdmin != false) {
+                    a(fomantic.item, href = "/settings/users").new {
+                        i(fomantic.ui.cog.icon).withPopup(
+                            I18n.t(
+                                "ui.base.settingsIcon.popup.title",
+                                "Einstellungen",
+                                language = browser.sessionLanguage
+                            ),
+                            I18n.t(
+                                "ui.base.settingsIcon.popup.text",
+                                "Die Einstellungen des DocTag Systems bearbeiten",
+                                language = browser.sessionLanguage
+                            ),
+                            position = "bottom right",
+                            distanceAway = 0
+                        )
+                    }
                 }
                 a(fomantic.item, href = "/logout").i18nText("ui.base.logoutButton","Abmelden")
             }

@@ -66,7 +66,7 @@ fun WebBrowser.handleCreateInstance(content: ElementCreator<*>) {
                         h2().text("System einrichten")
                         h4().text("Admin-Benutzer anlegen")
 
-                        userAddForm(User()) { user, passwd ->
+                        userAddForm(User(isAdmin = true)) { user, passwd ->
 
                             user.passwordHash = generatePasswordHash(passwd)
                             user.created = ZonedDateTime.now()

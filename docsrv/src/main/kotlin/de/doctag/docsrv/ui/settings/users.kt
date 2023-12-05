@@ -1,18 +1,11 @@
 package de.doctag.docsrv.ui.settings
 
 import de.doctag.docsrv.formatDate
-import de.doctag.docsrv.generatePasswordHash
 import de.doctag.docsrv.i18n
 import de.doctag.docsrv.i18nText
-import de.doctag.docsrv.model.DbContext
-import de.doctag.docsrv.model.User
 import de.doctag.docsrv.model.authRequired
 import de.doctag.docsrv.model.db
 import de.doctag.docsrv.ui.*
-import de.doctag.docsrv.ui.forms.userAddForm
-import de.doctag.docsrv.ui.forms.userDeleteForm
-import de.doctag.docsrv.ui.forms.userEditForm
-import de.doctag.docsrv.ui.forms.userPasswordEditForm
 import de.doctag.docsrv.ui.modals.UserEditAction
 import de.doctag.docsrv.ui.modals.addUserModal
 import de.doctag.docsrv.ui.modals.editUserModal
@@ -20,11 +13,6 @@ import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
-import org.litote.kmongo.eq
-import org.litote.kmongo.replaceOneById
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-
 fun ElementCreator<*>.handleUsersSettings(){
     authRequired {
 
@@ -59,6 +47,7 @@ fun ElementCreator<*>.handleUsersSettings(){
                                 th().i18nText("ui.settings.users.lastName","Nachname")
                                 th().i18nText("ui.settings.users.email","E-Mail")
                                 th().i18nText("ui.settings.users.created","Erstellt am")
+                                th().i18nText("ui.settings.users.isAdmin","Admin?")
                                 th().i18nText("ui.settings.users.actions","Aktion")
                             }
                         }
@@ -70,6 +59,7 @@ fun ElementCreator<*>.handleUsersSettings(){
                                     td().text(user.lastName ?: "")
                                     td().text(user.emailAdress ?: "")
                                     td().text(user.created?.formatDate() ?: "")
+                                    td().text(if(user.isAdmin!=false){"✓"} else "-")
                                     td().new {
 
                                         i(fomantic.ui.edit.icon).on.click {

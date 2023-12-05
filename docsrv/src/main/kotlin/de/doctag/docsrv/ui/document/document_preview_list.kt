@@ -75,7 +75,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
 
         div(fomantic.ui.main.container).new {
 
-            div(fomantic.ui.grid).new {
+            div(fomantic.ui.stackable.grid).new {
 
                 div(fomantic.row).new {
                     div(fomantic.sixteen.wide.column).new {
@@ -121,66 +121,21 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                 }
 
                 div(fomantic.row).new {
-                    div(fomantic.five.wide.column).new {
+                    div(fomantic.sixteen.wide.column.mobileOnly.tabletOnly).new {
                         render(documents, container = {div()}){ rDocuments ->
-                            logger.info("List of documents did change")
-                            table(fomantic.ui.selectable.celled.table).new {
-                                thead().new {
-                                    tr().new {
-                                        th().new{
-                                            documentSearchFilterComponent(searchQuery.value, debounce {
-                                                searchQuery.value = it
-                                            })
-                                        }
-                                    }
-                                }
-                                render(documentToPreview, container={tbody(attributes = mapOf("style" to "display: block;height:70vh;overflow-y:scroll"))}) {
-                                    rDocuments.forEach { document ->
-
-                                        val classN = if(document._id == documentToPreview.value?._id){
-                                            fomantic.active
-                                        }
-                                        else {
-                                            mapOf<String, Any>()
-                                        }
-
-                                        tr(classN).apply {
-                                            this.on.click {
-                                                logger.info("Clicked")
-
-                                                documentToPreview.value = document
-                                            }
-                                        }.new {
-                                            td(mapOf("style" to "width:100vw")).new {
-                                                div().new{
-                                                    span().text(document.originalFileName?.take(35) ?: "")
-                                                }
-                                                div().new {
-                                                    document.getWorkflowStatus().forEach { (role, signature) ->
-                                                        if(signature != null) {
-                                                            val signedAt = signature.signed?.formatDateTime()
-                                                            i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, i18n("ui.document.documentPreviewList.signedOnMessage", "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}"))
-                                                        }
-                                                        else {
-                                                            i(fomantic.ui.icon.circle.outline.grey).withPopup(role, i18n("ui.document.documentPreviewList.notYetSignedMessage","Noch nicht signiert"))
-                                                        }
-                                                    }
-                                                    span(mapOf("style" to "float:right")).new {
-                                                        document.tags?.forEach {
-                                                            tag(it, false, size = FomanticUiSize.Mini)
-                                                        }
-                                                        span(mapOf("style" to "width:4px;height:1px;display:inline-block;")).text("")
-                                                        span().text(document.created?.formatDateTime(true) ?: "")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                            renderDocumentList(rDocuments, documentToPreview, searchQuery){
+                                browser.navigateTo(it)
                             }
                         }
                     }
-                    div(fomantic.eleven.wide.column).new {
+                    div(fomantic.five.wide.column.computerScreenOnly).new {
+                        render(documents, container = {div()}){ rDocuments ->
+                            renderDocumentList(rDocuments, documentToPreview, searchQuery){
+                                documentToPreview.value = it
+                            }
+                        }
+                    }
+                    div(fomantic.eleven.wide.column.computerScreenOnly).new {
                         render(documentToPreview) { rFile ->
                             renderDocumentPreview(rFile)
                         }
@@ -191,7 +146,63 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
     }
 }
 
+fun ElementCreator<*>.renderDocumentList(rDocuments: List<Document>, documentToPreview: KVar<Document?>, searchQuery:KVar<SearchFilter>, onDocumentClick: (d:Document)->Unit){
+    logger.info("List of documents did change")
+    table(fomantic.ui.selectable.celled.table).new {
+        thead().new {
+            tr().new {
+                th().new{
+                    documentSearchFilterComponent(searchQuery.value, debounce {
+                        searchQuery.value = it
+                    })
+                }
+            }
+        }
+        render(documentToPreview, container={tbody(attributes = mapOf("style" to "display: block;height:70vh;overflow-y:scroll"))}) {
+            rDocuments.forEach { document ->
 
+                val classN = if(document._id == documentToPreview.value?._id){
+                    fomantic.active
+                }
+                else {
+                    mapOf<String, Any>()
+                }
+
+                tr(classN).apply {
+                    this.on.click {
+                        logger.info("Clicked")
+
+                        onDocumentClick(document)
+                    }
+                }.new {
+                    td(mapOf("style" to "width:100vw")).new {
+                        div().new{
+                            span().text(document.originalFileName?.take(35) ?: "")
+                        }
+                        div().new {
+                            document.getWorkflowStatus().forEach { (role, signature) ->
+                                if(signature != null) {
+                                    val signedAt = signature.signed?.formatDateTime()
+                                    i(fomantic.ui.icon.check.circle.outline.green).withPopup(role, i18n("ui.document.documentPreviewList.signedOnMessage", "Signiert am ${signedAt} von ${signature.signedByKey?.ownerAddress?.name1}"))
+                                }
+                                else {
+                                    i(fomantic.ui.icon.circle.outline.grey).withPopup(role, i18n("ui.document.documentPreviewList.notYetSignedMessage","Noch nicht signiert"))
+                                }
+                            }
+                            span(mapOf("style" to "float:right")).new {
+                                document.tags?.forEach {
+                                    tag(it, false, size = FomanticUiSize.Mini)
+                                }
+                                span(mapOf("style" to "width:4px;height:1px;display:inline-block;")).text("")
+                                span().text(document.created?.formatDateTime(true) ?: "")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 fun ElementCreator<*>.renderDocumentPreview(rFile: Document?, showLinkToDocumentButton: Boolean=true, showSignButton: Boolean=false , showFileName: Boolean=true){
 
@@ -205,19 +216,18 @@ fun ElementCreator<*>.renderDocumentPreview(rFile: Document?, showLinkToDocument
             div(fomantic.ui.grid).new {
                 div(fomantic.ui.column.twelve.wide).new {
                     if (showFileName) {
-                        h1().text(file?.name ?: "Keine Vorschau verfügbar")
+                        h1().apply{
+                            text(file?.name ?: "Keine Vorschau verfügbar")
+                            this.setAttribute("style", KVal("overflow:clip;white-space:nowrap;"))
+                        }
                     }
                 }
                 div(fomantic.ui.column.four.wide.right.aligned).new {
                     if (showLinkToDocumentButton) {
                         button(fomantic.ui.button.tertiary.blue).setAttribute("title", KVal(i18n("ui.document.documentPreviewList.show", "Anzeigen")) ).apply {
                             this.on.click {
-                                val docIdPart = rFile?.url!!.split("/d/")[1]
-                                val hostname = rFile?.url!!.split("/d/")[0].removePrefix("https://")
-                                if (hostname != db().currentConfig.hostname) {
-                                    browser.navigateTo("/d/${docIdPart}/${hostname}")
-                                } else {
-                                    browser.navigateTo("/d/${docIdPart}")
+                                rFile?.let{
+                                    browser.navigateTo(rFile)
                                 }
                             }
                         }.new {

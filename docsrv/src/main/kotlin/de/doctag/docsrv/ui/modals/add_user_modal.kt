@@ -13,7 +13,7 @@ import kweb.logger
 import java.time.ZonedDateTime
 
 fun ElementCreator<*>.addUserModal(onUserAdd: (u:User)->Unit) = modal(i18n("ui.modals.addUserModal.title","Benutzer hinzufügen")){ modal->
-    val user  = User()
+    val user  = User(isAdmin = false)
     userAddForm(user) { userObj, pass ->
         logger.info("Creating user with e-mail ${userObj.emailAdress} and password ${pass}")
         userObj.created = ZonedDateTime.now()

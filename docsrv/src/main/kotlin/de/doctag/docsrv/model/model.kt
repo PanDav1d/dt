@@ -74,7 +74,8 @@ data class User(
     var emailAdress: String? = null,
     var passwordHash: String? = null,
     var created: ZonedDateTime?= null,
-    var sessions: List<Session>?=null
+    var sessions: List<Session>?=null,
+    var isAdmin: Boolean? = null
 )
 
 data class DocumentId(

@@ -360,12 +360,52 @@ val FomanticUIClasses.simple: FomanticUIClasses
         return this
     }
 
+val FomanticUIClasses.mobile: FomanticUIClasses
+    get() {
+        classes("mobile")
+        return this
+    }
+
+
+val FomanticUIClasses.tablet: FomanticUIClasses
+    get() {
+        classes("tablet")
+        return this
+    }
+
+val FomanticUIClasses.computer: FomanticUIClasses
+    get() {
+        classes("computer")
+        return this
+    }
+
+
+val FomanticUIClasses.mobileOnly: FomanticUIClasses
+    get() {
+        classes("mobile only")
+        return this
+    }
+
+val FomanticUIClasses.tabletOnly: FomanticUIClasses
+    get() {
+        classes("tablet only")
+        return this
+    }
+val FomanticUIClasses.computerScreenOnly: FomanticUIClasses
+    get() {
+        classes("computer only")
+        return this
+    }
+
 fun FomanticUIClasses.withStyle(styleStr:String): FomanticUIClasses {
     set("style", styleStr)
     return this
 }
 
-
+fun FomanticUIClasses.withAttribute(name:String,value:String): FomanticUIClasses {
+    set(name, value)
+    return this
+}
 fun FomanticUIClasses.active(isActive: Boolean) = withOptionalAttribute("active", isActive)
 
 fun FomanticUIClasses.checked(isChecked: Boolean) = withOptionalAttribute("checked", isChecked)
@@ -397,6 +437,8 @@ fun FomanticUIClasses.withOptionalAttribute(name: String, isEnabled: Boolean) : 
     }
     return this
 }
+
+
 
 
 fun Map<String, Any>.removeClass(cssClassName: String): Map<String, Any> {

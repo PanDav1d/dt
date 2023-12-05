@@ -2,6 +2,7 @@ package de.doctag.docsrv.api
 
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
+import de.doctag.docsrv.pdf_builder.DocTagSignatureDocument
 import de.doctag.docsrv.remotes.DocServerClient
 import de.doctag.docsrv.ui.parseLanguageHeaders
 import de.doctag.lib.*
@@ -243,7 +244,7 @@ fun Routing.docServerApi(){
 
         val docToSign = db().files.findOneById(doc.attachmentId!!)
 
-        val renderer = PdfBuilder(doc, db(), language = call.request.parseLanguageHeaders())
+        val renderer = DocTagSignatureDocument(doc, db(), language = call.request.parseLanguageHeaders())
 
         renderer.let { fd ->
             val signaturePage = renderer.render().toByteArray()

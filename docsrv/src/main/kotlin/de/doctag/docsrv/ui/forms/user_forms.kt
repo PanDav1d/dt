@@ -2,6 +2,7 @@ package de.doctag.docsrv.ui.forms
 
 import de.doctag.docsrv.*
 import de.doctag.docsrv.model.*
+import de.doctag.docsrv.pdf_builder.LoginLinkDocument
 import de.doctag.docsrv.ui.*
 import de.doctag.lib.EmailContent
 import de.doctag.lib.MailSender
@@ -10,7 +11,6 @@ import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 import kweb.state.KVar
 import kweb.state.render
-import kweb.util.toJson
 import org.litote.kmongo.findOne
 import org.litote.kmongo.regex
 import java.time.ZonedDateTime
@@ -94,6 +94,20 @@ fun ElementCreator<*>.userEditForm(userObj: User, onSaveClick: (user:User)->Unit
                 }
             }
 
+        checkBoxInput(i18n("ui.forms.userForms.userEditForm.isAdmin","Ist Administrator?"), user.propertyOrDefault(User::isAdmin, false))
+
+
+        formCtrl.withValidation {
+            if(user.value._id == browser.authenticatedUser?._id){
+                if(user.value.isAdmin == false && browser.authenticatedUser?.isAdmin==true){
+                    i18n("ui.forms.userForms.userEditForm.validationError.userCantDropAdminRightsHimself","Sie dürfen sich nicht selbst die Admin-Rechte entziehen.")
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        }
 
         displayErrorMessages(formCtrl)
 
@@ -207,11 +221,11 @@ fun ElementCreator<*>.userSessionsForm(userObj: User, onSaveClick: () -> Unit){
 
 data class SmartphoneLoginData(val doctagUrl:String, val sessionId: String)
 
-fun ElementCreator<*>.userAppForm(userObj:User, onSaveClick: () -> Unit) = useState(null as Session?){ newSession, setState ->
+fun ElementCreator<*>.userLoginLinkForm(userObj:User, onSaveClick: () -> Unit) = useState(null as Session?){ newSession, setState ->
 
     if(newSession == null) {
         button(fomantic.ui.button.primary).i18nText("ui.forms.userForms.userAppForm.addButton","Hinzufügen").on.click {
-            val session = Session(UUID.randomUUID().toString(), ZonedDateTime.now().plusYears(5), i18n("ui.forms.userForms.userAppForm.appSessionName","Doctag App Anmeldung"))
+            val session = Session(UUID.randomUUID().toString(), ZonedDateTime.now().plusYears(5), i18n("ui.forms.userForms.userAppForm.appSessionName","DocTag Anmeldelink"))
             userObj.sessions = (userObj.sessions ?: listOf()).plus(session)
 
             onSaveClick()
@@ -219,10 +233,11 @@ fun ElementCreator<*>.userAppForm(userObj:User, onSaveClick: () -> Unit) = useSt
         }
     } else {
 
-        val qr = getQRCodeImageAsDataUrl(SmartphoneLoginData(db().currentConfig.hostname, newSession.sessionId).toJson(), 400,400, 5)
+        val loginUrl = "https://${db().currentConfig.hostname}/login/?sessionId=${newSession.sessionId}"
+        val qr = getQRCodeImageAsDataUrl(loginUrl, 400,400, 5)
 
         h3(fomantic.ui.header).new {
-            span().i18nText("ui.forms.userForms.userAppForm.addSessionForAppHeader","Doctag App Anmeldung")
+            span().i18nText("ui.forms.userForms.userAppForm.addSessionForAppHeader","Anmeldelink")
             div(fomantic.ui.sub.header).i18nText("ui.forms.userForms.userAppForm.scanImmediately","Direkt scannen")
         }
 
@@ -248,6 +263,13 @@ fun ElementCreator<*>.userAppForm(userObj:User, onSaveClick: () -> Unit) = useSt
                 }
             }
         }
+
+        val keyCard = LoginLinkDocument(userObj, newSession,db(), browser.sessionLanguage)
+        br()
+        a(href="data:application/pdf;base64,${keyCard.asBase64Str()}", attributes = fomantic.ui.button.withAttribute("download", "keycard_${userObj.lastName?.toLowerCase()}_${userObj.firstName?.toLowerCase()}.pdf")).apply {
+            text.value = this@userLoginLinkForm.i18n("ui.forms.userForms.userAppForm.downloadKeycard", "Herunterladen")
+        }
+
     }
 }
 
