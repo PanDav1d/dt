@@ -31,14 +31,14 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
 
     formControl { formCtrl ->
 
-        h4(fomantic.ui.dividing.header).i18nText("ui.forms.system.mailSettingsEditForm.sendMailTitle","Mailversand")
+        h4(fomantic.ui.dividing.header).i18nText("ui.forms.system.mailSettingsEditForm.sendMailTitle","Mail-Versand")
 
         val smtp_protocol = KVar(inboundConfig.value.protocol.toString())
         smtp_protocol.addListener { oldVal, newVal ->
             outboundConfig.value.protocol = SendMailProtocol.valueOf(newVal.toUpperCase())
         }
 
-        formInput(i18n("ui.forms.system.mailSettingsEditForm.sendMailRemoteHost","SMTP Server"), "smtp.test.de", false, outboundConfig.propertyOrDefault(OutboundMailConfig::server, ""))
+        formInput(i18n("ui.forms.system.mailSettingsEditForm.sendMailRemoteHost","SMTP-Server"), "smtp.test.de", false, outboundConfig.propertyOrDefault(OutboundMailConfig::server, ""))
             .with(formCtrl)
 
         radioInput(i18n("ui.forms.system.mailSettingsEditForm.sendMailProtocol","Protokoll"), mapOf("SMTP" to SendMailProtocol.SMTP.name, "SMTPS" to SendMailProtocol.SMTPS.name), false, true,  smtp_protocol)
@@ -53,7 +53,7 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
                 .with(formCtrl)
 
 
-        h4(fomantic.ui.dividing.header).i18nText("ui.forms.system.mailSettingsEditForm.fetchMailHeader","Mail Empfang")
+        h4(fomantic.ui.dividing.header).i18nText("ui.forms.system.mailSettingsEditForm.fetchMailHeader","Mail-Empfang")
 
         checkBoxInput(
             i18n("ui.forms.system.mailSettingsEditForm.fetchMailActive","Dokumenten-Empfang per Mail aktiv"),
@@ -67,7 +67,7 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
         radioInput(i18n("ui.forms.system.mailSettingsEditForm.fetchMailProtocol","Protokoll"), mapOf("IMAP" to InboundMailProtocol.IMAP.name, "POP3" to InboundMailProtocol.POP3.name), false, true,  protocol)
 
 
-        formInput(i18n("ui.forms.system.mailSettingsEditForm.fetchMailRemoteHost","IMAP / POP Server"), "smtp.test.de", false, inboundConfig.propertyOrDefault(InboundMailConfig::server, ""))
+        formInput(i18n("ui.forms.system.mailSettingsEditForm.fetchMailRemoteHost","IMAP / POP-Server"), "smtp.test.de", false, inboundConfig.propertyOrDefault(InboundMailConfig::server, ""))
                 .with(formCtrl)
 
 
@@ -119,7 +119,7 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
             val messages = recv?.receive()
 
             if(messages != null) {
-                testResult.value = UserMessage(DisplayMessageKind.Success, i18n("ui.forms.system.mailSettingsEditForm.fetchMailSuccess.title","Erfolg"), i18n("ui.forms.system.mailSettingsEditForm.fetchMailSuccess.description","E-Mail Abruf erfolgreich. ${messages.size} Nachrichten empfangen"))
+                testResult.value = UserMessage(DisplayMessageKind.Success, i18n("ui.forms.system.mailSettingsEditForm.fetchMailSuccess.title","Erfolg"), i18n("ui.forms.system.mailSettingsEditForm.fetchMailSuccess.description","E-Mail-Abruf erfolgreich. ${messages.size} Nachrichten empfangen"))
             }
             else {
                 testResult.value = UserMessage(DisplayMessageKind.Error, i18n("ui.forms.system.mailSettingsEditForm.fetchMailFailedErrorTitle","Fehler"), i18n("ui.forms.system.mailSettingsEditForm.fetchMailFailedErrorDescription", "E-Mail Abruf fehlgeschlagen. Bitte prüfen Sie die Einstellungen"))
@@ -131,7 +131,7 @@ fun ElementCreator<*>.mailSettingsEditForm(outbound: OutboundMailConfig, inbound
 private fun sendTestMail(conf: OutboundMailConfig, toAddress: String, locale: Locale) : Boolean{
     val email = EmailContent(
             greeting = I18n.t("ui.forms.system.mailSettingsEditForm.testMail.greeting","Hallo", language = locale),
-            text = I18n.t("ui.forms.system.mailSettingsEditForm.testMail.text", """Dies ist eine Test-Nachricht welche über die Web-Konsole versendet wurde""", language = locale),
+            text = I18n.t("ui.forms.system.mailSettingsEditForm.testMail.text", """Dies ist eine über die Web-Konsole versendete Test-Nachricht.""", language = locale),
             actionText = null,
             actionUrl = null,
             byeText = I18n.t("ui.forms.system.mailSettingsEditForm.testMail.byeText","Viele Grüße ", language = locale)

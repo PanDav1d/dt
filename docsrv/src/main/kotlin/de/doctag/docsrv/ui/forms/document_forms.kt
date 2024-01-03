@@ -144,7 +144,7 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
 
                     val sizeSelection = KVar("4.29")
                     p().new {
-                        span().i18nText("ui.forms.documentForms.documentAddForm.placeDoctagMessage","Positionieren Sie das DocTag mit der Maus an der gewünschten Position")
+                        span().i18nText("ui.forms.documentForms.documentAddForm.placeDoctagMessage","Positionieren Sie das Doctag mit der Maus an der gewünschten Position")
                     }
 
                     render(sizeSelection){
@@ -159,8 +159,8 @@ fun ElementCreator<*>.documentAddForm(documentObj: Document, onSaveClick: (file:
                     div(fomantic.ui.icon.message).new {
                         i(fomantic.icon.qrcode)
                         div(fomantic.content).new {
-                            div(fomantic.header).i18nText("ui.forms.documentForms.documentAddForm.foundDoctag","DocTag erkannt")
-                            p().i18nText("ui.forms.documentForms.documentAddForm.foundDoctagDescription","Das hochgeladene Dokument hat das DocTag ${document.value.url}. Drücken Sie auf Speichern um den Import abzuschließen.")
+                            div(fomantic.header).i18nText("ui.forms.documentForms.documentAddForm.foundDoctag","Doctag erkannt")
+                            p().i18nText("ui.forms.documentForms.documentAddForm.foundDoctagDescription","Das hochgeladene Dokument hat das Doctag ${document.value.url}. Drücken Sie auf Speichern um den Import abzuschließen.")
                         }
                     }
 

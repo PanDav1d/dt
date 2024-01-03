@@ -16,7 +16,7 @@ import kweb.state.render
 import org.litote.kmongo.save
 import kweb.*
 
-fun ElementCreator<*>.addKeyModal(onKeyAdd: (u: PrivatePublicKeyPair)->Unit) = modal(i18n("ui.modals.addKeyModal.title","Schlüssel hinzufügen")){ modal->
+fun ElementCreator<*>.addKeyModal(onKeyAdd: (u: PrivatePublicKeyPair)->Unit) = modal(i18n("ui.modals.addKeyModal.title","Teilnehmerzertifikat hinzufügen")){ modal->
     val hasError = KVar<String?>(null)
 
     render(hasError){ errorMessage->

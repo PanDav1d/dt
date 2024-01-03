@@ -25,9 +25,9 @@ data class ScanDocTagResult(
         val document: EmbeddedDocument
 )
 
-fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->Unit) = modal(i18n("ui.modals.scanDoctagModal.title","Status erfassen")){ modal->
+fun ElementCreator<*>.scanDoctagModal(onScanSuccessful: (u: ScanDocTagResult)->Unit) = modal(i18n("ui.modals.scanDoctagModal.title","QR-Code scannen")){ modal->
     val scannedCode = KVar("")
-    val rescanButtonText = i18n("ui.modals.scanDoctagModal.rescanButton","Erneut Scannen")
+    val rescanButtonText = i18n("ui.modals.scanDoctagModal.rescanButton","Erneut scannen")
     render(scannedCode){ code->
 
         when{

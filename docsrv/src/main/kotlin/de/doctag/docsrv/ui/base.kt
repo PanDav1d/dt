@@ -197,8 +197,8 @@ fun ElementCreator<*>.pageHeader() : PageArea {
                 }.new {
                     val iconSrc = if(design?.headerColor.isNullOrBlank()) "/ressources/icon_scan.svg" else "/ressources/icon_scan_white.svg"
                     img(iconSrc).withPopup(
-                        I18n.t("ui.base.scanIcon.popup.title", "DocTag Scannen", language = browser.sessionLanguage ),
-                        I18n.t("ui.base.scanIcon.popup.text","Öffnet die Kamera um einen QR Code zu scannen", language = browser.sessionLanguage), position="bottom right", distanceAway = 0)
+                        I18n.t("ui.base.scanIcon.popup.title", "Doctag scannen", language = browser.sessionLanguage ),
+                        I18n.t("ui.base.scanIcon.popup.text","Öffnet die Kamera um einen QR-Code zu scannen", language = browser.sessionLanguage), position="bottom right", distanceAway = 0)
                 }
                 if(browser.authenticatedUser?.isAdmin != false) {
                     a(fomantic.item, href = "/settings/users").new {

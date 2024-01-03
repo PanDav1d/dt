@@ -15,9 +15,9 @@ fun ElementCreator<*>.setupPinCheck(expectedPin: String, fileName: String, whenD
     formControl { formCtrl ->
 
 
-        h4(fomantic.ui.header).i18nText("ui.admin.installForms.serverPin","Server-Pin angeben")
+        h4(fomantic.ui.header).i18nText("ui.admin.installForms.serverPin","Server-PIN angeben")
         p().innerHTML(
-                i18n("ui.admin.installForms.requestServerPinText","""Bitte geben Sie den Server-Pin an, um mit der Installation fortzufahren. Die Server-Pin erhalten Sie indem Sie den folgenden Befehl im Terminal Ihres Servers ausführen:""").trimIndent()
+                i18n("ui.admin.installForms.requestServerPinText","""Bitte geben Sie die Server-PIN an, um mit der Installation fortzufahren. Die Server-PIN erhalten Sie indem Sie den folgenden Befehl im Terminal Ihres Servers ausführen:""").trimIndent()
         )
         div(fomantic.ui.inverted.segment.left.aligned).new{
                 span(fomantic.ui.inverted.text).text("Linux")

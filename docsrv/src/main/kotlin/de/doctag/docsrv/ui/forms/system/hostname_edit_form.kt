@@ -25,7 +25,7 @@ fun ElementCreator<*>.hostnameEditForm(hostnameStr:String, onSaveClick: (hostnam
             label().i18nText("ui.forms.system.hostnameEditForm.hostnameLabel","Hostname")
             formInput(null, "docsvr.test.de", true, hostName)
                     .with(formCtrl)
-                    .withInputMissingErrorMessage(i18n("ui.forms.system.hostnameEditForm.hostnameMissingErrorMessage","Bitte geben Sie den Domain Namen an, unter dem dieses System erreichbar ist."))
+                    .withInputMissingErrorMessage(i18n("ui.forms.system.hostnameEditForm.hostnameMissingErrorMessage","Bitte geben Sie den Domain-Namen an, unter dem dieses System erreichbar ist."))
         }
 
         displayErrorMessages(formCtrl)

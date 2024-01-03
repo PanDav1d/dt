@@ -41,7 +41,7 @@ fun WebBrowser.handleInstall(content: ElementCreator<*>) {
     if(db(host()).config.findOne(DocsrvConfig::_id eq "1")!=null){
         content.centeredBox {
             h2().text(i18n("ui.admin.install.doneHeader", "Einrichtung abgeschlossen"))
-            p().text(i18n("ui.admin.install.doneText","Die Einrichtung Ihres Systems wurde bereits durchgeführt. Sie können den Docsrv jetzt verwenden."))
+            p().text(i18n("ui.admin.install.doneText","Die Einrichtung Ihres Systems wurde bereits durchgeführt. Sie können den Docserver jetzt verwenden."))
         }
     }
     else {

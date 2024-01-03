@@ -56,7 +56,7 @@ fun ElementCreator<*>.tagForm(tag: Tag, onSaveClick: (tag: Tag)->Unit) {
                 i(fomantic.icon.dropdown)
             }
             div(fomantic.content).new {
-                formInput(i18n("ui.forms.system.tagForm.autoAttachWhenTextContainsLabel","Wenn das Dokument den Text enthält"), "ABC", false, tag.propertyOrDefault(Tag::options, TagOptions()).propertyOrDefault(TagOptions::appendRules, TagAppendRules()).propertyOrDefault(TagAppendRules::whenDocumentContains, ""))
+                formInput(i18n("ui.forms.system.tagForm.autoAttachWhenTextContainsLabel","Wenn das Dokument den folgenden Text enthält"), "ABC", false, tag.propertyOrDefault(Tag::options, TagOptions()).propertyOrDefault(TagOptions::appendRules, TagAppendRules()).propertyOrDefault(TagAppendRules::whenDocumentContains, ""))
                     .with(formCtrl)
             }
         }

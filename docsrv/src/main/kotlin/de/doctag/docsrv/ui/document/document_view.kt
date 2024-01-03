@@ -84,7 +84,7 @@ fun ElementCreator<*>.signButton(rFile: Document){
             span(fomantic.small.text).i18nText("ui.document.documentView.signingNoLongerPossible", "Dokument kann nicht mehr signiert werden")
         }
     } else {
-        span(fomantic.small.text).i18nText("ui.document.documentView.anonymousSignaturesNotPossibleInfoMessage", "Signaturen ohne Authentifikation sind in diesem Dokument nicht möglich.")
+        span(fomantic.small.text).i18nText("ui.document.documentView.anonymousSignaturesNotPossibleInfoMessage", "Signaturen ohne Authentifizierung sind in diesem Dokument nicht möglich.")
     }
 }
 
@@ -122,7 +122,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                                 }
                             }
                         }
-                        div(fomantic.description).i18nText("ui.document.documentView.documentUrl","Dokumentenaddresse")
+                        div(fomantic.description).i18nText("ui.document.documentView.documentUrl","Dokumentenadresse")
                     }
                 }
 
@@ -191,7 +191,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
 
             rDocument.url?.let {url->
 
-                val m = modal(i18n("ui.document.documentView.documentAddress","Dokumentenaddresse")){
+                val m = modal(i18n("ui.document.documentView.documentAddress","Dokumentenadresse")){
                     img(src= getQRCodeImageAsDataUrl(url, 400,400, 5))
                     a(href=url).text(url)
                 }
@@ -256,7 +256,7 @@ fun ElementCreator<*>.renderDocumentInfo(rDocument: Document, selectedSignature:
                     tr().new {
                         th().i18nText("ui.document.documentView.role","Rolle")
                         th().i18nText("ui.document.documentView.operator","Systembetreiber")
-                        th().i18nText("ui.document.documentView.address","Addresse")
+                        th().i18nText("ui.document.documentView.address","Adresse")
                         th().i18nText("ui.document.documentView.keyOwner","Schlüsselinhaber")
                         th().i18nText("ui.document.documentView.timestamp","Datum")
                         th().i18nText("ui.document.documentView.info","Info")

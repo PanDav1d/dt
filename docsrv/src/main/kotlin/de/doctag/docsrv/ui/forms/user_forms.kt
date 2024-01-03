@@ -50,8 +50,8 @@ fun ElementCreator<*>.userAddForm(userObj: User, onSaveClick: (user:User, passwo
             .with(formCtrl)
             .validate {
                 when{
-                    it?.matches("^[A-Za-z0-9+_.-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$".toRegex(RegexOption.IGNORE_CASE)) != true -> i18n("ui.forms.userForms.userAddForm.emailInvalidErrorMessage","Bitte geben Sie eine gültige E-Mail Addresse an")
-                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null -> i18n("ui.forms.userForms.userAddForm.emailAddressTakenErrorMessage","Die E-Mail Addresse ist bereits vergeben")
+                    it?.matches("^[A-Za-z0-9+_.-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$".toRegex(RegexOption.IGNORE_CASE)) != true -> i18n("ui.forms.userForms.userAddForm.emailInvalidErrorMessage","Bitte geben Sie eine gültige E-Mail-Adresse an")
+                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null -> i18n("ui.forms.userForms.userAddForm.emailAddressTakenErrorMessage","Die E-Mail-Adresse ist bereits vergeben")
                     else -> null
                 }
             }
@@ -88,13 +88,13 @@ fun ElementCreator<*>.userEditForm(userObj: User, onSaveClick: (user:User)->Unit
             .with(formCtrl)
             .validate {
                 when{
-                    it?.matches("^[A-Za-z0-9+_.-]+@(.+)$".toRegex()) != true -> i18n("ui.forms.userForms.userEditForm.provideEmailerrorMessage","Bitte geben Sie eine gültige E-Mail Addresse an")
-                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null && it != userObj.emailAdress -> i18n("ui.forms.userForms.userEditForm.emailAddressAlreadyTakenErrorMessage","Die E-Mail Addresse ist bereits vergeben")
+                    it?.matches("^[A-Za-z0-9+_.-]+@(.+)$".toRegex()) != true -> i18n("ui.forms.userForms.userEditForm.provideEmailerrorMessage","Bitte geben Sie eine gültige E-Mail-Adresse an")
+                    db().users.findOne(User::emailAdress.regex(it, "i") ) != null && it != userObj.emailAdress -> i18n("ui.forms.userForms.userEditForm.emailAddressAlreadyTakenErrorMessage","Die E-Mail-Adresse ist bereits vergeben")
                     else -> null
                 }
             }
 
-        checkBoxInput(i18n("ui.forms.userForms.userEditForm.isAdmin","Ist Administrator?"), user.propertyOrDefault(User::isAdmin, false))
+        checkBoxInput(i18n("ui.forms.userForms.userEditForm.isAdmin","ist Administrator?"), user.propertyOrDefault(User::isAdmin, false))
 
 
         formCtrl.withValidation {
@@ -164,7 +164,7 @@ fun ElementCreator<*>.userDeleteForm(userObj: User, onSaveClick: ()->Unit){
         }
 
         h2().i18nText("ui.forms.userForms.userDeleteForm.deleteConfirmMessage","Den Benutzer ${userObj.firstName} ${userObj.lastName} wirklich löschen?")
-        p().i18nText("ui.forms.userForms.userDeleteForm.pleaseTypeEmailMessage","Bitte geben Sie die E-Mail Addresse ${userObj.emailAdress} des Nutzers ein um die Löschung zu bestätigen.")
+        p().i18nText("ui.forms.userForms.userDeleteForm.pleaseTypeEmailMessage","Bitte geben Sie die E-Mail-Adresse ${userObj.emailAdress} des Nutzers ein um die Löschung zu bestätigen.")
 
         formInput( i18n("ui.forms.userForms.userDeleteForm.emailLabel","E-Mail Addresse"), i18n("ui.forms.userForms.userDeleteForm.emailPlaceholder","E-Mail"), true, emailConfirm, InputType.text)
             .with(formCtrl)
@@ -225,7 +225,7 @@ fun ElementCreator<*>.userLoginLinkForm(userObj:User, onSaveClick: () -> Unit) =
 
     if(newSession == null) {
         button(fomantic.ui.button.primary).i18nText("ui.forms.userForms.userAppForm.addButton","Hinzufügen").on.click {
-            val session = Session(UUID.randomUUID().toString(), ZonedDateTime.now().plusYears(5), i18n("ui.forms.userForms.userAppForm.appSessionName","DocTag Anmeldelink"))
+            val session = Session(UUID.randomUUID().toString(), ZonedDateTime.now().plusYears(5), i18n("ui.forms.userForms.userAppForm.appSessionName","Doctag Anmeldelink"))
             userObj.sessions = (userObj.sessions ?: listOf()).plus(session)
 
             onSaveClick()

@@ -55,7 +55,7 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                             conf.inboundMail = inbound
                                             db().config.save(conf)
 
-                                            pageArea.showToast(i18n("ui.settings.keys.mailSettingsChanged","E-Mail Einstellungen geändert"), ToastKind.Success)
+                                            pageArea.showToast(i18n("ui.settings.keys.mailSettingsChanged","E-Mail-Einstellungen geändert"), ToastKind.Success)
                                         }
                                     }
                                 }
@@ -70,7 +70,7 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
                                             conf.design = designConfig
                                             db().config.save(conf)
                                         }
-                                        pageArea.showToast(i18n("ui.settings.keys.designSettingsChanged","Design Einstellungen geändert"), ToastKind.Success)
+                                        pageArea.showToast(i18n("ui.settings.keys.designSettingsChanged","Design-Einstellungen geändert"), ToastKind.Success)
                                     }
                                 }
                                 SystemSettingsActiveItem.SEARCH->{

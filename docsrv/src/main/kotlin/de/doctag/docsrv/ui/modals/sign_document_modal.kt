@@ -57,7 +57,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
             val keyOptions = allKeys.map { it._id to (it.verboseName ?: "") }.toMap()
             key.value = allKeys.firstOrNull{it.defaultKey == true} ?: allKeys.firstOrNull()
             div(fomantic.ui.field).new {
-                label().i18nText("ui.modals.signDocumentModal.selectKey","Schlüssel wählen")
+                label().i18nText("ui.modals.signDocumentModal.selectKey","Teilnehmerzertifikat wählen")
                 dropdown(keyOptions).onSelect { selectedKeyId ->
                     val currentKey = db().keys.findOne(PrivatePublicKeyPair::_id eq selectedKeyId)
                     logger.info("Selected key: ${selectedKeyId}. key.value = ${currentKey?.verboseName}")
@@ -65,7 +65,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                 }
             }
             formCtrl.withValidation {
-                if (key.value == null) i18n("ui.modals.signDocumentModal.selectKeyMessage","Bitte wählen Sie einen Schlüssel aus") else null
+                if (key.value == null) i18n("ui.modals.signDocumentModal.selectKeyMessage","Bitte wählen Sie ein Zertifikat aus") else null
             }
         }
 
@@ -92,7 +92,7 @@ fun ElementCreator<*>.signDocumentModal(doc: Document, onSignFunc:(doc:Document,
                             formInput(null, "", true, result.propertyOrDefault(WorkflowInputResult::value,""))
                         }
                         formCtrl.withValidation {
-                            if(!result.value.value.isNullOrBlank() && !mailRegex.matches(result.value.value!!)) i18n("ui.modals.signDocumentModal.inputValidEmailMessage","Bitte geben Sie eine gültige Mail-Adresse an") else null
+                            if(!result.value.value.isNullOrBlank() && !mailRegex.matches(result.value.value!!)) i18n("ui.modals.signDocumentModal.inputValidEmailMessage","Bitte geben Sie eine gültige E-Mail-Adresse an") else null
                         }
                     }
                     WorkflowInputKind.Checkbox -> {

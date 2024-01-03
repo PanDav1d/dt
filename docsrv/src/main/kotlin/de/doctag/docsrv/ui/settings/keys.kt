@@ -54,7 +54,7 @@ fun ElementCreator<*>.handleKeySettings(){
                                 th().i18nText("ui.settings.keys.createdBy","von")
                                 th().new {
                                     span().i18nText("ui.settings.keys.verification","Verifizierung")
-                                    i(fomantic.ui.icon.info).withPopup(null, i18n("ui.settings.keys.verificationInfoMessage","Gibt an, ob der Schlüssel bereits von DocTag verifiziert wurde"))
+                                    i(fomantic.ui.icon.info).withPopup(null, i18n("ui.settings.keys.verificationInfoMessage","Gibt an, ob das Zertifikat bereits von DocTag verifiziert wurde"))
                                 }
                                 th().i18nText("ui.settings.keys.keyValidTill","Gültig bis")
                                 th().i18nText("ui.settings.keys.action","Aktion")
@@ -91,16 +91,16 @@ fun ElementCreator<*>.handleKeySettings(){
                                                     db().keys.save(key)
                                                 }
 
-                                                pageArea.showToast(i18n("ui.settings.keys.keyUpdatedInfo","Schlüssel aktualisiert"), ToastKind.Success)
+                                                pageArea.showToast(i18n("ui.settings.keys.keyUpdatedInfo","Zertifikat aktualisiert"), ToastKind.Success)
                                             }
                                             else {
-                                                pageArea.showToast(i18n("ui.settings.keys.keyUpdateFailedError","Veröffentlichen fehlgeschlagen."), ToastKind.Error)
+                                                pageArea.showToast(i18n("ui.settings.keys.keyUpdateFailedError","Veröffentlichung fehlgeschlagen."), ToastKind.Error)
                                             }
                                         }
 
                                         i(fomantic.ui.remove.icon).on.click {
                                             logger.info("Removing key ${key.verboseName}")
-                                            val removeModal = deleteVerifyModal(i18n("ui.settings.keys.deleteKeyObjectName","Schlüssel"), key.verboseName?:""){
+                                            val removeModal = deleteVerifyModal(i18n("ui.settings.keys.deleteKeyObjectName","Zertifikat"), key.verboseName?:""){
                                                 db().keys.deleteOneById(key._id!!)
                                             }
                                             removeModal.open()

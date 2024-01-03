@@ -205,8 +205,8 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
                     WorkflowInputKind.Checkbox.name to i18n("ui.forms.system.workflowForm.inputKindCheckbox","Checkbox"),
                     WorkflowInputKind.FileInput.name to i18n("ui.forms.system.workflowForm.inputKindAttachFile","Datei anfügen"),
                     WorkflowInputKind.TextInput.name to i18n("ui.forms.system.workflowForm.inputKindText","Texteingabe"),
-                    WorkflowInputKind.Sign.name to i18n("ui.forms.system.workflowForm.inputKindSignature","Signieren"),
-                    WorkflowInputKind.ReceiptMail.name to i18n("ui.forms.system.workflowForm.inputKIndEmail","E-Mailaddresse"),
+                    WorkflowInputKind.Sign.name to i18n("ui.forms.system.workflowForm.inputKindSignature","Unterschriftsfeld"),
+                    WorkflowInputKind.ReceiptMail.name to i18n("ui.forms.system.workflowForm.inputKIndEmail","E-Mail-Adresse"),
                 ),
             ).onSelect{ selectedKey->
                 val kind = WorkflowInputKind.valueOf(selectedKey!!)
@@ -232,7 +232,7 @@ fun ElementCreator<*>.workflowInputInlineEditForm(workFlowInput: WorkflowInput, 
                     when (inputKind) {
                         WorkflowInputKind.TextInput -> {
                             div(fomantic.ui.field).new {
-                                checkBoxInput(i18n("ui.forms.system.workflowForm.multilineCheckbox","Mehrzeilig?"), KVar(false))
+                                checkBoxInput(i18n("ui.forms.system.workflowForm.multilineCheckbox","mehrzeilig?"), KVar(false))
                             }
                         }
                         WorkflowInputKind.Sign -> {

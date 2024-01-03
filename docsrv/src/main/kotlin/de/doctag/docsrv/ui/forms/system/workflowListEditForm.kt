@@ -54,7 +54,7 @@ fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) = useState(1){cur
 
                         a(href="#").new {
                             if(wf._id == db().currentConfig.workflow?.defaultWorkflowId) {
-                                i(fomantic.icon.star).withPopup(null, i18n("ui.forms.system.workflowListEditForm.markAsDefaultWorkflow","Standart-Workflow"))
+                                i(fomantic.icon.star).withPopup(null, i18n("ui.forms.system.workflowListEditForm.markAsDefaultWorkflow","Standard-Workflow"))
                             }
                             else {
                                 i(fomantic.icon.starOutline).on.click {
@@ -65,9 +65,9 @@ fun ElementCreator<*>.workflowListEditForm(pageArea: PageArea) = useState(1){cur
                                         this.workflow?.defaultWorkflowId = wf._id
                                         db().config.save(this)
                                     }
-                                    pageArea.showToast(i18n("ui.forms.system.workflowListEditForm.successfullySetAsDefaultWorkflow","Standart Workflow festgelegt"), ToastKind.Success)
+                                    pageArea.showToast(i18n("ui.forms.system.workflowListEditForm.successfullySetAsDefaultWorkflow","Als Standard-Workflow festlegen"), ToastKind.Success)
                                     setState(currentState+1)
-                                }.withPopup(null, i18n("ui.forms.system.workflowListEditForm.setAsDefaultWorkflow","Als Standart-Workflow festlegen"))
+                                }.withPopup(null, i18n("ui.forms.system.workflowListEditForm.setAsDefaultWorkflow","Als Standard-Workflow festlegen"))
                             }
                         }
                         a(href="#").new {

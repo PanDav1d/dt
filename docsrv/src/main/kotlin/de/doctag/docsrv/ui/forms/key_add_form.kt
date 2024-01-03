@@ -25,7 +25,7 @@ fun ElementCreator<*>.keyAddForm(onSaveClick: (vname: String, address: Address)-
             label().i18nText("ui.forms.keyAddForm.displayNameLabel","Anzeigename")
             formInput(null, i18n("ui.forms.keyAddForm.displayNamePlaceholder","Vorname"), true, verboseName)
                 .with(formCtrl)
-                .withInputMissingErrorMessage(i18n("ui.forms.keyAddForm.provideDisplayNameError","Bitte geben Sie einen Anzeigenamen für den Schlüssel an"))
+                .withInputMissingErrorMessage(i18n("ui.forms.keyAddForm.provideDisplayNameError","Bitte geben Sie einen Anzeigenamen für das Teilnehmerzertifikat an"))
         }
 
         h4(fomantic.ui.dividing.header).i18nText("ui.forms.keyAddForm.organizationNameHeader","Für Organisation")

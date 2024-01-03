@@ -9,11 +9,11 @@ import de.doctag.lib.publicKeyFingerprint
 import kweb.*
 import kweb.plugins.fomanticUI.fomantic
 
-fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal(i18n("ui.modals.showSignatureModal.title", "Schlüssel ${
+fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal(i18n("ui.modals.showSignatureModal.title", "Zertifikat ${
     publicKeyFingerprint(loadPublicKey(key.publicKey)!!)} anzeigen")){ modal->
 
 
-    h4(fomantic.ui.dividing.header).i18nText("ui.modals.showSignatureModal.keyHeader","Schlüssel")
+    h4(fomantic.ui.dividing.header).i18nText("ui.modals.showSignatureModal.keyHeader","Zertifikat")
 
     table(fomantic.ui.selectable.celled.table).new {
         tr().new {
@@ -22,7 +22,7 @@ fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal(
         }
 
         tr().new {
-            td().i18nText("ui.modals.showSignatureModal.doctagSource","Doctag System")
+            td().i18nText("ui.modals.showSignatureModal.doctagSource","Doctag-System")
             td().text("${key.signingDoctagInstance}/${publicKeyFingerprint(loadPublicKey(key.publicKey)!!)}")
         }
 
@@ -52,7 +52,7 @@ fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal(
         }
     }
 
-    h4(fomantic.ui.dividing.header).i18nText("ui.modals.showSignatureModal.verification","Verifikation")
+    h4(fomantic.ui.dividing.header).i18nText("ui.modals.showSignatureModal.verification","Verifizierung")
     if(key.verification?.signatureOfPublicKeyEntry != null){
 
         table(fomantic.ui.selectable.celled.table).apply {
@@ -85,11 +85,11 @@ fun ElementCreator<*>.showSignatureInfoModal(key: PrivatePublicKeyPair) = modal(
                 td().text("${key.verification?.signatureValidUntil}")
             }
             tr().new {
-                td().i18nText("ui.modals.showSignatureModal.addressValid","Addresse gültig:")
+                td().i18nText("ui.modals.showSignatureModal.addressValid","Adresse gültig:")
                 td().text("${key.verification?.isAddressVerified?.toYesNoString()}")
             }
             tr().new {
-                td().i18nText("ui.modals.showSignatureModal.doctagHostValid","DocTag Host gültig:")
+                td().i18nText("ui.modals.showSignatureModal.doctagHostValid","Doctag-Host gültig:")
                 td().text("${key.verification?.isSigningDoctagInstanceVerified?.toYesNoString()}")
             }
         }

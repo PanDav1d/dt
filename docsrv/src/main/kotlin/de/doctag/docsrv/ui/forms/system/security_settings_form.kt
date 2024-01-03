@@ -32,13 +32,13 @@ fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit)
                 div(fomantic.ui.message.red).new {
                     div(fomantic.header).i18nText("ui.forms.system.securitySettingsForm.attentionTitle","Achtung")
                     p().i18nText("ui.forms.system.securitySettingsForm.attentionText","""
-                        Ihr System akzeptiert Signaturen von noch nicht verzifizierten Schlüsseln. 
+                        Ihr System akzeptiert Signaturen von noch nicht verzifizierten Teilnehmerzertifikaten. 
                         
-                        Mit dieser Einstellung ist nicht mehr sichergestellt, dass die im Schlüssel 
+                        Mit dieser Einstellung ist nicht mehr sichergestellt, dass die im Teilnehmerzertifikat 
                         verwendeten Angaben immer korrekt und vollständig gesetzt wurden. 
                         
-                        Sie müssen damit rechnen, dass Ihr System Signaturen von Partnern empfängt,
-                        die falsche Angaben im Schlüssel gemacht haben.
+                        Sie müssen damit rechnen, dass Ihr System Teilnehmerzertifikate von Partnern empfängt,
+                        die falsche Angaben im Teilnehmerzertifikat gemacht haben.
                         
                         Wir empfehlen die Aktivierung dieser Einstellung nur für Testsysteme.
                         """.trimIndent())
@@ -48,7 +48,7 @@ fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit)
 
 
         checkBoxInput(
-            i18n("ui.forms.system.securitySettingsForm.acceptSignaturesFromUnverifiedKeysCheckbox","Signaturen von unverifizierten Schlüsseln akzeptieren."),
+            i18n("ui.forms.system.securitySettingsForm.acceptSignaturesFromUnverifiedKeysCheckbox","Signaturen von unverifizierten Teilnehmerzertifikaten akzeptieren."),
             secConf.propertyOrDefault(SecurityConfig::acceptSignaturesByUnverifiedKeys, false)
         )
 
@@ -56,7 +56,7 @@ fun ElementCreator<*>.security_settings_form(saveAction: (SecurityConfig)->Unit)
 
         val keyOptions = db().keys.find().map { it._id to (it.verboseName ?:"")}.toMap()
         div(fomantic.ui.field).new {
-            label().i18nText("ui.forms.system.securitySettingsForm.defaultKey","Standart Schlüssel für anonyme Signaturaktionen")
+            label().i18nText("ui.forms.system.securitySettingsForm.defaultKey","Standart-Schlüssel für anonyme Signaturaktionen")
             dropdown(keyOptions, secConf.propertyOrDefault(SecurityConfig::defaultKeyForAnonymousSubmissions, null)).onSelect { selectedKeyId ->
                 logger.info("Selected key: ${selectedKeyId}. key.value = $selectedKeyId" )
             }

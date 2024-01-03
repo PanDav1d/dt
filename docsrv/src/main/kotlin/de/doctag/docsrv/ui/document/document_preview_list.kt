@@ -102,7 +102,7 @@ fun ElementCreator<*>.handleDocumentPreviewList() {
                                                 div(fomantic.ui.active.inline.loader)
                                             }
                                             else {
-                                                a(fomantic.item).i18nText("ui.document.documentPreviewList.importFromMailboxButton","Aus Mail Postfach importieren").on.click {
+                                                a(fomantic.item).i18nText("ui.document.documentPreviewList.importFromMailboxButton","Aus Mail-Postfach importieren").on.click {
                                                     try {
                                                         isImportRunning.value = true
                                                         AttachmentImporter(db()).runImport()

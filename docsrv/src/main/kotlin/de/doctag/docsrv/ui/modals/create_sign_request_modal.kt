@@ -19,7 +19,7 @@ fun ElementCreator<*>.createDocumentSignRequestModal(onCreate: (docSignReq:Docum
 
     val scannedCode = KVar("")
 
-    val rescanButtonText = i18n("ui.modals.createSignRequest.reScanButton","Erneut Scannen")
+    val rescanButtonText = i18n("ui.modals.createSignRequest.reScanButton","Erneut scannen")
 
     render(scannedCode){ code ->
         when{
