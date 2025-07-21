@@ -23,7 +23,7 @@ fun ElementCreator<*>.handleSystemSettings(subPage : KVar<String>) {
             pageBorderAndTitle(i18n("ui.settings.system.pageTitle","Einstellungen")) { pageArea ->
 
                 div(fomantic.content).new() {
-                    div(fomantic.ui.grid).new {
+                    div(fomantic.ui.stackable.grid).new {
                         div(fomantic.ui.sixteen.wide.column).new {
                             settingsTabMenu(SettingsTabMenuActiveItem.System) {}
                             div(fomantic.ui.divider.hidden)

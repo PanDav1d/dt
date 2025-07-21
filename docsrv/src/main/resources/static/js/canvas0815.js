@@ -17,6 +17,9 @@ class Canvas0815 {
   listenerMouseDown = null;
   listenerMouseMove = null;
   listenerDblclick = null;
+  listenerTouchStart = null;
+  listenerTouchEnd = null;
+  listenerTouchMove = null;
   objValues = {};
   qrCodeOriginalSizeX = 0;
   qrCodeOriginalSizeY = 0;
@@ -107,11 +110,17 @@ class Canvas0815 {
      if(!this.listenerMouseUp) this.listenerMouseUp=function(e) { ths.mouseUp(e); };
      if(!this.listenerMouseMove) this.listenerMouseMove=function(e) { ths.mouseMove(e); };
      if(!this.listenerDblclick) this.listenerDblclick=function(e) { ths.mouseDoubleClick(e); };
+     if(!this.listenerTouchStart) this.listenerTouchStart=function(e) { ths.touchStart(e); };
+     if(!this.listenerTouchEnd) this.listenerTouchEnd=function(e) { ths.touchEnd(e); };
+     if(!this.listenerTouchMove) this.listenerTouchMove=function(e) { ths.touchMove(e); };
      var el=this.getListenerBaseElement();
      if(this.listenerMouseDown) el.addEventListener('mousedown', this.listenerMouseDown);
      if(this.listenerMouseUp) el.addEventListener('mouseup', this.listenerMouseUp);
      if(this.listenerMouseMove) el.addEventListener('mousemove', this.listenerMouseMove);
      if(this.listenerDblclick) el.addEventListener('dbclick', this.listenerDblclick);
+     if(this.listenerTouchStart) el.addEventListener('touchstart', this.listenerTouchStart);
+     if(this.listenerTouchEnd) el.addEventListener('touchend', this.listenerTouchEnd);
+     if(this.listenerTouchMove) el.addEventListener('touchmove', this.listenerTouchMove);
   }
   detachListeners() {
     this.debug("detachListeners(window)");
@@ -121,6 +130,9 @@ class Canvas0815 {
     el.removeEventListener('mouseup', this.listenerMouseUp);
     el.removeEventListener('mousemove', this.listenerMouseMove);
     el.removeEventListener('dbclick', this.listenerDblclick);
+    el.removeEventListener('touchstart', this.listenerTouchStart);
+    el.removeEventListener('touchend', this.listenerTouchEnd);
+    el.removeEventListener('touchmove', this.listenerTouchMove);
   }
 
   // Handler... alles für die Maus
@@ -219,6 +231,30 @@ class Canvas0815 {
       this.showBorder = this.showResize = false;
       this.redraw();
     }
+  }
+
+  touchStart(e) {
+    this.debug('touchStart');
+    e.preventDefault();
+    if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        this.mouseDown(touch);
+    }
+  }
+
+  touchEnd(e) {
+      this.debug('touchEnd');
+      e.preventDefault();
+      this.mouseUp(e);
+  }
+
+  touchMove(e) {
+      this.debug('touchMove');
+      e.preventDefault();
+      if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          this.mouseMove(touch);
+      }
   }
 
   getValidPosition() {

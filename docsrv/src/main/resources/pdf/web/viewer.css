@@ -3318,7 +3318,7 @@ a:focus > .thumbnail > .thumbnailImage,
 
 dialog {
   margin: auto;
-  padding: 15px;
+  padding: 15px 15px 60px 15px;
   border-spacing: 4px;
   color: var(--main-color);
   font: message-box;
@@ -3328,6 +3328,10 @@ dialog {
   border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 4px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-sizing: border-box;
 }
 dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.2);
@@ -3354,8 +3358,16 @@ dialog .separator {
 }
 
 dialog .buttonRow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 15px;
+  background-color: var(--doorhanger-bg-color);
+  border-top: 1px solid var(--separator-color);
   text-align: center;
   vertical-align: middle;
+  z-index: 1;
 }
 
 dialog :link {

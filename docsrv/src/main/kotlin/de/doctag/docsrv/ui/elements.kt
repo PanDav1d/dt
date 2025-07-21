@@ -113,34 +113,43 @@ fun ElementCreator<*>.scanQrCode(onScanSuccessful:(String)->Unit){
     }
 
     render(cameras){ cameraResponse ->
-        div(fomantic.ui.menu).new {
-            cameraResponse?.cameras?.forEachIndexed {idx, camera ->
-                a(fomantic.item.active(idx==activeCamera.value)).text(camera.label).on.click {
-                    logger.info("Setting active camera to ${idx}")
-                    activeCamera.value = idx
+        if (cameraResponse?.cameras.isNullOrEmpty()) {
+            div(fomantic.ui.message.icon).new {
+                i(fomantic.ui.icon.camera)
+                div(fomantic.content).new {
+                    div(fomantic.header).i18nText("ui.elements.camera.noCamerasFound.header", "Keine Kamera gefunden")
+                    p().i18nText("ui.elements.camera.noCamerasFound.text", "Es wurde keine Kamera gefunden oder der Zugriff wurde verweigert.")
                 }
             }
-        }
-
-        div(mapOf("id" to "reader", "width" to "600px"))
-
-        render(activeCamera){rActiveCamera ->
-
-            logger.info("Active Camera did change")
-
-            if(isScanning){
-                stopScanning()
-                isScanning = false
+        } else {
+            div(fomantic.ui.menu).new {
+                cameraResponse.cameras.forEachIndexed {idx, camera ->
+                    a(fomantic.item.active(idx==activeCamera.value)).text(camera.label).on.click {
+                        logger.info("Setting active camera to ${idx}")
+                        activeCamera.value = idx
+                    }
+                }
             }
 
-            cameraResponse?.cameras?.get(rActiveCamera)?.id?.let {cameraId ->
-                runBlocking { delay(1000) }
-                startScanning(cameraId) { qrCode ->
-                    isScanning = true
-                    qrCode.qrCode?.let {
-                        logger.info("Detected qr code ${qrCode.qrCode}")
-                        stopScanning()
-                        onScanSuccessful(qrCode.qrCode)
+            div(mapOf("id" to "reader", "style" to "width: 100%;"))
+
+            render(activeCamera){rActiveCamera ->
+
+                logger.info("Active Camera did change")
+
+                if(isScanning){
+                    stopScanning()
+                    isScanning = false
+                }
+
+                cameraResponse.cameras[rActiveCamera].id.let {cameraId ->
+                    startScanning(cameraId) { qrCode ->
+                        isScanning = true
+                        qrCode.qrCode?.let {
+                            logger.info("Detected qr code ${qrCode.qrCode}")
+                            stopScanning()
+                            onScanSuccessful(qrCode.qrCode)
+                        }
                     }
                 }
             }
